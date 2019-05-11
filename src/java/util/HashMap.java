@@ -295,7 +295,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         public final int hashCode() {
             return Objects.hashCode(key) ^ Objects.hashCode(value);
         }
-
+        
         public final V setValue(V newValue) {
             V oldValue = value;
             value = newValue;
@@ -333,6 +333,11 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * to incorporate impact of the highest bits that would otherwise
      * never be used in index calculations because of table bounds.
      */
+    // #IMP 2019-05-11 扰动函数
+// (h = key.hashCode()) ^ (h >>> 16)
+// 将hashcode的高16位和低16位做异或，保留了高16位的随机信息
+// 使得不那么容易冲突
+// hashmap 的size位2的n次幂，取模时相当于只取二进制数的后几位
     static final int hash(Object key) {
         int h;
         return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
@@ -374,6 +379,15 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     /**
      * Returns a power of two size for the given target capacity.
      */
+// #IMP 19-5-11 非常优秀的位运算使用
+//   比如cap = 5
+//    100 | 010 = 110
+//    110 | 001 = 111
+//    111 | 000 = 111
+//    ...
+    // TODO: 19-5-11 怎么做到的
+
+
     static final int tableSizeFor(int cap) {
         int n = cap - 1;
         n |= n >>> 1;
@@ -392,6 +406,10 @@ public class HashMap<K,V> extends AbstractMap<K,V>
      * (We also tolerate length zero in some operations to allow
      * bootstrapping mechanics that are currently not needed.)
      */
+// #IMP 19-5-11 为什么使用transient
+//    hash表的计算依赖于hashcode方法
+//    这个方法是平台相关的，不同平台算出来的可能不一样
+// 另外一个原因是hashmap中大部分值是无意义的，如果持久化会浪费空间
     transient Node<K,V>[] table;
 
     /**
@@ -626,6 +644,8 @@ public class HashMap<K,V> extends AbstractMap<K,V>
         Node<K,V>[] tab; Node<K,V> p; int n, i;
         if ((tab = table) == null || (n = tab.length) == 0)
             n = (tab = resize()).length;
+            // #NOTE 2019-05-11 相当于hash % (n - 1)
+            // 因为这里n一定是一个2的一个指数幂，所以取余相当于与其相与
         if ((p = tab[i = (n - 1) & hash]) == null)
             tab[i] = newNode(hash, key, value, null);
         else {
@@ -643,6 +663,7 @@ public class HashMap<K,V> extends AbstractMap<K,V>
                             treeifyBin(tab, hash);
                         break;
                     }
+                    // #NOTE 2019-05-11 找到了同hash同key的（之前已经插入过了），直接退出
                     if (e.hash == hash &&
                         ((k = e.key) == key || (key != null && key.equals(k))))
                         break;
