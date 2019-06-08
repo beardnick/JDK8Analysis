@@ -161,6 +161,8 @@ import java.io.IOException;
  * @since   1.4
  */
 public class LinkedHashMap<K,V>
+// #NOTE 2019-06-08 继承自HashMap，这就是为什么HashMap
+// 中要留下来一些空实现给LinkedHashMap
     extends HashMap<K,V>
     implements Map<K,V>
 {
