@@ -713,6 +713,16 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
     }
 
     static final <K, V> boolean casTabAt(Node<K, V>[] tab, int i, Node<K, V> c, Node<K, V> v) {
+    // #NOTE 2019-06-09 
+    /** 
+    * 比较obj的offset处内存位置中的值和期望的值，如果相同则更新。此更新是不可中断的。 
+    *  按照顺序，参数分别为
+    * @param obj 需要更新的对象 
+    * @param offset obj中field的偏移量 
+    * @param expect 希望field中存在的值 
+    * @param update 如果期望值expect与field的当前值相同，设置filed的值为这个新值 
+    * @return 如果field的值被更改返回true 
+    */  
         return U.compareAndSwapObject(tab, ((long) i << ASHIFT) + ABASE, c, v);
     }
 
@@ -747,6 +757,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
      * table size to use upon creation, or 0 for default. After initialization,
      * holds the next element count value upon which to resize the table.
      */
+    // #NOTE 2019-06-09 在进行size变化的控制中起着至关重要的作用的控制变量
     private transient volatile int sizeCtl;
 
     /**
@@ -971,21 +982,23 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
         int hash = spread(key.hashCode());
         int binCount = 0;
         for (Node<K, V>[] tab = table;;) {
+            // #NOTE 2019-06-09 f是first的意思，指该链表的头结点
             Node<K, V> f;
             int n, i, fh;
-            if (tab == null || (n = tab.length) == 0) {
+            if (tab == null || (n = tab.length) == 0) { // #NOTE 2019-06-09 还未初始化，进行初始化
                 tab = initTable();
-            } else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {
+            } else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) { 
+                // #NOTE 2019-06-09 通过cas操作将i位置上的null设为当前的newNode
+                // 如果这里cas失败了，for循环就无法跳出，就会不断进行尝试竞争
                 if (casTabAt(tab, i, null, new Node<K, V>(hash, key, value, null))) {
                     break; // no lock when adding to empty bin
                 }
-            } else if ((fh = f.hash) == MOVED){
+            } else if ((fh = f.hash) == MOVED) {
                 tab = helpTransfer(tab, f);
-            }
-            else {
+            } else {
                 V oldVal = null;
                 synchronized (f) {
-                    if (tabAt(tab, i) == f) {
+                    if (tabAt(tab, i) == f) {    // #NOTE 2019-06-09 volatile读
                         if (fh >= 0) {
                             binCount = 1;
                             for (Node<K, V> e = f;; ++binCount) {
@@ -1015,6 +1028,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
                         }
                     }
                 }
+                // #NOTE 2019-06-09 超过单条链表的长度限制了就扩容
                 if (binCount != 0) {
                     if (binCount >= TREEIFY_THRESHOLD) {
                         treeifyBin(tab, i);
@@ -2188,8 +2202,10 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
         int sc;
         while ((tab = table) == null || tab.length == 0) {
             if ((sc = sizeCtl) < 0) {
+                // #NOTE 2019-06-09 sizeCtl < 0说明有其它的线程在进行初始化，此线程在竞争中失败了
+                // 于是进行自旋
                 Thread.yield(); // lost initialization race; just spin
-            } else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) {
+            } else if (U.compareAndSwapInt(this, SIZECTL, sc, -1)) { // #NOTE 2019-06-09 通过cas将sc设为-1
                 try {
                     if ((tab = table) == null || tab.length == 0) {
                         int n = (sc > 0) ? sc : DEFAULT_CAPACITY;
@@ -2264,7 +2280,8 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
         if (tab != null && (f instanceof ForwardingNode) && (nextTab = ((ForwardingNode<K, V>) f).nextTable) != null) {
             int rs = resizeStamp(tab.length);
             while (nextTab == nextTable && table == tab && (sc = sizeCtl) < 0) {
-                if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 || sc == rs + MAX_RESIZERS || transferIndex <= 0) {
+                if ((sc >>> RESIZE_STAMP_SHIFT) != rs || sc == rs + 1 || sc == rs + MAX_RESIZERS
+                        || transferIndex <= 0) {
                     break;
                 }
                 if (U.compareAndSwapInt(this, SIZECTL, sc, sc + 1)) {
