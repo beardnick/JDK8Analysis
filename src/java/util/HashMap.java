@@ -321,11 +321,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * systematic lossage, as well as to incorporate impact of the highest bits that
      * would otherwise never be used in index calculations because of table bounds.
      */
+
     // #IMP 2019-05-11 扰动函数
     // (h = key.hashCode()) ^ (h >>> 16)
     // 将hashcode的高16位和低16位做异或，保留了高16位的随机信息
     // 使得不那么容易冲突
-    // hashmap 的size位2的n次幂，取模时相当于只取二进制数的后几位
+    // hashmap 的size为2的n次幂，取模时相当于只取二进制数的后几位
     static final int hash(Object key) {
         int h;
         return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
@@ -418,6 +419,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * make iterators on Collection-views of the HashMap fail-fast. (See
      * ConcurrentModificationException).
      */
+    // #NOTE 2019-06-08 modify count，修改次数，用于检查是否发生了并发修改的情况，
+    // 如果并非修改了就采用fail-fast机制抛出异常
     transient int modCount;
 
     /**
@@ -572,6 +575,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
         int n;
         K k;
         if ((tab = table) != null && (n = tab.length) > 0 && (first = tab[(n - 1) & hash]) != null) {
+            // #NOTE 2019-06-09 作为链表头或者红黑树的根，每次都应该单独检查
             if (first.hash == hash && // always check first node
                     ((k = first.key) == key || (key != null && key.equals(k))))
                 return first;
@@ -639,12 +643,14 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
             // #NOTE 2019-06-08 不但hash冲突，其实插入的就是同一个对象
             if (p.hash == hash && ((k = p.key) == key || (key != null && key.equals(k)))) {
                 e = p;
-                // #NOTE 2019-06-08 如果已经建成红黑树了，就使用不同的方法插入
+                // #NOTE 2019-06-08 如果已经建成红黑树了，就使用红黑树的插入方法
             } else if (p instanceof TreeNode) {
                 e = ((TreeNode<K, V>) p).putTreeVal(this, tab, hash, key, value);
             } else {
                 for (int binCount = 0;; ++binCount) {
                     if ((e = p.next) == null) {
+                        // #NOTE 2019-06-09 到达表尾了，直接插入表尾
+                        // #MARK 2019-06-09 直接插入表尾是否足够好，是否可以插入表头，更加符合局部性原理
                         p.next = newNode(hash, key, value, null);
                         // #NOTE 2019-06-08 冲突过多，链表过长，转换为红黑树
                         if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
@@ -688,14 +694,18 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
         int oldThr = threshold;
         int newCap, newThr = 0;
         if (oldCap > 0) {
-            if (oldCap >= MAXIMUM_CAPACITY) {
+            if (oldCap >= MAXIMUM_CAPACITY) { // #NOTE 2019-06-09 操过最大限制，不进行扩容
                 threshold = Integer.MAX_VALUE;
                 return oldTab;
-            } else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY && oldCap >= DEFAULT_INITIAL_CAPACITY)
+            } else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY && oldCap >= DEFAULT_INITIAL_CAPACITY) { // #NOTE
+                                                                                                          // 2019-06-09
+                                                                                                          // 没有操过限制，扩容两倍
                 newThr = oldThr << 1; // double threshold
-        } else if (oldThr > 0) // initial capacity was placed in threshold
+            }
+        } else if (oldThr > 0) { // initial capacity was placed in threshold
             newCap = oldThr;
-        else { // zero initial threshold signifies using defaults
+        } else { // zero initial threshold signifies using defaults
+            // #NOTE 2019-06-09 默认设置
             newCap = DEFAULT_INITIAL_CAPACITY;
             newThr = (int) (DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
         }
@@ -712,23 +722,33 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                 Node<K, V> e;
                 if ((e = oldTab[j]) != null) {
                     oldTab[j] = null;
-                    if (e.next == null)
+                    if (e.next == null) {
+                        // #NOTE 2019-06-09 该位置只有一个元素，直接设置
                         newTab[e.hash & (newCap - 1)] = e;
-                    else if (e instanceof TreeNode)
+                    } else if (e instanceof TreeNode) {
+                        // #NOTE 2019-06-09 该位置是一个红黑树
                         ((TreeNode<K, V>) e).split(this, newTab, j, oldCap);
-                    else { // preserve order
+                    } else { // preserve order
                         Node<K, V> loHead = null, loTail = null;
                         Node<K, V> hiHead = null, hiTail = null;
                         Node<K, V> next;
+
+                        // #IMP 2019-06-09 这里写得十分巧妙
+                        // 元素的hash不变，HashMap容量变为原来的两倍，在进行mod操作后，元素位置要么不变，要么变为原索引位置 +　原容量大小
+                        // 证明：
+                        // 任何数mod 16 结果为该数的低四位，
+                        // 任何数mod 32 结果为第五位，所以如果该数第五位为0时结果为原来的低四位，为1时为低五位，也就是原来低四位加上16
+
+                        // #NOTE 2019-06-09 位置变不变分为low链表和high链表
                         do {
                             next = e.next;
-                            if ((e.hash & oldCap) == 0) {
+                            if ((e.hash & oldCap) == 0) {    // #NOTE 2019-06-09 索引位置不变
                                 if (loTail == null)
                                     loHead = e;
                                 else
                                     loTail.next = e;
                                 loTail = e;
-                            } else {
+                            } else { // 位置变了
                                 if (hiTail == null)
                                     hiHead = e;
                                 else
@@ -736,6 +756,9 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                                 hiTail = e;
                             }
                         } while ((e = next) != null);
+                         
+                        // #NOTE 2019-06-09 直接将新分成的两个链表放在对应的位置上
+                        // 使用两个链表保证了原来的元素在链表上的相对位置不变
                         if (loTail != null) {
                             loTail.next = null;
                             newTab[j] = loHead;
@@ -1793,6 +1816,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * Entry for Tree bins. Extends LinkedHashMap.Entry (which in turn extends Node)
      * so can be used as extension of either regular or linked node.
      */
+    // #MARK 2019-06-09 HashMap中的红黑树
     static final class TreeNode<K, V> extends LinkedHashMap.Entry<K, V> {
         TreeNode<K, V> parent; // red-black tree links
         TreeNode<K, V> left;
