@@ -196,10 +196,12 @@ public final class StackTraceElement implements java.io.Serializable {
      *         execution point as this instance.
      */
     public boolean equals(Object obj) {
-        if (obj==this)
+        if (obj==this) {
             return true;
-        if (!(obj instanceof StackTraceElement))
+        }
+        if (!(obj instanceof StackTraceElement)) {
             return false;
+        }
         StackTraceElement e = (StackTraceElement)obj;
         return e.declaringClass.equals(declaringClass) &&
             e.lineNumber == lineNumber &&

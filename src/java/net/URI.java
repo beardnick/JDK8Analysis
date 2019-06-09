@@ -909,8 +909,9 @@ public final class URI
         // We could be clever and cache the error message and index from the
         // exception thrown during the original parse, but that would require
         // either more fields or a more-obscure representation.
-        if ((host != null) || (authority == null))
+        if ((host != null) || (authority == null)) {
             return this;
+        }
         defineString();
         new Parser(string).parse(true);
         return this;
@@ -1084,8 +1085,9 @@ public final class URI
      */
     public URL toURL()
         throws MalformedURLException {
-        if (!isAbsolute())
+        if (!isAbsolute()) {
             throw new IllegalArgumentException("URI is not absolute");
+        }
         return new URL(toString());
     }
 
@@ -1160,8 +1162,9 @@ public final class URI
      *          (never {@code null})
      */
     public String getSchemeSpecificPart() {
-        if (decodedSchemeSpecificPart == null)
+        if (decodedSchemeSpecificPart == null) {
             decodedSchemeSpecificPart = decode(getRawSchemeSpecificPart());
+        }
         return decodedSchemeSpecificPart;
     }
 
@@ -1193,8 +1196,9 @@ public final class URI
      *          or {@code null} if the authority is undefined
      */
     public String getAuthority() {
-        if (decodedAuthority == null)
+        if (decodedAuthority == null) {
             decodedAuthority = decode(authority);
+        }
         return decodedAuthority;
     }
 
@@ -1223,8 +1227,9 @@ public final class URI
      *          or {@code null} if the user information is undefined
      */
     public String getUserInfo() {
-        if ((decodedUserInfo == null) && (userInfo != null))
+        if ((decodedUserInfo == null) && (userInfo != null)) {
             decodedUserInfo = decode(userInfo);
+        }
         return decodedUserInfo;
     }
 
@@ -1307,8 +1312,9 @@ public final class URI
      *          or {@code null} if the path is undefined
      */
     public String getPath() {
-        if ((decodedPath == null) && (path != null))
+        if ((decodedPath == null) && (path != null)) {
             decodedPath = decode(path);
+        }
         return decodedPath;
     }
 
@@ -1336,8 +1342,9 @@ public final class URI
      *          or {@code null} if the query is undefined
      */
     public String getQuery() {
-        if ((decodedQuery == null) && (query != null))
+        if ((decodedQuery == null) && (query != null)) {
             decodedQuery = decode(query);
+        }
         return decodedQuery;
     }
 
@@ -1365,8 +1372,9 @@ public final class URI
      *          or {@code null} if the fragment is undefined
      */
     public String getFragment() {
-        if ((decodedFragment == null) && (fragment != null))
+        if ((decodedFragment == null) && (fragment != null)) {
             decodedFragment = decode(fragment);
+        }
         return decodedFragment;
     }
 
@@ -1411,33 +1419,56 @@ public final class URI
      *          is identical to this URI
      */
     public boolean equals(Object ob) {
-        if (ob == this)
+        if (ob == this) {
             return true;
-        if (!(ob instanceof URI))
+        }
+        if (!(ob instanceof URI)) {
             return false;
+        }
         URI that = (URI)ob;
-        if (this.isOpaque() != that.isOpaque()) return false;
-        if (!equalIgnoringCase(this.scheme, that.scheme)) return false;
-        if (!equal(this.fragment, that.fragment)) return false;
+        if (this.isOpaque() != that.isOpaque()) {
+            return false;
+        }
+        if (!equalIgnoringCase(this.scheme, that.scheme)) {
+            return false;
+        }
+        if (!equal(this.fragment, that.fragment)) {
+            return false;
+        }
 
         // Opaque
-        if (this.isOpaque())
+        if (this.isOpaque()) {
             return equal(this.schemeSpecificPart, that.schemeSpecificPart);
+        }
 
         // Hierarchical
-        if (!equal(this.path, that.path)) return false;
-        if (!equal(this.query, that.query)) return false;
+        if (!equal(this.path, that.path)) {
+            return false;
+        }
+        if (!equal(this.query, that.query)) {
+            return false;
+        }
 
         // Authorities
-        if (this.authority == that.authority) return true;
+        if (this.authority == that.authority) {
+            return true;
+        }
         if (this.host != null) {
             // Server-based
-            if (!equal(this.userInfo, that.userInfo)) return false;
-            if (!equalIgnoringCase(this.host, that.host)) return false;
-            if (this.port != that.port) return false;
+            if (!equal(this.userInfo, that.userInfo)) {
+                return false;
+            }
+            if (!equalIgnoringCase(this.host, that.host)) {
+                return false;
+            }
+            if (this.port != that.port) {
+                return false;
+            }
         } else if (this.authority != null) {
             // Registry-based
-            if (!equal(this.authority, that.authority)) return false;
+            if (!equal(this.authority, that.authority)) {
+                return false;
+            }
         } else if (this.authority != that.authority) {
             return false;
         }
@@ -1453,8 +1484,9 @@ public final class URI
      * @return  A hash-code value for this URI
      */
     public int hashCode() {
-        if (hash != 0)
+        if (hash != 0) {
             return hash;
+        }
         int h = hashIgnoringCase(0, scheme);
         h = hash(h, fragment);
         if (isOpaque()) {
@@ -1545,15 +1577,17 @@ public final class URI
     public int compareTo(URI that) {
         int c;
 
-        if ((c = compareIgnoringCase(this.scheme, that.scheme)) != 0)
+        if ((c = compareIgnoringCase(this.scheme, that.scheme)) != 0) {
             return c;
+        }
 
         if (this.isOpaque()) {
             if (that.isOpaque()) {
                 // Both opaque
                 if ((c = compare(this.schemeSpecificPart,
-                                 that.schemeSpecificPart)) != 0)
+                                 that.schemeSpecificPart)) != 0) {
                     return c;
+                }
                 return compare(this.fragment, that.fragment);
             }
             return +1;                  // Opaque > hierarchical
@@ -1564,12 +1598,15 @@ public final class URI
         // Hierarchical
         if ((this.host != null) && (that.host != null)) {
             // Both server-based
-            if ((c = compare(this.userInfo, that.userInfo)) != 0)
+            if ((c = compare(this.userInfo, that.userInfo)) != 0) {
                 return c;
-            if ((c = compareIgnoringCase(this.host, that.host)) != 0)
+            }
+            if ((c = compareIgnoringCase(this.host, that.host)) != 0) {
                 return c;
-            if ((c = this.port - that.port) != 0)
+            }
+            if ((c = this.port - that.port) != 0) {
                 return c;
+            }
         } else {
             // If one or both authorities are registry-based then we simply
             // compare them in the usual, case-sensitive way.  If one is
@@ -1577,11 +1614,17 @@ public final class URI
             // guaranteed to be unequal, hence the comparison will never return
             // zero and the compareTo and equals methods will remain
             // consistent.
-            if ((c = compare(this.authority, that.authority)) != 0) return c;
+            if ((c = compare(this.authority, that.authority)) != 0) {
+                return c;
+            }
         }
 
-        if ((c = compare(this.path, that.path)) != 0) return c;
-        if ((c = compare(this.query, that.query)) != 0) return c;
+        if ((c = compare(this.path, that.path)) != 0) {
+            return c;
+        }
+        if ((c = compare(this.query, that.query)) != 0) {
+            return c;
+        }
         return compare(this.fragment, that.fragment);
     }
 
@@ -1682,43 +1725,53 @@ public final class URI
 
     // US-ASCII only
     private static int toLower(char c) {
-        if ((c >= 'A') && (c <= 'Z'))
+        if ((c >= 'A') && (c <= 'Z')) {
             return c + ('a' - 'A');
+        }
         return c;
     }
 
     // US-ASCII only
     private static int toUpper(char c) {
-        if ((c >= 'a') && (c <= 'z'))
+        if ((c >= 'a') && (c <= 'z')) {
             return c - ('a' - 'A');
+        }
         return c;
     }
 
     private static boolean equal(String s, String t) {
-        if (s == t) return true;
+        if (s == t) {
+            return true;
+        }
         if ((s != null) && (t != null)) {
-            if (s.length() != t.length())
+            if (s.length() != t.length()) {
                 return false;
-            if (s.indexOf('%') < 0)
+            }
+            if (s.indexOf('%') < 0) {
                 return s.equals(t);
+            }
             int n = s.length();
             for (int i = 0; i < n;) {
                 char c = s.charAt(i);
                 char d = t.charAt(i);
                 if (c != '%') {
-                    if (c != d)
+                    if (c != d) {
                         return false;
+                    }
                     i++;
                     continue;
                 }
-                if (d != '%')
+                if (d != '%') {
                     return false;
+                }
                 i++;
-                if (toLower(s.charAt(i)) != toLower(t.charAt(i)))
+                if (toLower(s.charAt(i)) != toLower(t.charAt(i))) {
                     return false;
+                }
                 i++;
-                if (toLower(s.charAt(i)) != toLower(t.charAt(i)))
+                if (toLower(s.charAt(i)) != toLower(t.charAt(i))) {
                     return false;
+                }
                 i++;
             }
             return true;
@@ -1728,14 +1781,18 @@ public final class URI
 
     // US-ASCII only
     private static boolean equalIgnoringCase(String s, String t) {
-        if (s == t) return true;
+        if (s == t) {
+            return true;
+        }
         if ((s != null) && (t != null)) {
             int n = s.length();
-            if (t.length() != n)
+            if (t.length() != n) {
                 return false;
+            }
             for (int i = 0; i < n; i++) {
-                if (toLower(s.charAt(i)) != toLower(t.charAt(i)))
+                if (toLower(s.charAt(i)) != toLower(t.charAt(i))) {
                     return false;
+                }
             }
             return true;
         }
@@ -1743,7 +1800,9 @@ public final class URI
     }
 
     private static int hash(int hash, String s) {
-        if (s == null) return hash;
+        if (s == null) {
+            return hash;
+        }
         return s.indexOf('%') < 0 ? hash * 127 + s.hashCode()
                                   : normalizedHash(hash, s);
     }
@@ -1758,8 +1817,9 @@ public final class URI
                 /*
                  * Process the next two encoded characters
                  */
-                for (int i = index + 1; i < index + 3; i++)
+                for (int i = index + 1; i < index + 3; i++) {
                     h = 31 * h + toUpper(s.charAt(i));
+                }
                 index += 2;
             }
         }
@@ -1768,21 +1828,27 @@ public final class URI
 
     // US-ASCII only
     private static int hashIgnoringCase(int hash, String s) {
-        if (s == null) return hash;
+        if (s == null) {
+            return hash;
+        }
         int h = hash;
         int n = s.length();
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < n; i++) {
             h = 31 * h + toLower(s.charAt(i));
+        }
         return h;
     }
 
     private static int compare(String s, String t) {
-        if (s == t) return 0;
+        if (s == t) {
+            return 0;
+        }
         if (s != null) {
-            if (t != null)
+            if (t != null) {
                 return s.compareTo(t);
-            else
+            } else {
                 return +1;
+            }
         } else {
             return -1;
         }
@@ -1790,7 +1856,9 @@ public final class URI
 
     // US-ASCII only
     private static int compareIgnoringCase(String s, String t) {
-        if (s == t) return 0;
+        if (s == t) {
+            return 0;
+        }
         if (s != null) {
             if (t != null) {
                 int sn = s.length();
@@ -1798,8 +1866,9 @@ public final class URI
                 int n = sn < tn ? sn : tn;
                 for (int i = 0; i < n; i++) {
                     int c = toLower(s.charAt(i)) - toLower(t.charAt(i));
-                    if (c != 0)
+                    if (c != 0) {
                         return c;
+                    }
                 }
                 return sn - tn;
             }
@@ -1819,9 +1888,10 @@ public final class URI
     {
         if (scheme != null) {
             if ((path != null)
-                && ((path.length() > 0) && (path.charAt(0) != '/')))
+                && ((path.length() > 0) && (path.charAt(0) != '/'))) {
                 throw new URISyntaxException(s,
                                              "Relative path in absolute URI");
+            }
         }
     }
 
@@ -1840,9 +1910,13 @@ public final class URI
             boolean needBrackets = ((host.indexOf(':') >= 0)
                                     && !host.startsWith("[")
                                     && !host.endsWith("]"));
-            if (needBrackets) sb.append('[');
+            if (needBrackets) {
+                sb.append('[');
+            }
             sb.append(host);
-            if (needBrackets) sb.append(']');
+            if (needBrackets) {
+                sb.append(']');
+            }
             if (port != -1) {
                 sb.append(':');
                 sb.append(port);
@@ -1907,8 +1981,9 @@ public final class URI
             }
         } else {
             appendAuthority(sb, authority, userInfo, host, port);
-            if (path != null)
+            if (path != null) {
                 sb.append(quote(path, L_PATH, H_PATH));
+            }
             if (query != null) {
                 sb.append('?');
                 sb.append(quote(query, L_URIC, H_URIC));
@@ -1946,16 +2021,22 @@ public final class URI
     }
 
     private void defineSchemeSpecificPart() {
-        if (schemeSpecificPart != null) return;
+        if (schemeSpecificPart != null) {
+            return;
+        }
         StringBuffer sb = new StringBuffer();
         appendSchemeSpecificPart(sb, null, getAuthority(), getUserInfo(),
                                  host, port, getPath(), getQuery());
-        if (sb.length() == 0) return;
+        if (sb.length() == 0) {
+            return;
+        }
         schemeSpecificPart = sb.toString();
     }
 
     private void defineString() {
-        if (string != null) return;
+        if (string != null) {
+            return;
+        }
 
         StringBuffer sb = new StringBuffer();
         if (scheme != null) {
@@ -1974,9 +2055,13 @@ public final class URI
                 boolean needBrackets = ((host.indexOf(':') >= 0)
                                     && !host.startsWith("[")
                                     && !host.endsWith("]"));
-                if (needBrackets) sb.append('[');
+                if (needBrackets) {
+                    sb.append('[');
+                }
                 sb.append(host);
-                if (needBrackets) sb.append(']');
+                if (needBrackets) {
+                    sb.append(']');
+                }
                 if (port != -1) {
                     sb.append(':');
                     sb.append(port);
@@ -1985,8 +2070,9 @@ public final class URI
                 sb.append("//");
                 sb.append(authority);
             }
-            if (path != null)
+            if (path != null) {
                 sb.append(path);
+            }
             if (query != null) {
                 sb.append('?');
                 sb.append(query);
@@ -2012,13 +2098,15 @@ public final class URI
 
         if (cn == 0) {
             // 5.2 (6a)
-            if (i >= 0)
+            if (i >= 0) {
                 path = base.substring(0, i + 1);
+            }
         } else {
             StringBuffer sb = new StringBuffer(base.length() + cn);
             // 5.2 (6a)
-            if (i >= 0)
+            if (i >= 0) {
                 sb.append(base.substring(0, i + 1));
+            }
             // 5.2 (6b)
             sb.append(child);
             path = sb.toString();
@@ -2037,8 +2125,9 @@ public final class URI
     private static URI resolve(URI base, URI child) {
         // check if child if opaque first so that NPE is thrown
         // if child is null.
-        if (child.isOpaque() || base.isOpaque())
+        if (child.isOpaque() || base.isOpaque()) {
             return child;
+        }
 
         // 5.2 (2): Reference to current document (lone fragment)
         if ((child.scheme == null) && (child.authority == null)
@@ -2061,8 +2150,9 @@ public final class URI
         }
 
         // 5.2 (3): Child is absolute
-        if (child.scheme != null)
+        if (child.scheme != null) {
             return child;
+        }
 
         URI ru = new URI();             // Resolved URI
         ru.scheme = base.scheme;
@@ -2101,12 +2191,14 @@ public final class URI
     // o.w., return a new URI containing the normalized path.
     //
     private static URI normalize(URI u) {
-        if (u.isOpaque() || (u.path == null) || (u.path.length() == 0))
+        if (u.isOpaque() || (u.path == null) || (u.path.length() == 0)) {
             return u;
+        }
 
         String np = normalize(u.path);
-        if (np == u.path)
+        if (np == u.path) {
             return u;
+        }
 
         URI v = new URI();
         v.scheme = u.scheme;
@@ -2128,19 +2220,23 @@ public final class URI
     private static URI relativize(URI base, URI child) {
         // check if child if opaque first so that NPE is thrown
         // if child is null.
-        if (child.isOpaque() || base.isOpaque())
+        if (child.isOpaque() || base.isOpaque()) {
             return child;
+        }
         if (!equalIgnoringCase(base.scheme, child.scheme)
-            || !equal(base.authority, child.authority))
+            || !equal(base.authority, child.authority)) {
             return child;
+        }
 
         String bp = normalize(base.path);
         String cp = normalize(child.path);
         if (!bp.equals(cp)) {
-            if (!bp.endsWith("/"))
+            if (!bp.endsWith("/")) {
                 bp = bp + "/";
-            if (!cp.startsWith(bp))
+            }
+            if (!cp.startsWith(bp)) {
                 return child;
+            }
         }
 
         URI v = new URI();
@@ -2183,10 +2279,14 @@ public final class URI
 
         // Skip initial slashes
         while (p <= end) {
-            if (path.charAt(p) != '/') break;
+            if (path.charAt(p) != '/') {
+                break;
+            }
             p++;
         }
-        if (p > 1) normal = false;
+        if (p > 1) {
+            normal = false;
+        }
 
         // Scan segments
         while (p <= end) {
@@ -2204,12 +2304,15 @@ public final class URI
 
             // Find beginning of next segment
             while (p <= end) {
-                if (path.charAt(p++) != '/')
+                if (path.charAt(p++) != '/') {
                     continue;
+                }
 
                 // Skip redundant slashes
                 while (p <= end) {
-                    if (path.charAt(p) != '/') break;
+                    if (path.charAt(p) != '/') {
+                        break;
+                    }
                     normal = false;
                     p++;
                 }
@@ -2239,7 +2342,9 @@ public final class URI
 
         // Skip initial slashes
         while (p <= end) {
-            if (path[p] != '/') break;
+            if (path[p] != '/') {
+                break;
+            }
             path[p] = '\0';
             p++;
         }
@@ -2251,21 +2356,25 @@ public final class URI
 
             // Find beginning of next segment
             while (p <= end) {
-                if (path[p++] != '/')
+                if (path[p++] != '/') {
                     continue;
+                }
                 path[p - 1] = '\0';
 
                 // Skip redundant slashes
                 while (p <= end) {
-                    if (path[p] != '/') break;
+                    if (path[p] != '/') {
+                        break;
+                    }
                     path[p++] = '\0';
                 }
                 break;
             }
         }
 
-        if (i != segs.length)
+        if (i != segs.length) {
             throw new InternalError();  // ASSERT
+        }
     }
 
 
@@ -2295,26 +2404,31 @@ public final class URI
             int q = segs[i];            // Current segment
             if (q == -1)
                 // Ignore this segment
+            {
                 continue;
+            }
 
             if (p == q) {
                 // We're already at this segment, so just skip to its end
-                while ((p <= end) && (path[p] != '\0'))
+                while ((p <= end) && (path[p] != '\0')) {
                     p++;
+                }
                 if (p <= end) {
                     // Preserve trailing slash
                     path[p++] = '/';
                 }
             } else if (p < q) {
                 // Copy q down to p
-                while ((q <= end) && (path[q] != '\0'))
+                while ((q <= end) && (path[q] != '\0')) {
                     path[p++] = path[q++];
+                }
                 if (q <= end) {
                     // Preserve trailing slash
                     path[p++] = '/';
                 }
-            } else
+            } else {
                 throw new InternalError(); // ASSERT false
+            }
         }
 
         return p;
@@ -2350,8 +2464,9 @@ public final class URI
                 }
                 i++;
             } while (i < ns);
-            if ((i > ns) || (dots == 0))
+            if ((i > ns) || (dots == 0)) {
                 break;
+            }
 
             if (dots == 1) {
                 // Remove this occurrence of "."
@@ -2362,7 +2477,9 @@ public final class URI
                 // ".." segment as-is.
                 int j;
                 for (j = i - 1; j >= 0; j--) {
-                    if (segs[j] != -1) break;
+                    if (segs[j] != -1) {
+                        break;
+                    }
                 }
                 if (j >= 0) {
                     int q = segs[j];
@@ -2385,25 +2502,34 @@ public final class URI
 
         if (path[0] == '\0')
             // The path is absolute
+        {
             return;
+        }
 
         int ns = segs.length;
         int f = 0;                      // Index of first segment
         while (f < ns) {
-            if (segs[f] >= 0)
+            if (segs[f] >= 0) {
                 break;
+            }
             f++;
         }
         if ((f >= ns) || (f == 0))
             // The path is empty, or else the original first segment survived,
             // in which case we already know that no leading "." is needed
+        {
             return;
+        }
 
         int p = segs[f];
-        while ((p < path.length) && (path[p] != ':') && (path[p] != '\0')) p++;
+        while ((p < path.length) && (path[p] != ':') && (path[p] != '\0')) {
+            p++;
+        }
         if (p >= path.length || path[p] == '\0')
             // No colon in first segment, so no "." needed
+        {
             return;
+        }
 
         // At this point we know that the first segment is unused,
         // hence we can insert a "." segment at that position
@@ -2425,7 +2551,9 @@ public final class URI
         int ns = needsNormalization(ps);        // Number of segments
         if (ns < 0)
             // Nope -- just return it
+        {
             return ps;
+        }
 
         char[] path = ps.toCharArray();         // Path in char-array form
 
@@ -2470,8 +2598,9 @@ public final class URI
         long m = 0;
         for (int i = 0; i < n; i++) {
             char c = chars.charAt(i);
-            if (c < 64)
+            if (c < 64) {
                 m |= (1L << c);
+            }
         }
         return m;
     }
@@ -2482,8 +2611,9 @@ public final class URI
         long m = 0;
         for (int i = 0; i < n; i++) {
             char c = chars.charAt(i);
-            if ((c >= 64) && (c < 128))
+            if ((c >= 64) && (c < 128)) {
                 m |= (1L << (c - 64));
+            }
         }
         return m;
     }
@@ -2494,8 +2624,9 @@ public final class URI
         long m = 0;
         int f = Math.max(Math.min(first, 63), 0);
         int l = Math.max(Math.min(last, 63), 0);
-        for (int i = f; i <= l; i++)
+        for (int i = f; i <= l; i++) {
             m |= 1L << i;
+        }
         return m;
     }
 
@@ -2505,19 +2636,24 @@ public final class URI
         long m = 0;
         int f = Math.max(Math.min(first, 127), 64) - 64;
         int l = Math.max(Math.min(last, 127), 64) - 64;
-        for (int i = f; i <= l; i++)
+        for (int i = f; i <= l; i++) {
             m |= 1L << i;
+        }
         return m;
     }
 
     // Tell whether the given character is permitted by the given mask pair
     private static boolean match(char c, long lowMask, long highMask) {
         if (c == 0) // 0 doesn't have a slot in the mask. So, it never matches.
+        {
             return false;
-        if (c < 64)
+        }
+        if (c < 64) {
             return ((1L << c) & lowMask) != 0;
-        if (c < 128)
+        }
+        if (c < 128) {
             return ((1L << (c - 64)) & highMask) != 0;
+        }
         return false;
     }
 
@@ -2661,10 +2797,11 @@ public final class URI
         }
         while (bb.hasRemaining()) {
             int b = bb.get() & 0xff;
-            if (b >= 0x80)
+            if (b >= 0x80) {
                 appendEscape(sb, (byte)b);
-            else
+            } else {
                 sb.append((char)b);
+            }
         }
     }
 
@@ -2685,8 +2822,9 @@ public final class URI
                     }
                     appendEscape(sb, (byte)c);
                 } else {
-                    if (sb != null)
+                    if (sb != null) {
                         sb.append(c);
+                    }
                 }
             } else if (allowNonASCII
                        && (Character.isSpaceChar(c)
@@ -2697,8 +2835,9 @@ public final class URI
                 }
                 appendEncoded(sb, c);
             } else {
-                if (sb != null)
+                if (sb != null) {
                     sb.append(c);
+                }
             }
         }
         return (sb == null) ? s : sb.toString();
@@ -2709,15 +2848,18 @@ public final class URI
     //
     private static String encode(String s) {
         int n = s.length();
-        if (n == 0)
+        if (n == 0) {
             return s;
+        }
 
         // First check whether we actually need to encode
         for (int i = 0;;) {
-            if (s.charAt(i) >= '\u0080')
+            if (s.charAt(i) >= '\u0080') {
                 break;
-            if (++i >= n)
+            }
+            if (++i >= n) {
                 return s;
+            }
         }
 
         String ns = Normalizer.normalize(s, Normalizer.Form.NFC);
@@ -2732,21 +2874,25 @@ public final class URI
         StringBuffer sb = new StringBuffer();
         while (bb.hasRemaining()) {
             int b = bb.get() & 0xff;
-            if (b >= 0x80)
+            if (b >= 0x80) {
                 appendEscape(sb, (byte)b);
-            else
+            } else {
                 sb.append((char)b);
+            }
         }
         return sb.toString();
     }
 
     private static int decode(char c) {
-        if ((c >= '0') && (c <= '9'))
+        if ((c >= '0') && (c <= '9')) {
             return c - '0';
-        if ((c >= 'a') && (c <= 'f'))
+        }
+        if ((c >= 'a') && (c <= 'f')) {
             return c - 'a' + 10;
-        if ((c >= 'A') && (c <= 'F'))
+        }
+        if ((c >= 'A') && (c <= 'F')) {
             return c - 'A' + 10;
+        }
         assert false;
         return -1;
     }
@@ -2764,13 +2910,16 @@ public final class URI
     //            with a scope_id
     //
     private static String decode(String s) {
-        if (s == null)
+        if (s == null) {
             return s;
+        }
         int n = s.length();
-        if (n == 0)
+        if (n == 0) {
             return s;
-        if (s.indexOf('%') < 0)
+        }
+        if (s.indexOf('%') < 0) {
             return s;
+        }
 
         StringBuffer sb = new StringBuffer(n);
         ByteBuffer bb = ByteBuffer.allocate(n);
@@ -2792,8 +2941,9 @@ public final class URI
             }
             if (c != '%' || betweenBrackets) {
                 sb.append(c);
-                if (++i >= n)
+                if (++i >= n) {
                     break;
+                }
                 c = s.charAt(i);
                 continue;
             }
@@ -2802,11 +2952,13 @@ public final class URI
             for (;;) {
                 assert (n - i >= 2);
                 bb.put(decode(s.charAt(++i), s.charAt(++i)));
-                if (++i >= n)
+                if (++i >= n) {
                     break;
+                }
                 c = s.charAt(i);
-                if (c != '%')
+                if (c != '%') {
                     break;
+                }
             }
             bb.flip();
             cb.clear();
@@ -2888,8 +3040,9 @@ public final class URI
         private boolean at(int start, int end, String s) {
             int p = start;
             int sn = s.length();
-            if (sn > end - p)
+            if (sn > end - p) {
                 return false;
+            }
             int i = 0;
             while (i < sn) {
                 if (charAt(p++) != s.charAt(i)) {
@@ -2932,8 +3085,9 @@ public final class URI
         // start position.
         //
         private int scan(int start, int end, char c) {
-            if ((start < end) && (charAt(start) == c))
+            if ((start < end) && (charAt(start) == c)) {
                 return start + 1;
+            }
             return start;
         }
 
@@ -2948,10 +3102,12 @@ public final class URI
             int p = start;
             while (p < end) {
                 char c = charAt(p);
-                if (err.indexOf(c) >= 0)
+                if (err.indexOf(c) >= 0) {
                     return -1;
-                if (stop.indexOf(c) >= 0)
+                }
+                if (stop.indexOf(c) >= 0) {
                     break;
+                }
                 p++;
             }
             return p;
@@ -3017,8 +3173,9 @@ public final class URI
             throws URISyntaxException
         {
             int p = scan(start, end, lowMask, highMask);
-            if (p < end)
+            if (p < end) {
                 fail("Illegal character in " + what, p);
+            }
         }
 
         // Check that the char at position p matches the given mask
@@ -3042,8 +3199,9 @@ public final class URI
             int n = input.length();
             int p = scan(0, n, "/?#", ":");
             if ((p >= 0) && at(p, n, ':')) {
-                if (p == 0)
+                if (p == 0) {
                     failExpecting("scheme name", 0);
+                }
                 checkChar(0, L_ALPHA, H_ALPHA, "scheme name");
                 checkChars(1, p, L_SCHEME, H_SCHEME, "scheme name");
                 scheme = substring(0, p);
@@ -3053,8 +3211,9 @@ public final class URI
                     p = parseHierarchical(p, n);
                 } else {
                     int q = scan(p, n, "", "#");
-                    if (q <= p)
+                    if (q <= p) {
                         failExpecting("scheme-specific part", p);
+                    }
                     checkChars(p, q, L_URIC, H_URIC, "opaque part");
                     p = q;
                 }
@@ -3068,8 +3227,9 @@ public final class URI
                 fragment = substring(p + 1, n);
                 p = n;
             }
-            if (p < n)
+            if (p < n) {
                 fail("end of URI", p);
+            }
         }
 
         // [//authority]<path>[?<query>]
@@ -3098,8 +3258,9 @@ public final class URI
                 } else if (q < n) {
                     // DEVIATION: Allow empty authority prior to non-empty
                     // path, query component or fragment identifier
-                } else
+                } else {
                     failExpecting("authority", p);
+                }
             }
             int q = scan(p, n, "", "?#"); // DEVIATION: May be empty
             checkChars(p, q, L_PATH, H_PATH, "path");
@@ -3153,8 +3314,9 @@ public final class URI
                 // as a registry-based authority.
                 try {
                     q = parseServer(p, n);
-                    if (q < n)
+                    if (q < n) {
                         failExpecting("end of authority", q);
+                    }
                     authority = substring(p, n);
                 } catch (URISyntaxException x) {
                     // Undo results of failed parse
@@ -3232,8 +3394,9 @@ public final class URI
                 }
             } else {
                 q = parseIPv4Address(p, n);
-                if (q <= p)
+                if (q <= p) {
                     q = parseHostname(p, n);
+                }
                 p = q;
             }
 
@@ -3251,8 +3414,9 @@ public final class URI
                     p = q;
                 }
             }
-            if (p < n)
+            if (p < n) {
                 failExpecting("port number", p);
+            }
 
             return p;
         }
@@ -3264,8 +3428,12 @@ public final class URI
         {
             int p = start;
             int q = scan(p, n, L_DIGIT, H_DIGIT);
-            if (q <= p) return q;
-            if (Integer.parseInt(substring(p, q)) > 255) return p;
+            if (q <= p) {
+                return q;
+            }
+            if (Integer.parseInt(substring(p, q)) > 255) {
+                return p;
+            }
             return q;
         }
 
@@ -3290,19 +3458,43 @@ public final class URI
             int p = start;
             int q;
             int m = scan(p, n, L_DIGIT | L_DOT, H_DIGIT | H_DOT);
-            if ((m <= p) || (strict && (m != n)))
+            if ((m <= p) || (strict && (m != n))) {
                 return -1;
+            }
             for (;;) {
                 // Per RFC2732: At most three digits per byte
                 // Further constraint: Each element fits in a byte
-                if ((q = scanByte(p, m)) <= p) break;   p = q;
-                if ((q = scan(p, m, '.')) <= p) break;  p = q;
-                if ((q = scanByte(p, m)) <= p) break;   p = q;
-                if ((q = scan(p, m, '.')) <= p) break;  p = q;
-                if ((q = scanByte(p, m)) <= p) break;   p = q;
-                if ((q = scan(p, m, '.')) <= p) break;  p = q;
-                if ((q = scanByte(p, m)) <= p) break;   p = q;
-                if (q < m) break;
+                if ((q = scanByte(p, m)) <= p) {
+                    break;
+                }
+                p = q;
+                if ((q = scan(p, m, '.')) <= p) {
+                    break;
+                }
+                p = q;
+                if ((q = scanByte(p, m)) <= p) {
+                    break;
+                }
+                p = q;
+                if ((q = scan(p, m, '.')) <= p) {
+                    break;
+                }
+                p = q;
+                if ((q = scanByte(p, m)) <= p) {
+                    break;
+                }
+                p = q;
+                if ((q = scan(p, m, '.')) <= p) {
+                    break;
+                }
+                p = q;
+                if ((q = scanByte(p, m)) <= p) {
+                    break;
+                }
+                p = q;
+                if (q < m) {
+                    break;
+                }
                 return q;
             }
             fail("Malformed IPv4 address", q);
@@ -3316,8 +3508,9 @@ public final class URI
             throws URISyntaxException
         {
             int p = scanIPv4Address(start, n, true);
-            if (p <= start)
+            if (p <= start) {
                 failExpecting(expected, start);
+            }
             return p;
         }
 
@@ -3345,8 +3538,9 @@ public final class URI
                 }
             }
 
-            if (p > start)
+            if (p > start) {
                 host = substring(start, p);
+            }
 
             return p;
         }
@@ -3365,29 +3559,34 @@ public final class URI
             do {
                 // domainlabel = alphanum [ *( alphanum | "-" ) alphanum ]
                 q = scan(p, n, L_ALPHANUM, H_ALPHANUM);
-                if (q <= p)
+                if (q <= p) {
                     break;
+                }
                 l = p;
                 if (q > p) {
                     p = q;
                     q = scan(p, n, L_ALPHANUM | L_DASH, H_ALPHANUM | H_DASH);
                     if (q > p) {
-                        if (charAt(q - 1) == '-')
+                        if (charAt(q - 1) == '-') {
                             fail("Illegal character in hostname", q - 1);
+                        }
                         p = q;
                     }
                 }
                 q = scan(p, n, '.');
-                if (q <= p)
+                if (q <= p) {
                     break;
+                }
                 p = q;
             } while (p < n);
 
-            if ((p < n) && !at(p, n, ':'))
+            if ((p < n) && !at(p, n, ':')) {
                 fail("Illegal character in hostname", p);
+            }
 
-            if (l < 0)
+            if (l < 0) {
                 failExpecting("hostname", start);
+            }
 
             // for a fully qualified hostname check that the rightmost
             // label starts with an alpha character.
@@ -3465,14 +3664,18 @@ public final class URI
                 compressedZeros = true;
                 p = scanHexPost(p + 2, n);
             }
-            if (p < n)
+            if (p < n) {
                 fail("Malformed IPv6 address", start);
-            if (ipv6byteCount > 16)
+            }
+            if (ipv6byteCount > 16) {
                 fail("IPv6 address too long", start);
-            if (!compressedZeros && ipv6byteCount < 16)
+            }
+            if (!compressedZeros && ipv6byteCount < 16) {
                 fail("IPv6 address too short", start);
-            if (compressedZeros && ipv6byteCount == 16)
+            }
+            if (compressedZeros && ipv6byteCount == 16) {
                 fail("Malformed IPv6 address", start);
+            }
 
             return p;
         }
@@ -3483,8 +3686,9 @@ public final class URI
             int p = start;
             int q;
 
-            if (p == n)
+            if (p == n) {
                 return p;
+            }
 
             q = scanHexSeq(p, n);
             if (q > p) {
@@ -3510,29 +3714,37 @@ public final class URI
             int q;
 
             q = scan(p, n, L_HEX, H_HEX);
-            if (q <= p)
+            if (q <= p) {
                 return -1;
+            }
             if (at(q, n, '.'))          // Beginning of IPv4 address
+            {
                 return -1;
-            if (q > p + 4)
+            }
+            if (q > p + 4) {
                 fail("IPv6 hexadecimal digit sequence too long", p);
+            }
             ipv6byteCount += 2;
             p = q;
             while (p < n) {
-                if (!at(p, n, ':'))
+                if (!at(p, n, ':')) {
                     break;
-                if (at(p + 1, n, ':'))
+                }
+                if (at(p + 1, n, ':')) {
                     break;              // "::"
+                }
                 p++;
                 q = scan(p, n, L_HEX, H_HEX);
-                if (q <= p)
+                if (q <= p) {
                     failExpecting("digits for an IPv6 address", p);
+                }
                 if (at(q, n, '.')) {    // Beginning of IPv4 address
                     p--;
                     break;
                 }
-                if (q > p + 4)
+                if (q > p + 4) {
                     fail("IPv6 hexadecimal digit sequence too long", p);
+                }
                 ipv6byteCount += 2;
                 p = q;
             }

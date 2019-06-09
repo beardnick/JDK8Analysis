@@ -199,8 +199,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      * {@link StreamOpFlag}
      */
     AbstractPipeline(AbstractPipeline<?, E_IN, ?> previousStage, int opFlags) {
-        if (previousStage.linkedOrConsumed)
+        if (previousStage.linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         previousStage.linkedOrConsumed = true;
         previousStage.nextStage = this;
 
@@ -208,8 +209,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
         this.sourceOrOpFlags = opFlags & StreamOpFlag.OP_MASK;
         this.combinedFlags = StreamOpFlag.combineOpFlags(opFlags, previousStage.combinedFlags);
         this.sourceStage = previousStage.sourceStage;
-        if (opIsStateful())
+        if (opIsStateful()) {
             sourceStage.sourceAnyStateful = true;
+        }
         this.depth = previousStage.depth + 1;
     }
 
@@ -225,8 +227,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      */
     final <R> R evaluate(TerminalOp<E_OUT, R> terminalOp) {
         assert getOutputShape() == terminalOp.inputShape();
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         return isParallel()
@@ -242,8 +245,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      */
     @SuppressWarnings("unchecked")
     final Node<E_OUT> evaluateToArrayNode(IntFunction<E_OUT[]> generator) {
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         // If the last intermediate operation is stateful then
@@ -272,11 +276,13 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
      */
     @SuppressWarnings("unchecked")
     final Spliterator<E_OUT> sourceStageSpliterator() {
-        if (this != sourceStage)
+        if (this != sourceStage) {
             throw new IllegalStateException();
+        }
 
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         if (sourceStage.sourceSpliterator != null) {
@@ -339,8 +345,9 @@ abstract class AbstractPipeline<E_IN, E_OUT, S extends BaseStream<E_OUT, S>>
     @Override
     @SuppressWarnings("unchecked")
     public Spliterator<E_OUT> spliterator() {
-        if (linkedOrConsumed)
+        if (linkedOrConsumed) {
             throw new IllegalStateException(MSG_STREAM_LINKED);
+        }
         linkedOrConsumed = true;
 
         if (this == sourceStage) {

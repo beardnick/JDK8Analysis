@@ -146,8 +146,9 @@ abstract class ReferencePipeline<P_IN, P_OUT>
 
     @Override
     public Stream<P_OUT> unordered() {
-        if (!isOrdered())
+        if (!isOrdered()) {
             return this;
+        }
         return new StatelessOp<P_OUT, P_OUT>(this, StreamShape.REFERENCE, StreamOpFlag.NOT_ORDERED) {
             @Override
             Sink<P_OUT> opWrapSink(int flags, Sink<P_OUT> sink) {
@@ -171,8 +172,9 @@ abstract class ReferencePipeline<P_IN, P_OUT>
 
                     @Override
                     public void accept(P_OUT u) {
-                        if (predicate.test(u))
+                        if (predicate.test(u)) {
                             downstream.accept(u);
+                        }
                     }
                 };
             }
@@ -266,8 +268,9 @@ abstract class ReferencePipeline<P_IN, P_OUT>
                     public void accept(P_OUT u) {
                         try (Stream<? extends R> result = mapper.apply(u)) {
                             // We can do better that this too; optimize for depth=0 case and just grab spliterator and forEach it
-                            if (result != null)
+                            if (result != null) {
                                 result.sequential().forEach(downstream);
+                            }
                         }
                     }
                 };
@@ -294,8 +297,9 @@ abstract class ReferencePipeline<P_IN, P_OUT>
                     public void accept(P_OUT u) {
                         try (IntStream result = mapper.apply(u)) {
                             // We can do better that this too; optimize for depth=0 case and just grab spliterator and forEach it
-                            if (result != null)
+                            if (result != null) {
                                 result.sequential().forEach(downstreamAsInt);
+                            }
                         }
                     }
                 };
@@ -322,8 +326,9 @@ abstract class ReferencePipeline<P_IN, P_OUT>
                     public void accept(P_OUT u) {
                         try (DoubleStream result = mapper.apply(u)) {
                             // We can do better that this too; optimize for depth=0 case and just grab spliterator and forEach it
-                            if (result != null)
+                            if (result != null) {
                                 result.sequential().forEach(downstreamAsDouble);
+                            }
                         }
                     }
                 };
@@ -350,8 +355,9 @@ abstract class ReferencePipeline<P_IN, P_OUT>
                     public void accept(P_OUT u) {
                         try (LongStream result = mapper.apply(u)) {
                             // We can do better that this too; optimize for depth=0 case and just grab spliterator and forEach it
-                            if (result != null)
+                            if (result != null) {
                                 result.sequential().forEach(downstreamAsLong);
+                            }
                         }
                     }
                 };
@@ -396,19 +402,22 @@ abstract class ReferencePipeline<P_IN, P_OUT>
 
     @Override
     public final Stream<P_OUT> limit(long maxSize) {
-        if (maxSize < 0)
+        if (maxSize < 0) {
             throw new IllegalArgumentException(Long.toString(maxSize));
+        }
         return SliceOps.makeRef(this, 0, maxSize);
     }
 
     @Override
     public final Stream<P_OUT> skip(long n) {
-        if (n < 0)
+        if (n < 0) {
             throw new IllegalArgumentException(Long.toString(n));
-        if (n == 0)
+        }
+        if (n == 0) {
             return this;
-        else
+        } else {
             return SliceOps.makeRef(this, n, -1);
+        }
     }
 
     // Terminal operations from Stream

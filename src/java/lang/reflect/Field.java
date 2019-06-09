@@ -144,8 +144,9 @@ class Field extends AccessibleObject implements Member {
         // which implicitly requires that new java.lang.reflect
         // objects be fabricated for each reflective call on Class
         // objects.)
-        if (this.root != null)
+        if (this.root != null) {
             throw new IllegalArgumentException("Can not copy a non-root Field");
+        }
 
         Field res = new Field(clazz, name, type, modifiers, slot, signature, annotations);
         res.root = this;
@@ -243,10 +244,11 @@ class Field extends AccessibleObject implements Member {
      * @since 1.5
      */
     public Type getGenericType() {
-        if (getGenericSignature() != null)
+        if (getGenericSignature() != null) {
             return getGenericInfo().getGenericType();
-        else
+        } else {
             return getType();
+        }
     }
 
 
@@ -1077,12 +1079,15 @@ class Field extends AccessibleObject implements Member {
         // First check to see if one has been created yet, and take it
         // if so
         FieldAccessor tmp = null;
-        if (root != null) tmp = root.getFieldAccessor(overrideFinalCheck);
+        if (root != null) {
+            tmp = root.getFieldAccessor(overrideFinalCheck);
+        }
         if (tmp != null) {
-            if (overrideFinalCheck)
+            if (overrideFinalCheck) {
                 overrideFieldAccessor = tmp;
-            else
+            } else {
                 fieldAccessor = tmp;
+            }
         } else {
             // Otherwise fabricate one and propagate it up to the root
             tmp = reflectionFactory.newFieldAccessor(this, overrideFinalCheck);
@@ -1101,10 +1106,11 @@ class Field extends AccessibleObject implements Member {
     // Sets the FieldAccessor for this Field object and
     // (recursively) its root
     private void setFieldAccessor(FieldAccessor accessor, boolean overrideFinalCheck) {
-        if (overrideFinalCheck)
+        if (overrideFinalCheck) {
             overrideFieldAccessor = accessor;
-        else
+        } else {
             fieldAccessor = accessor;
+        }
         // Propagate up
         if (root != null) {
             root.setFieldAccessor(accessor, overrideFinalCheck);

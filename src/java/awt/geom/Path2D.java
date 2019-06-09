@@ -783,10 +783,18 @@ public abstract class Path2D implements Shape, Cloneable {
                 while (i > 0) {
                     float y = floatCoords[--i];
                     float x = floatCoords[--i];
-                    if (x < x1) x1 = x;
-                    if (y < y1) y1 = y;
-                    if (x > x2) x2 = x;
-                    if (y > y2) y2 = y;
+                    if (x < x1) {
+                        x1 = x;
+                    }
+                    if (y < y1) {
+                        y1 = y;
+                    }
+                    if (x > x2) {
+                        x2 = x;
+                    }
+                    if (y > y2) {
+                        y2 = y;
+                    }
                 }
             } else {
                 x1 = y1 = x2 = y2 = 0.0f;
@@ -1542,10 +1550,18 @@ public abstract class Path2D implements Shape, Cloneable {
                 while (i > 0) {
                     double y = doubleCoords[--i];
                     double x = doubleCoords[--i];
-                    if (x < x1) x1 = x;
-                    if (y < y1) y1 = y;
-                    if (x > x2) x2 = x;
-                    if (y > y2) y2 = y;
+                    if (x < x1) {
+                        x1 = x;
+                    }
+                    if (y < y1) {
+                        y1 = y;
+                    }
+                    if (x > x2) {
+                        x2 = x;
+                    }
+                    if (y > y2) {
+                        y2 = y;
+                    }
                 }
             } else {
                 x1 = y1 = x2 = y2 = 0.0;

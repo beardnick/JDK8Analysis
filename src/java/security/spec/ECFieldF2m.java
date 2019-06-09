@@ -216,7 +216,9 @@ public class ECFieldF2m implements ECField {
      * polynomial match, false otherwise.
      */
     public boolean equals(Object obj) {
-        if (this == obj) return true;
+        if (this == obj) {
+            return true;
+        }
         if (obj instanceof ECFieldF2m) {
             // no need to compare rp here since ks and rp
             // should be equivalent

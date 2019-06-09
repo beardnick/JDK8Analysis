@@ -218,8 +218,9 @@ public class TextField extends TextComponent {
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = getToolkit().createTextField(this);
+            }
             super.addNotify();
         }
     }

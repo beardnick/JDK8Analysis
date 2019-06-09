@@ -49,9 +49,12 @@ final class LambdaFormBuffer {
         this.arity = lf.arity;
         setNames(lf.names);
         int result = lf.result;
-        if (result == LAST_RESULT)  result = length - 1;
-        if (result >= 0 && lf.names[result].type != V_TYPE)
+        if (result == LAST_RESULT) {
+            result = length - 1;
+        }
+        if (result >= 0 && lf.names[result].type != V_TYPE) {
             resultName = lf.names[result];
+        }
         debugName = lf.debugName;
         assert(lf.nameRefsAreLegal());
     }
@@ -71,7 +74,9 @@ final class LambdaFormBuffer {
     }
 
     int resultIndex() {
-        if (resultName == null)  return VOID_RESULT;
+        if (resultName == null) {
+            return VOID_RESULT;
+        }
         int index = indexOf(resultName, names);
         assert(index >= 0);
         return index;
@@ -116,14 +121,18 @@ final class LambdaFormBuffer {
 
     private static int indexOf(NamedFunction fn, NamedFunction[] fns) {
         for (int i = 0; i < fns.length; i++) {
-            if (fns[i] == fn)  return i;
+            if (fns[i] == fn) {
+                return i;
+            }
         }
         return -1;
     }
 
     private static int indexOf(Name n, Name[] ns) {
         for (int i = 0; i < ns.length; i++) {
-            if (ns[i] == n)  return i;
+            if (ns[i] == n) {
+                return i;
+            }
         }
         return -1;
     }
@@ -156,7 +165,9 @@ final class LambdaFormBuffer {
                 assert(ownedCount() == oc);
             }
         }
-        if (growLength == 0)  return;
+        if (growLength == 0) {
+            return;
+        }
         int insertEnd = insertPos + growLength;
         int tailLength = oldLength - insertPos;
         System.arraycopy(names, insertPos, names, insertEnd, tailLength);
@@ -174,7 +185,9 @@ final class LambdaFormBuffer {
     int lastIndexOf(Name n) {
         int result = -1;
         for (int i = 0; i < length; i++) {
-            if (names[i] == n)  result = i;
+            if (names[i] == n) {
+                result = i;
+            }
         }
         return result;
     }
@@ -240,7 +253,9 @@ final class LambdaFormBuffer {
             // make a new buffer to hold the names
             final int SLOP = 2;
             names = Arrays.copyOf(oldNames, Math.max(length + SLOP, oldNames.length));
-            if (oc < 2)  ++flags;
+            if (oc < 2) {
+                ++flags;
+            }
             assert(ownedCount() == oc + 1);
         }
         originalNames = oldNames;
@@ -255,8 +270,9 @@ final class LambdaFormBuffer {
         Name oldName = names[i];
         assert(oldName == originalNames[i]);  // no multiple changes
         assert(verifyFirstChange());
-        if (ownedCount() == 0)
+        if (ownedCount() == 0) {
             growNames(0, 0);
+        }
         names[i] = name;
         if (firstChange > i) {
             firstChange = i;
@@ -279,7 +295,9 @@ final class LambdaFormBuffer {
         // update arguments to ensure referential integrity.
         for (int i = Math.max(firstChange, arity); i < length; i++) {
             Name name = names[i];
-            if (name == null)  continue;  // space for removed duplicate
+            if (name == null) {
+                continue;  // space for removed duplicate
+            }
             Name newName = name.replaceNames(originalNames, names, firstChange, i);
             if (newName != name) {
                 names[i] = newName;
@@ -329,7 +347,9 @@ final class LambdaFormBuffer {
     LambdaFormBuffer replaceFunctions(NamedFunction[] oldFns, NamedFunction[] newFns,
                                       Object... forArguments) {
         assert(inTrans());
-        if (oldFns.length == 0)  return this;
+        if (oldFns.length == 0) {
+            return this;
+        }
         for (int i = arity; i < length; i++) {
             Name n = names[i];
             int nfi = indexOf(n.function, oldFns);
@@ -378,7 +398,9 @@ final class LambdaFormBuffer {
         assert(verifyArity());
         assert(isParameter ? pos <= arity : pos >= arity);
         growNames(pos, 1);
-        if (isParameter)  arity += 1;
+        if (isParameter) {
+            arity += 1;
+        }
         changeName(pos, expr);
     }
 

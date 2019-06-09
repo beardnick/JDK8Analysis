@@ -2286,8 +2286,12 @@ public abstract class Toolkit {
 
         static AWTEventListener add(AWTEventListener a,
                                     AWTEventListener b) {
-            if (a == null)  return b;
-            if (b == null)  return a;
+            if (a == null) {
+                return b;
+            }
+            if (b == null) {
+                return a;
+            }
             return new ToolkitEventMulticaster(a, b);
         }
 
@@ -2302,8 +2306,12 @@ public abstract class Toolkit {
         // Note: this method is called by AWTEventListener.removeInternal(),
         // so its method signature must match AWTEventListener.remove().
         protected EventListener remove(EventListener oldl) {
-            if (oldl == a)  return b;
-            if (oldl == b)  return a;
+            if (oldl == a) {
+                return b;
+            }
+            if (oldl == b) {
+                return a;
+            }
             AWTEventListener a2 = (AWTEventListener)removeInternal(a, oldl);
             AWTEventListener b2 = (AWTEventListener)removeInternal(b, oldl);
             if (a2 == a && b2 == b) {

@@ -105,10 +105,12 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         long msb = 0;
         long lsb = 0;
         assert data.length == 16 : "data must be 16 bytes in length";
-        for (int i=0; i<8; i++)
+        for (int i=0; i<8; i++) {
             msb = (msb << 8) | (data[i] & 0xff);
-        for (int i=8; i<16; i++)
+        }
+        for (int i=8; i<16; i++) {
             lsb = (lsb << 8) | (data[i] & 0xff);
+        }
         this.mostSigBits = msb;
         this.leastSigBits = lsb;
     }
@@ -190,10 +192,12 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      */
     public static UUID fromString(String name) {
         String[] components = name.split("-");
-        if (components.length != 5)
+        if (components.length != 5) {
             throw new IllegalArgumentException("Invalid UUID string: "+name);
-        for (int i=0; i<5; i++)
+        }
+        for (int i=0; i<5; i++) {
             components[i] = "0x"+components[i];
+        }
 
         long mostSigBits = Long.decode(components[0]).longValue();
         mostSigBits <<= 16;
@@ -409,8 +413,9 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      *          otherwise
      */
     public boolean equals(Object obj) {
-        if ((null == obj) || (obj.getClass() != UUID.class))
+        if ((null == obj) || (obj.getClass() != UUID.class)) {
             return false;
+        }
         UUID id = (UUID)obj;
         return (mostSigBits == id.mostSigBits &&
                 leastSigBits == id.leastSigBits);

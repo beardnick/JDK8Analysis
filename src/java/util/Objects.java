@@ -77,12 +77,13 @@ public final class Objects {
     * @see Objects#equals(Object, Object)
     */
     public static boolean deepEquals(Object a, Object b) {
-        if (a == b)
+        if (a == b) {
             return true;
-        else if (a == null || b == null)
+        } else if (a == null || b == null) {
             return false;
-        else
+        } else {
             return Arrays.deepEquals0(a, b);
+        }
     }
 
     /**
@@ -199,8 +200,9 @@ public final class Objects {
      * @throws NullPointerException if {@code obj} is {@code null}
      */
     public static <T> T requireNonNull(T obj) {
-        if (obj == null)
+        if (obj == null) {
             throw new NullPointerException();
+        }
         return obj;
     }
 
@@ -224,8 +226,9 @@ public final class Objects {
      * @throws NullPointerException if {@code obj} is {@code null}
      */
     public static <T> T requireNonNull(T obj, String message) {
-        if (obj == null)
+        if (obj == null) {
             throw new NullPointerException(message);
+        }
         return obj;
     }
 
@@ -286,8 +289,9 @@ public final class Objects {
      * @since 1.8
      */
     public static <T> T requireNonNull(T obj, Supplier<String> messageSupplier) {
-        if (obj == null)
+        if (obj == null) {
             throw new NullPointerException(messageSupplier.get());
+        }
         return obj;
     }
 }

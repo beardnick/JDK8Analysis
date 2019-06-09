@@ -289,8 +289,9 @@ public class TextArea extends TextComponent {
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = getToolkit().createTextArea(this);
+            }
             super.addNotify();
         }
     }

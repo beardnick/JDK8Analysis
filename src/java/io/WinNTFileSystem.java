@@ -58,8 +58,11 @@ class WinNTFileSystem extends FileSystem {
     }
 
     private String slashify(String p) {
-        if ((p.length() > 0) && (p.charAt(0) != slash)) return slash + p;
-        else return p;
+        if ((p.length() > 0) && (p.charAt(0) != slash)) {
+            return slash + p;
+        } else {
+            return p;
+        }
     }
 
     /* -- Normalization and construction -- */
@@ -85,23 +88,32 @@ class WinNTFileSystem extends FileSystem {
         char prev = 0;
         for (int i = 0; i < n; i++) {
             char c = path.charAt(i);
-            if (c == altSlash)
+            if (c == altSlash) {
                 return normalize(path, n, (prev == slash) ? i - 1 : i);
-            if ((c == slash) && (prev == slash) && (i > 1))
+            }
+            if ((c == slash) && (prev == slash) && (i > 1)) {
                 return normalize(path, n, i - 1);
-            if ((c == ':') && (i > 1))
+            }
+            if ((c == ':') && (i > 1)) {
                 return normalize(path, n, 0);
+            }
             prev = c;
         }
-        if (prev == slash) return normalize(path, n, n - 1);
+        if (prev == slash) {
+            return normalize(path, n, n - 1);
+        }
         return path;
     }
 
     /* Normalize the given pathname, whose length is len, starting at the given
        offset; everything before this offset is already normal. */
     private String normalize(String path, int len, int off) {
-        if (len == 0) return path;
-        if (off < 3) off = 0;   /* Avoid fencepost cases with UNC pathnames */
+        if (len == 0) {
+            return path;
+        }
+        if (off < 3) {
+            off = 0;   /* Avoid fencepost cases with UNC pathnames */
+        }
         int src;
         char slash = this.slash;
         StringBuffer sb = new StringBuffer(len);
@@ -120,7 +132,9 @@ class WinNTFileSystem extends FileSystem {
         while (src < len) {
             char c = path.charAt(src++);
             if (isSlash(c)) {
-                while ((src < len) && isSlash(path.charAt(src))) src++;
+                while ((src < len) && isSlash(path.charAt(src))) {
+                    src++;
+                }
                 if (src == len) {
                     /* Check for trailing separator */
                     int sn = sb.length();
@@ -174,7 +188,9 @@ class WinNTFileSystem extends FileSystem {
      */
     private int normalizePrefix(String path, int len, StringBuffer sb) {
         int src = 0;
-        while ((src < len) && isSlash(path.charAt(src))) src++;
+        while ((src < len) && isSlash(path.charAt(src))) {
+            src++;
+        }
         char c;
         if ((len - src >= 2)
             && isLetter(c = path.charAt(src))
@@ -207,16 +223,21 @@ class WinNTFileSystem extends FileSystem {
     public int prefixLength(String path) {
         char slash = this.slash;
         int n = path.length();
-        if (n == 0) return 0;
+        if (n == 0) {
+            return 0;
+        }
         char c0 = path.charAt(0);
         char c1 = (n > 1) ? path.charAt(1) : 0;
         if (c0 == slash) {
-            if (c1 == slash) return 2;  /* Absolute UNC pathname "\\\\foo" */
+            if (c1 == slash) {
+                return 2;  /* Absolute UNC pathname "\\\\foo" */
+            }
             return 1;                   /* Drive-relative "\\foo" */
         }
         if (isLetter(c0) && (c1 == ':')) {
-            if ((n > 2) && (path.charAt(2) == slash))
+            if ((n > 2) && (path.charAt(2) == slash)) {
                 return 3;               /* Absolute local pathname "z:\\foo" */
+            }
             return 2;                   /* Directory-relative "z:foo" */
         }
         return 0;                       /* Completely relative */
@@ -225,9 +246,13 @@ class WinNTFileSystem extends FileSystem {
     @Override
     public String resolve(String parent, String child) {
         int pn = parent.length();
-        if (pn == 0) return child;
+        if (pn == 0) {
+            return child;
+        }
         int cn = child.length();
-        if (cn == 0) return parent;
+        if (cn == 0) {
+            return parent;
+        }
 
         String c = child;
         int childStart = 0;
@@ -243,14 +268,16 @@ class WinNTFileSystem extends FileSystem {
 
             }
             if (cn == childStart) { // Child is double slash
-                if (parent.charAt(pn - 1) == slash)
+                if (parent.charAt(pn - 1) == slash) {
                     return parent.substring(0, pn - 1);
+                }
                 return parent;
             }
         }
 
-        if (parent.charAt(pn - 1) == slash)
+        if (parent.charAt(pn - 1) == slash) {
             parentEnd--;
+        }
 
         int strlen = parentEnd + cn - childStart;
         char[] theChars = null;
@@ -279,8 +306,9 @@ class WinNTFileSystem extends FileSystem {
             // "/c:/foo" --> "c:/foo"
             p = p.substring(1);
             // "c:/foo/" --> "c:/foo", but "c:/" --> "c:/"
-            if ((p.length() > 3) && p.endsWith("/"))
+            if ((p.length() > 3) && p.endsWith("/")) {
                 p = p.substring(0, p.length() - 1);
+            }
         } else if ((p.length() > 1) && p.endsWith("/")) {
             // "/foo/" --> "/foo"
             p = p.substring(0, p.length() - 1);
@@ -301,23 +329,29 @@ class WinNTFileSystem extends FileSystem {
     public String resolve(File f) {
         String path = f.getPath();
         int pl = f.getPrefixLength();
-        if ((pl == 2) && (path.charAt(0) == slash))
+        if ((pl == 2) && (path.charAt(0) == slash)) {
             return path;                        /* UNC */
-        if (pl == 3)
+        }
+        if (pl == 3) {
             return path;                        /* Absolute local */
-        if (pl == 0)
+        }
+        if (pl == 0) {
             return getUserPath() + slashify(path); /* Completely relative */
+        }
         if (pl == 1) {                          /* Drive-relative */
             String up = getUserPath();
             String ud = getDrive(up);
-            if (ud != null) return ud + path;
+            if (ud != null) {
+                return ud + path;
+            }
             return up + path;                   /* User dir is a UNC path */
         }
         if (pl == 2) {                          /* Directory-relative */
             String up = getUserPath();
             String ud = getDrive(up);
-            if ((ud != null) && path.startsWith(ud))
+            if ((ud != null) && path.startsWith(ud)) {
                 return up + slashify(path.substring(2));
+            }
             char drive = path.charAt(0);
             String dir = getDriveDirectory(drive);
             String np;
@@ -328,7 +362,9 @@ class WinNTFileSystem extends FileSystem {
                 String p = drive + (':' + dir + slashify(path.substring(2)));
                 SecurityManager security = System.getSecurityManager();
                 try {
-                    if (security != null) security.checkRead(p);
+                    if (security != null) {
+                        security.checkRead(p);
+                    }
                 } catch (SecurityException x) {
                     /* Don't disclose the drive's directory in the exception */
                     throw new SecurityException("Cannot resolve path " + path);
@@ -354,8 +390,12 @@ class WinNTFileSystem extends FileSystem {
     private static String[] driveDirCache = new String[26];
 
     private static int driveIndex(char d) {
-        if ((d >= 'a') && (d <= 'z')) return d - 'a';
-        if ((d >= 'A') && (d <= 'Z')) return d - 'A';
+        if ((d >= 'a') && (d <= 'z')) {
+            return d - 'a';
+        }
+        if ((d >= 'A') && (d <= 'Z')) {
+            return d - 'A';
+        }
         return -1;
     }
 
@@ -363,9 +403,13 @@ class WinNTFileSystem extends FileSystem {
 
     private String getDriveDirectory(char drive) {
         int i = driveIndex(drive);
-        if (i < 0) return null;
+        if (i < 0) {
+            return null;
+        }
         String s = driveDirCache[i];
-        if (s != null) return s;
+        if (s != null) {
+            return s;
+        }
         s = getDriveDirectory(i + 1);
         driveDirCache[i] = s;
         return s;
@@ -388,16 +432,18 @@ class WinNTFileSystem extends FileSystem {
             (isLetter(path.charAt(0))) &&
             (path.charAt(1) == ':')) {
             char c = path.charAt(0);
-            if ((c >= 'A') && (c <= 'Z'))
+            if ((c >= 'A') && (c <= 'Z')) {
                 return path;
+            }
             return "" + ((char) (c-32)) + ':';
         } else if ((len == 3) &&
                    (isLetter(path.charAt(0))) &&
                    (path.charAt(1) == ':') &&
                    (path.charAt(2) == '\\')) {
             char c = path.charAt(0);
-            if ((c >= 'A') && (c <= 'Z'))
+            if ((c >= 'A') && (c <= 'Z')) {
                 return path;
+            }
             return "" + ((char) (c-32)) + ':' + '\\';
         }
         if (!useCanonCaches) {
@@ -467,7 +513,9 @@ class WinNTFileSystem extends FileSystem {
     // situations as well. Returning null will cause the underlying
     // (expensive) canonicalization routine to be called.
     private static String parentOrNull(String path) {
-        if (path == null) return null;
+        if (path == null) {
+            return null;
+        }
         char sep = File.separatorChar;
         char altSep = '/';
         int last = path.length() - 1;
@@ -587,18 +635,20 @@ class WinNTFileSystem extends FileSystem {
         int n = 0;
         for (int i = 0; i < 26; i++) {
             if (((ds >> i) & 1) != 0) {
-                if (!access((char)('A' + i) + ":" + slash))
+                if (!access((char)('A' + i) + ":" + slash)) {
                     ds &= ~(1 << i);
-                else
+                } else {
                     n++;
+                }
             }
         }
         File[] fs = new File[n];
         int j = 0;
         char slash = this.slash;
         for (int i = 0; i < 26; i++) {
-            if (((ds >> i) & 1) != 0)
+            if (((ds >> i) & 1) != 0) {
                 fs[j++] = new File((char)('A' + i) + ":" + slash);
+            }
         }
         return fs;
     }
@@ -608,7 +658,9 @@ class WinNTFileSystem extends FileSystem {
     private boolean access(String path) {
         try {
             SecurityManager security = System.getSecurityManager();
-            if (security != null) security.checkRead(path);
+            if (security != null) {
+                security.checkRead(path);
+            }
             return true;
         } catch (SecurityException x) {
             return false;

@@ -210,10 +210,12 @@ public class Attributes implements Map<Object,Object>, Cloneable {
      */
     public void putAll(Map<?,?> attr) {
         // ## javac bug?
-        if (!Attributes.class.isInstance(attr))
+        if (!Attributes.class.isInstance(attr)) {
             throw new ClassCastException();
-        for (Map.Entry<?,?> me : (attr).entrySet())
+        }
+        for (Map.Entry<?,?> me : (attr).entrySet()) {
             put(me.getKey(), me.getValue());
+        }
     }
 
     /**

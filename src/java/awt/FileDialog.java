@@ -319,8 +319,9 @@ public class FileDialog extends Dialog {
             if (parent != null && parent.getPeer() == null) {
                 parent.addNotify();
             }
-            if (peer == null)
+            if (peer == null) {
                 peer = getToolkit().createFileDialog(this);
+            }
             super.addNotify();
         }
     }

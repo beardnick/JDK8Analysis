@@ -98,15 +98,21 @@ public class DropTargetDragEvent extends DropTargetEvent {
     public DropTargetDragEvent(DropTargetContext dtc, Point cursorLocn, int dropAction, int srcActions)  {
         super(dtc);
 
-        if (cursorLocn == null) throw new NullPointerException("cursorLocn");
+        if (cursorLocn == null) {
+            throw new NullPointerException("cursorLocn");
+        }
 
         if (dropAction != DnDConstants.ACTION_NONE &&
             dropAction != DnDConstants.ACTION_COPY &&
             dropAction != DnDConstants.ACTION_MOVE &&
             dropAction != DnDConstants.ACTION_LINK
-        ) throw new IllegalArgumentException("dropAction" + dropAction);
+        ) {
+            throw new IllegalArgumentException("dropAction" + dropAction);
+        }
 
-        if ((srcActions & ~(DnDConstants.ACTION_COPY_OR_MOVE | DnDConstants.ACTION_LINK)) != 0) throw new IllegalArgumentException("srcActions");
+        if ((srcActions & ~(DnDConstants.ACTION_COPY_OR_MOVE | DnDConstants.ACTION_LINK)) != 0) {
+            throw new IllegalArgumentException("srcActions");
+        }
 
         location        = cursorLocn;
         actions         = srcActions;

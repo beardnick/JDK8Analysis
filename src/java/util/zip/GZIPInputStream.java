@@ -116,10 +116,11 @@ class GZIPInputStream extends InflaterInputStream {
         }
         int n = super.read(buf, off, len);
         if (n == -1) {
-            if (readTrailer())
+            if (readTrailer()) {
                 eos = true;
-            else
+            } else {
                 return this.read(buf, off, len);
+            }
         } else {
             crc.update(buf, off, n);
         }
@@ -221,8 +222,9 @@ class GZIPInputStream extends InflaterInputStream {
         // Uses left-to-right evaluation order
         if ((readUInt(in) != crc.getValue()) ||
             // rfc1952; ISIZE is the input size modulo 2^32
-            (readUInt(in) != (inf.getBytesWritten() & 0xffffffffL)))
+            (readUInt(in) != (inf.getBytesWritten() & 0xffffffffL))) {
             throw new ZipException("Corrupt GZIP trailer");
+        }
 
         // If there are more bytes available in "in" or
         // the leftover in the "inf" is > 26 bytes:
@@ -236,8 +238,9 @@ class GZIPInputStream extends InflaterInputStream {
                 return true;  // ignore any malformed, do nothing
             }
             inf.reset();
-            if (n > m)
+            if (n > m) {
                 inf.setInput(buf, len - n + m, n - m);
+            }
             return false;
         }
         return true;

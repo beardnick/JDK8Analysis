@@ -441,22 +441,25 @@ public class LambdaMetafactory {
             System.arraycopy(args, argIndex, markerInterfaces, 0, markerCount);
             argIndex += markerCount;
         }
-        else
+        else {
             markerInterfaces = EMPTY_CLASS_ARRAY;
+        }
         if ((flags & FLAG_BRIDGES) != 0) {
             int bridgeCount = (Integer) args[argIndex++];
             bridges = new MethodType[bridgeCount];
             System.arraycopy(args, argIndex, bridges, 0, bridgeCount);
             argIndex += bridgeCount;
         }
-        else
+        else {
             bridges = EMPTY_MT_ARRAY;
+        }
 
         boolean isSerializable = ((flags & FLAG_SERIALIZABLE) != 0);
         if (isSerializable) {
             boolean foundSerializableSupertype = Serializable.class.isAssignableFrom(invokedType.returnType());
-            for (Class<?> c : markerInterfaces)
+            for (Class<?> c : markerInterfaces) {
                 foundSerializableSupertype |= Serializable.class.isAssignableFrom(c);
+            }
             if (!foundSerializableSupertype) {
                 markerInterfaces = Arrays.copyOf(markerInterfaces, markerInterfaces.length + 1);
                 markerInterfaces[markerInterfaces.length-1] = Serializable.class;

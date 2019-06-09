@@ -163,8 +163,9 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * @since   JDK1.0
      */
     public final ThreadGroup getParent() {
-        if (parent != null)
+        if (parent != null) {
             parent.checkAccess();
+        }
         return parent;
     }
 
@@ -609,8 +610,9 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
      */
     @Deprecated
     public final void stop() {
-        if (stopOrSuspend(false))
+        if (stopOrSuspend(false)) {
             Thread.currentThread().stop();
+        }
     }
 
     /**
@@ -672,8 +674,9 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
     @Deprecated
     @SuppressWarnings("deprecation")
     public final void suspend() {
-        if (stopOrSuspend(true))
+        if (stopOrSuspend(true)) {
             Thread.currentThread().suspend();
+        }
     }
 
     /**
@@ -692,12 +695,13 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
         synchronized (this) {
             checkAccess();
             for (int i = 0 ; i < nthreads ; i++) {
-                if (threads[i]==us)
+                if (threads[i]==us) {
                     suicide = true;
-                else if (suspend)
+                } else if (suspend) {
                     threads[i].suspend();
-                else
+                } else {
                     threads[i].stop();
+                }
             }
 
             ngroupsSnapshot = ngroups;
@@ -705,8 +709,9 @@ class ThreadGroup implements Thread.UncaughtExceptionHandler {
                 groupsSnapshot = Arrays.copyOf(groups, ngroupsSnapshot);
             }
         }
-        for (int i = 0 ; i < ngroupsSnapshot ; i++)
+        for (int i = 0 ; i < ngroupsSnapshot ; i++) {
             suicide = groupsSnapshot[i].stopOrSuspend(suspend) || suicide;
+        }
 
         return suicide;
     }

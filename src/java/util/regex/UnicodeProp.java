@@ -227,8 +227,9 @@ enum UnicodeProp {
     public static UnicodeProp forName(String propName) {
         propName = propName.toUpperCase(Locale.ENGLISH);
         String alias = aliases.get(propName);
-        if (alias != null)
+        if (alias != null) {
             propName = alias;
+        }
         try {
             return valueOf (propName);
         } catch (IllegalArgumentException x) {}
@@ -237,8 +238,9 @@ enum UnicodeProp {
 
     public static UnicodeProp forPOSIXName(String propName) {
         propName = posix.get(propName.toUpperCase(Locale.ENGLISH));
-        if (propName == null)
+        if (propName == null) {
             return null;
+        }
         return valueOf (propName);
     }
 

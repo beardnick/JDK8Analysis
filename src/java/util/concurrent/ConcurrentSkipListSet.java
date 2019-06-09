@@ -301,10 +301,12 @@ public class ConcurrentSkipListSet<E>
      */
     public boolean equals(Object o) {
         // Override AbstractSet version to avoid calling size()
-        if (o == this)
+        if (o == this) {
             return true;
-        if (!(o instanceof Set))
+        }
+        if (!(o instanceof Set)) {
             return false;
+        }
         Collection<?> c = (Collection<?>) o;
         try {
             return containsAll(c) && c.containsAll(this);
@@ -331,9 +333,11 @@ public class ConcurrentSkipListSet<E>
     public boolean removeAll(Collection<?> c) {
         // Override AbstractSet version to avoid unnecessary call to size()
         boolean modified = false;
-        for (Object e : c)
-            if (remove(e))
+        for (Object e : c) {
+            if (remove(e)) {
                 modified = true;
+            }
+        }
         return modified;
     }
 
@@ -500,10 +504,11 @@ public class ConcurrentSkipListSet<E>
      */
     @SuppressWarnings("unchecked")
     public Spliterator<E> spliterator() {
-        if (m instanceof ConcurrentSkipListMap)
+        if (m instanceof ConcurrentSkipListMap) {
             return ((ConcurrentSkipListMap<E,?>)m).keySpliterator();
-        else
+        } else {
             return (Spliterator<E>)((ConcurrentSkipListMap.SubMap<E,?>)m).keyIterator();
+        }
     }
 
     // Support for resetting map in clone

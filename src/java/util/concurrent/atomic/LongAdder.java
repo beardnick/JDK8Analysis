@@ -87,8 +87,9 @@ public class LongAdder extends Striped64 implements Serializable {
             boolean uncontended = true;
             if (as == null || (m = as.length - 1) < 0 ||
                 (a = as[getProbe() & m]) == null ||
-                !(uncontended = a.cas(v = a.value, v + x)))
+                !(uncontended = a.cas(v = a.value, v + x))) {
                 longAccumulate(x, null, uncontended);
+            }
         }
     }
 
@@ -120,8 +121,9 @@ public class LongAdder extends Striped64 implements Serializable {
         long sum = base;
         if (as != null) {
             for (int i = 0; i < as.length; ++i) {
-                if ((a = as[i]) != null)
+                if ((a = as[i]) != null) {
                     sum += a.value;
+                }
             }
         }
         return sum;
@@ -139,8 +141,9 @@ public class LongAdder extends Striped64 implements Serializable {
         base = 0L;
         if (as != null) {
             for (int i = 0; i < as.length; ++i) {
-                if ((a = as[i]) != null)
+                if ((a = as[i]) != null) {
                     a.value = 0L;
+                }
             }
         }
     }

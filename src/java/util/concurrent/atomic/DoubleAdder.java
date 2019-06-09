@@ -96,8 +96,9 @@ public class DoubleAdder extends Striped64 implements Serializable {
                 (a = as[getProbe() & m]) == null ||
                 !(uncontended = a.cas(v = a.value,
                                       Double.doubleToRawLongBits
-                                      (Double.longBitsToDouble(v) + x))))
+                                      (Double.longBitsToDouble(v) + x)))) {
                 doubleAccumulate(x, null, uncontended);
+            }
         }
     }
 
@@ -118,8 +119,9 @@ public class DoubleAdder extends Striped64 implements Serializable {
         double sum = Double.longBitsToDouble(base);
         if (as != null) {
             for (int i = 0; i < as.length; ++i) {
-                if ((a = as[i]) != null)
+                if ((a = as[i]) != null) {
                     sum += Double.longBitsToDouble(a.value);
+                }
             }
         }
         return sum;
@@ -137,8 +139,9 @@ public class DoubleAdder extends Striped64 implements Serializable {
         base = 0L; // relies on fact that double 0 must have same rep as long
         if (as != null) {
             for (int i = 0; i < as.length; ++i) {
-                if ((a = as[i]) != null)
+                if ((a = as[i]) != null) {
                     a.value = 0L;
+                }
             }
         }
     }

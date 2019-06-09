@@ -104,12 +104,15 @@ public class InflaterOutputStream extends FilterOutputStream {
         super(out);
 
         // Sanity checks
-        if (out == null)
+        if (out == null) {
             throw new NullPointerException("Null output");
-        if (infl == null)
+        }
+        if (infl == null) {
             throw new NullPointerException("Null inflater");
-        if (bufLen <= 0)
+        }
+        if (bufLen <= 0) {
             throw new IllegalArgumentException("Buffer size < 1");
+        }
 
         // Initialize
         inf = infl;

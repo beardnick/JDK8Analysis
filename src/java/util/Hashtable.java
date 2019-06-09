@@ -178,14 +178,17 @@ public class Hashtable<K,V>
      *             than zero, or if the load factor is nonpositive.
      */
     public Hashtable(int initialCapacity, float loadFactor) {
-        if (initialCapacity < 0)
+        if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: "+
                                                initialCapacity);
-        if (loadFactor <= 0 || Float.isNaN(loadFactor))
+        }
+        if (loadFactor <= 0 || Float.isNaN(loadFactor)) {
             throw new IllegalArgumentException("Illegal Load: "+loadFactor);
+        }
 
-        if (initialCapacity==0)
+        if (initialCapacity==0) {
             initialCapacity = 1;
+        }
         this.loadFactor = loadFactor;
         table = new Entry<?,?>[initialCapacity];
         threshold = (int)Math.min(initialCapacity * loadFactor, MAX_ARRAY_SIZE + 1);
@@ -395,7 +398,9 @@ public class Hashtable<K,V>
         if (newCapacity - MAX_ARRAY_SIZE > 0) {
             if (oldCapacity == MAX_ARRAY_SIZE)
                 // Keep running with MAX_ARRAY_SIZE buckets
+            {
                 return;
+            }
             newCapacity = MAX_ARRAY_SIZE;
         }
         Entry<?,?>[] newMap = new Entry<?,?>[newCapacity];
@@ -519,8 +524,9 @@ public class Hashtable<K,V>
      * @since 1.2
      */
     public synchronized void putAll(Map<? extends K, ? extends V> t) {
-        for (Map.Entry<? extends K, ? extends V> e : t.entrySet())
+        for (Map.Entry<? extends K, ? extends V> e : t.entrySet()) {
             put(e.getKey(), e.getValue());
+        }
     }
 
     /**
@@ -529,8 +535,9 @@ public class Hashtable<K,V>
     public synchronized void clear() {
         Entry<?,?> tab[] = table;
         modCount++;
-        for (int index = tab.length; --index >= 0; )
+        for (int index = tab.length; --index >= 0; ) {
             tab[index] = null;
+        }
         count = 0;
     }
 
@@ -572,8 +579,9 @@ public class Hashtable<K,V>
      */
     public synchronized String toString() {
         int max = size() - 1;
-        if (max == -1)
+        if (max == -1) {
             return "{}";
+        }
 
         StringBuilder sb = new StringBuilder();
         Iterator<Map.Entry<K,V>> it = entrySet().iterator();
@@ -587,8 +595,9 @@ public class Hashtable<K,V>
             sb.append('=');
             sb.append(value == this ? "(this Map)" : value.toString());
 
-            if (i == max)
+            if (i == max) {
                 return sb.append('}').toString();
+            }
             sb.append(", ");
         }
     }
@@ -637,8 +646,9 @@ public class Hashtable<K,V>
      * @since 1.2
      */
     public Set<K> keySet() {
-        if (keySet == null)
+        if (keySet == null) {
             keySet = Collections.synchronizedSet(new KeySet(), this);
+        }
         return keySet;
     }
 
@@ -677,8 +687,9 @@ public class Hashtable<K,V>
      * @since 1.2
      */
     public Set<Map.Entry<K,V>> entrySet() {
-        if (entrySet==null)
+        if (entrySet==null) {
             entrySet = Collections.synchronizedSet(new EntrySet(), this);
+        }
         return entrySet;
     }
 
@@ -692,23 +703,27 @@ public class Hashtable<K,V>
         }
 
         public boolean contains(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> entry = (Map.Entry<?,?>)o;
             Object key = entry.getKey();
             Entry<?,?>[] tab = table;
             int hash = key.hashCode();
             int index = (hash & 0x7FFFFFFF) % tab.length;
 
-            for (Entry<?,?> e = tab[index]; e != null; e = e.next)
-                if (e.hash==hash && e.equals(entry))
+            for (Entry<?,?> e = tab[index]; e != null; e = e.next) {
+                if (e.hash==hash && e.equals(entry)) {
                     return true;
+                }
+            }
             return false;
         }
 
         public boolean remove(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> entry = (Map.Entry<?,?>) o;
             Object key = entry.getKey();
             Entry<?,?>[] tab = table;
@@ -720,10 +735,11 @@ public class Hashtable<K,V>
             for(Entry<K,V> prev = null; e != null; prev = e, e = e.next) {
                 if (e.hash==hash && e.equals(entry)) {
                     modCount++;
-                    if (prev != null)
+                    if (prev != null) {
                         prev.next = e.next;
-                    else
+                    } else {
                         tab[index] = e.next;
+                    }
 
                     count--;
                     e.value = null;
@@ -758,9 +774,10 @@ public class Hashtable<K,V>
      * @since 1.2
      */
     public Collection<V> values() {
-        if (values==null)
+        if (values==null) {
             values = Collections.synchronizedCollection(new ValueCollection(),
                                                         this);
+        }
         return values;
     }
 
@@ -791,14 +808,17 @@ public class Hashtable<K,V>
      * @since 1.2
      */
     public synchronized boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
+        }
 
-        if (!(o instanceof Map))
+        if (!(o instanceof Map)) {
             return false;
+        }
         Map<?,?> t = (Map<?,?>) o;
-        if (t.size() != size())
+        if (t.size() != size()) {
             return false;
+        }
 
         try {
             Iterator<Map.Entry<K,V>> i = entrySet().iterator();
@@ -807,11 +827,13 @@ public class Hashtable<K,V>
                 K key = e.getKey();
                 V value = e.getValue();
                 if (value == null) {
-                    if (!(t.get(key)==null && t.containsKey(key)))
+                    if (!(t.get(key)==null && t.containsKey(key))) {
                         return false;
+                    }
                 } else {
-                    if (!value.equals(t.get(key)))
+                    if (!value.equals(t.get(key))) {
                         return false;
+                    }
                 }
             }
         } catch (ClassCastException unused)   {
@@ -842,8 +864,9 @@ public class Hashtable<K,V>
          * in progress.
          */
         int h = 0;
-        if (count == 0 || loadFactor < 0)
+        if (count == 0 || loadFactor < 0) {
             return h;  // Returns zero
+        }
 
         loadFactor = -loadFactor;  // Mark hashCode computation in progress
         Entry<?,?>[] tab = table;
@@ -1177,10 +1200,12 @@ public class Hashtable<K,V>
         // odd if it's large enough, this helps distribute the entries.
         // Guard against the length ending up zero, that's not valid.
         int length = (int)(elements * loadFactor) + (elements / 20) + 3;
-        if (length > elements && (length & 1) == 0)
+        if (length > elements && (length & 1) == 0) {
             length--;
-        if (origlength > 0 && length > origlength)
+        }
+        if (origlength > 0 && length > origlength) {
             length = origlength;
+        }
         table = new Entry<?,?>[length];
         threshold = (int)Math.min(length * loadFactor, MAX_ARRAY_SIZE + 1);
         count = 0;
@@ -1262,8 +1287,9 @@ public class Hashtable<K,V>
         }
 
         public V setValue(V value) {
-            if (value == null)
+            if (value == null) {
                 throw new NullPointerException();
+            }
 
             V oldValue = this.value;
             this.value = value;
@@ -1271,8 +1297,9 @@ public class Hashtable<K,V>
         }
 
         public boolean equals(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> e = (Map.Entry<?,?>)o;
 
             return (key==null ? e.getKey()==null : key.equals(e.getKey())) &&
@@ -1363,18 +1390,22 @@ public class Hashtable<K,V>
         }
 
         public T next() {
-            if (modCount != expectedModCount)
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
+            }
             return nextElement();
         }
 
         public void remove() {
-            if (!iterator)
+            if (!iterator) {
                 throw new UnsupportedOperationException();
-            if (lastReturned == null)
+            }
+            if (lastReturned == null) {
                 throw new IllegalStateException("Hashtable Enumerator");
-            if (modCount != expectedModCount)
+            }
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
+            }
 
             synchronized(Hashtable.this) {
                 Entry<?,?>[] tab = Hashtable.this.table;
@@ -1386,10 +1417,11 @@ public class Hashtable<K,V>
                     if (e == lastReturned) {
                         modCount++;
                         expectedModCount++;
-                        if (prev == null)
+                        if (prev == null) {
                             tab[index] = e.next;
-                        else
+                        } else {
                             prev.next = e.next;
+                        }
                         count--;
                         lastReturned = null;
                         return;

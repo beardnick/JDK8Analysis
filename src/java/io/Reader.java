@@ -98,8 +98,9 @@ public abstract class Reader implements Readable, Closeable {
         int len = target.remaining();
         char[] cbuf = new char[len];
         int n = read(cbuf, 0, len);
-        if (n > 0)
+        if (n > 0) {
             target.put(cbuf, 0, n);
+        }
         return n;
     }
 
@@ -118,10 +119,11 @@ public abstract class Reader implements Readable, Closeable {
      */
     public int read() throws IOException {
         char cb[] = new char[1];
-        if (read(cb, 0, 1) == -1)
+        if (read(cb, 0, 1) == -1) {
             return -1;
-        else
+        } else {
             return cb[0];
+        }
     }
 
     /**
@@ -174,17 +176,20 @@ public abstract class Reader implements Readable, Closeable {
      * @exception  IOException  If an I/O error occurs
      */
     public long skip(long n) throws IOException {
-        if (n < 0L)
+        if (n < 0L) {
             throw new IllegalArgumentException("skip value is negative");
+        }
         int nn = (int) Math.min(n, maxSkipBufferSize);
         synchronized (lock) {
-            if ((skipBuffer == null) || (skipBuffer.length < nn))
+            if ((skipBuffer == null) || (skipBuffer.length < nn)) {
                 skipBuffer = new char[nn];
+            }
             long r = n;
             while (r > 0) {
                 int nc = read(skipBuffer, 0, (int)Math.min(r, nn));
-                if (nc == -1)
+                if (nc == -1) {
                     break;
+                }
                 r -= nc;
             }
             return n - r;

@@ -147,8 +147,9 @@ class HeapDoubleBuffer
 
     public DoubleBuffer get(double[] dst, int offset, int length) {
         checkBounds(offset, length, dst.length);
-        if (length > remaining())
+        if (length > remaining()) {
             throw new BufferUnderflowException();
+        }
         System.arraycopy(hb, ix(position()), dst, offset, length);
         position(position() + length);
         return this;
@@ -185,8 +186,9 @@ class HeapDoubleBuffer
     public DoubleBuffer put(double[] src, int offset, int length) {
 
         checkBounds(offset, length, src.length);
-        if (length > remaining())
+        if (length > remaining()) {
             throw new BufferOverflowException();
+        }
         System.arraycopy(src, offset, hb, ix(position()), length);
         position(position() + length);
         return this;
@@ -198,20 +200,23 @@ class HeapDoubleBuffer
     public DoubleBuffer put(DoubleBuffer src) {
 
         if (src instanceof HeapDoubleBuffer) {
-            if (src == this)
+            if (src == this) {
                 throw new IllegalArgumentException();
+            }
             HeapDoubleBuffer sb = (HeapDoubleBuffer)src;
             int n = sb.remaining();
-            if (n > remaining())
+            if (n > remaining()) {
                 throw new BufferOverflowException();
+            }
             System.arraycopy(sb.hb, sb.ix(sb.position()),
                              hb, ix(position()), n);
             sb.position(sb.position() + n);
             position(position() + n);
         } else if (src.isDirect()) {
             int n = src.remaining();
-            if (n > remaining())
+            if (n > remaining()) {
                 throw new BufferOverflowException();
+            }
             src.get(hb, ix(position()), n);
             position(position() + n);
         } else {

@@ -141,8 +141,9 @@ public class ThreadLocalRandom extends Random {
         if (pp != null && pp.equalsIgnoreCase("true")) {
             byte[] seedBytes = java.security.SecureRandom.getSeed(8);
             long s = (long)(seedBytes[0]) & 0xffL;
-            for (int i = 1; i < 8; ++i)
+            for (int i = 1; i < 8; ++i) {
                 s = (s << 8) | ((long)(seedBytes[i]) & 0xffL);
+            }
             return s;
         }
         return (mix64(System.currentTimeMillis()) ^
@@ -219,8 +220,9 @@ public class ThreadLocalRandom extends Random {
      * @return the current thread's {@code ThreadLocalRandom}
      */
     public static ThreadLocalRandom current() {
-        if (UNSAFE.getInt(Thread.currentThread(), PROBE) == 0)
+        if (UNSAFE.getInt(Thread.currentThread(), PROBE) == 0) {
             localInit();
+        }
         return instance;
     }
 
@@ -232,8 +234,9 @@ public class ThreadLocalRandom extends Random {
      */
     public void setSeed(long seed) {
         // only allow call from super() constructor
-        if (initialized)
+        if (initialized) {
             throw new UnsupportedOperationException();
+        }
     }
 
     final long nextSeed() {
@@ -267,17 +270,21 @@ public class ThreadLocalRandom extends Random {
         if (origin < bound) {
             long n = bound - origin, m = n - 1;
             if ((n & m) == 0L)  // power of two
+            {
                 r = (r & m) + origin;
-            else if (n > 0L) {  // reject over-represented candidates
+            } else if (n > 0L) {  // reject over-represented candidates
                 for (long u = r >>> 1;            // ensure nonnegative
                      u + m - (r = u % n) < 0L;    // rejection check
                      u = mix64(nextSeed()) >>> 1) // retry
+                {
                     ;
+                }
                 r += origin;
             }
             else {              // range not representable as long
-                while (r < origin || r >= bound)
+                while (r < origin || r >= bound) {
                     r = mix64(nextSeed());
+                }
             }
         }
         return r;
@@ -295,18 +302,20 @@ public class ThreadLocalRandom extends Random {
         int r = mix32(nextSeed());
         if (origin < bound) {
             int n = bound - origin, m = n - 1;
-            if ((n & m) == 0)
+            if ((n & m) == 0) {
                 r = (r & m) + origin;
-            else if (n > 0) {
+            } else if (n > 0) {
                 for (int u = r >>> 1;
                      u + m - (r = u % n) < 0;
-                     u = mix32(nextSeed()) >>> 1)
+                     u = mix32(nextSeed()) >>> 1) {
                     ;
+                }
                 r += origin;
             }
             else {
-                while (r < origin || r >= bound)
+                while (r < origin || r >= bound) {
                     r = mix32(nextSeed());
+                }
             }
         }
         return r;
@@ -324,7 +333,9 @@ public class ThreadLocalRandom extends Random {
         if (origin < bound) {
             r = r * (bound - origin) + origin;
             if (r >= bound) // correct for rounding
+            {
                 r = Double.longBitsToDouble(Double.doubleToLongBits(bound) - 1);
+            }
         }
         return r;
     }
@@ -348,17 +359,20 @@ public class ThreadLocalRandom extends Random {
      * @throws IllegalArgumentException if {@code bound} is not positive
      */
     public int nextInt(int bound) {
-        if (bound <= 0)
+        if (bound <= 0) {
             throw new IllegalArgumentException(BadBound);
+        }
         int r = mix32(nextSeed());
         int m = bound - 1;
         if ((bound & m) == 0) // power of two
+        {
             r &= m;
-        else { // reject over-represented candidates
+        } else { // reject over-represented candidates
             for (int u = r >>> 1;
                  u + m - (r = u % bound) < 0;
-                 u = mix32(nextSeed()) >>> 1)
+                 u = mix32(nextSeed()) >>> 1) {
                 ;
+            }
         }
         return r;
     }
@@ -375,8 +389,9 @@ public class ThreadLocalRandom extends Random {
      *         or equal to {@code bound}
      */
     public int nextInt(int origin, int bound) {
-        if (origin >= bound)
+        if (origin >= bound) {
             throw new IllegalArgumentException(BadRange);
+        }
         return internalNextInt(origin, bound);
     }
 
@@ -399,17 +414,20 @@ public class ThreadLocalRandom extends Random {
      * @throws IllegalArgumentException if {@code bound} is not positive
      */
     public long nextLong(long bound) {
-        if (bound <= 0)
+        if (bound <= 0) {
             throw new IllegalArgumentException(BadBound);
+        }
         long r = mix64(nextSeed());
         long m = bound - 1;
         if ((bound & m) == 0L) // power of two
+        {
             r &= m;
-        else { // reject over-represented candidates
+        } else { // reject over-represented candidates
             for (long u = r >>> 1;
                  u + m - (r = u % bound) < 0L;
-                 u = mix64(nextSeed()) >>> 1)
+                 u = mix64(nextSeed()) >>> 1) {
                 ;
+            }
         }
         return r;
     }
@@ -426,8 +444,9 @@ public class ThreadLocalRandom extends Random {
      *         or equal to {@code bound}
      */
     public long nextLong(long origin, long bound) {
-        if (origin >= bound)
+        if (origin >= bound) {
             throw new IllegalArgumentException(BadRange);
+        }
         return internalNextLong(origin, bound);
     }
 
@@ -452,8 +471,9 @@ public class ThreadLocalRandom extends Random {
      * @throws IllegalArgumentException if {@code bound} is not positive
      */
     public double nextDouble(double bound) {
-        if (!(bound > 0.0))
+        if (!(bound > 0.0)) {
             throw new IllegalArgumentException(BadBound);
+        }
         double result = (mix64(nextSeed()) >>> 11) * DOUBLE_UNIT * bound;
         return (result < bound) ?  result : // correct for rounding
             Double.longBitsToDouble(Double.doubleToLongBits(bound) - 1);
@@ -471,8 +491,9 @@ public class ThreadLocalRandom extends Random {
      *         or equal to {@code bound}
      */
     public double nextDouble(double origin, double bound) {
-        if (!(origin < bound))
+        if (!(origin < bound)) {
             throw new IllegalArgumentException(BadRange);
+        }
         return internalNextDouble(origin, bound);
     }
 
@@ -528,8 +549,9 @@ public class ThreadLocalRandom extends Random {
      * @since 1.8
      */
     public IntStream ints(long streamSize) {
-        if (streamSize < 0L)
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
+        }
         return StreamSupport.intStream
             (new RandomIntsSpliterator
              (0L, streamSize, Integer.MAX_VALUE, 0),
@@ -570,10 +592,12 @@ public class ThreadLocalRandom extends Random {
      */
     public IntStream ints(long streamSize, int randomNumberOrigin,
                           int randomNumberBound) {
-        if (streamSize < 0L)
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
-        if (randomNumberOrigin >= randomNumberBound)
+        }
+        if (randomNumberOrigin >= randomNumberBound) {
             throw new IllegalArgumentException(BadRange);
+        }
         return StreamSupport.intStream
             (new RandomIntsSpliterator
              (0L, streamSize, randomNumberOrigin, randomNumberBound),
@@ -597,8 +621,9 @@ public class ThreadLocalRandom extends Random {
      * @since 1.8
      */
     public IntStream ints(int randomNumberOrigin, int randomNumberBound) {
-        if (randomNumberOrigin >= randomNumberBound)
+        if (randomNumberOrigin >= randomNumberBound) {
             throw new IllegalArgumentException(BadRange);
+        }
         return StreamSupport.intStream
             (new RandomIntsSpliterator
              (0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound),
@@ -616,8 +641,9 @@ public class ThreadLocalRandom extends Random {
      * @since 1.8
      */
     public LongStream longs(long streamSize) {
-        if (streamSize < 0L)
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
+        }
         return StreamSupport.longStream
             (new RandomLongsSpliterator
              (0L, streamSize, Long.MAX_VALUE, 0L),
@@ -658,10 +684,12 @@ public class ThreadLocalRandom extends Random {
      */
     public LongStream longs(long streamSize, long randomNumberOrigin,
                             long randomNumberBound) {
-        if (streamSize < 0L)
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
-        if (randomNumberOrigin >= randomNumberBound)
+        }
+        if (randomNumberOrigin >= randomNumberBound) {
             throw new IllegalArgumentException(BadRange);
+        }
         return StreamSupport.longStream
             (new RandomLongsSpliterator
              (0L, streamSize, randomNumberOrigin, randomNumberBound),
@@ -685,8 +713,9 @@ public class ThreadLocalRandom extends Random {
      * @since 1.8
      */
     public LongStream longs(long randomNumberOrigin, long randomNumberBound) {
-        if (randomNumberOrigin >= randomNumberBound)
+        if (randomNumberOrigin >= randomNumberBound) {
             throw new IllegalArgumentException(BadRange);
+        }
         return StreamSupport.longStream
             (new RandomLongsSpliterator
              (0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound),
@@ -705,8 +734,9 @@ public class ThreadLocalRandom extends Random {
      * @since 1.8
      */
     public DoubleStream doubles(long streamSize) {
-        if (streamSize < 0L)
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
+        }
         return StreamSupport.doubleStream
             (new RandomDoublesSpliterator
              (0L, streamSize, Double.MAX_VALUE, 0.0),
@@ -749,10 +779,12 @@ public class ThreadLocalRandom extends Random {
      */
     public DoubleStream doubles(long streamSize, double randomNumberOrigin,
                                 double randomNumberBound) {
-        if (streamSize < 0L)
+        if (streamSize < 0L) {
             throw new IllegalArgumentException(BadSize);
-        if (!(randomNumberOrigin < randomNumberBound))
+        }
+        if (!(randomNumberOrigin < randomNumberBound)) {
             throw new IllegalArgumentException(BadRange);
+        }
         return StreamSupport.doubleStream
             (new RandomDoublesSpliterator
              (0L, streamSize, randomNumberOrigin, randomNumberBound),
@@ -776,8 +808,9 @@ public class ThreadLocalRandom extends Random {
      * @since 1.8
      */
     public DoubleStream doubles(double randomNumberOrigin, double randomNumberBound) {
-        if (!(randomNumberOrigin < randomNumberBound))
+        if (!(randomNumberOrigin < randomNumberBound)) {
             throw new IllegalArgumentException(BadRange);
+        }
         return StreamSupport.doubleStream
             (new RandomDoublesSpliterator
              (0L, Long.MAX_VALUE, randomNumberOrigin, randomNumberBound),
@@ -819,7 +852,9 @@ public class ThreadLocalRandom extends Random {
         }
 
         public boolean tryAdvance(IntConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 consumer.accept(ThreadLocalRandom.current().internalNextInt(origin, bound));
@@ -830,7 +865,9 @@ public class ThreadLocalRandom extends Random {
         }
 
         public void forEachRemaining(IntConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 index = f;
@@ -873,7 +910,9 @@ public class ThreadLocalRandom extends Random {
         }
 
         public boolean tryAdvance(LongConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 consumer.accept(ThreadLocalRandom.current().internalNextLong(origin, bound));
@@ -884,7 +923,9 @@ public class ThreadLocalRandom extends Random {
         }
 
         public void forEachRemaining(LongConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 index = f;
@@ -928,7 +969,9 @@ public class ThreadLocalRandom extends Random {
         }
 
         public boolean tryAdvance(DoubleConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 consumer.accept(ThreadLocalRandom.current().internalNextDouble(origin, bound));
@@ -939,7 +982,9 @@ public class ThreadLocalRandom extends Random {
         }
 
         public void forEachRemaining(DoubleConsumer consumer) {
-            if (consumer == null) throw new NullPointerException();
+            if (consumer == null) {
+                throw new NullPointerException();
+            }
             long i = index, f = fence;
             if (i < f) {
                 index = f;
@@ -1006,8 +1051,9 @@ public class ThreadLocalRandom extends Random {
         }
         else {
             localInit();
-            if ((r = (int)UNSAFE.getLong(t, SEED)) == 0)
+            if ((r = (int)UNSAFE.getLong(t, SEED)) == 0) {
                 r = 1; // avoid zero
+            }
         }
         UNSAFE.putInt(t, SECONDARY, r);
         return r;

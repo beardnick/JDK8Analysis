@@ -2346,9 +2346,10 @@ public class X509CertSelector implements CertSelector {
                 }
             }
         } catch (IOException ex) {
-            if (debug != null)
+            if (debug != null) {
                 debug.println("X509CertSelector.match: IOException in subject "
                     + "alternative name check");
+            }
             return false;
         }
         return true;
@@ -2547,11 +2548,12 @@ public class X509CertSelector implements CertSelector {
                 }
             }
             if (!permittedNameFound && nameTypeFound) {
-                if (debug != null)
-                  debug.println("X509CertSelector.match: " +
-                            "name constraints inhibit path to specified name; " +
-                            "permitted names of type " + pathToName.getType() +
-                            ": " + names);
+                if (debug != null) {
+                    debug.println("X509CertSelector.match: " +
+                              "name constraints inhibit path to specified name; " +
+                              "permitted names of type " + pathToName.getType() +
+                              ": " + names);
+                }
                 return false;
             }
         }

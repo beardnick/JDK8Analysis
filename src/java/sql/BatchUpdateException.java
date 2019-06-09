@@ -536,16 +536,21 @@ public class BatchUpdateException extends SQLException {
        ObjectInputStream.GetField fields = s.readFields();
        int[] tmp = (int[])fields.get("updateCounts", null);
        long[] tmp2 = (long[])fields.get("longUpdateCounts", null);
-       if(tmp != null && tmp2 != null && tmp.length != tmp2.length)
+       if(tmp != null && tmp2 != null && tmp.length != tmp2.length) {
            throw new InvalidObjectException("update counts are not the expected size");
-       if (tmp != null)
+       }
+       if (tmp != null) {
            updateCounts = tmp.clone();
-       if (tmp2 != null)
+       }
+       if (tmp2 != null) {
            longUpdateCounts = tmp2.clone();
-       if(updateCounts == null && longUpdateCounts != null)
+       }
+       if(updateCounts == null && longUpdateCounts != null) {
            updateCounts = copyUpdateCount(longUpdateCounts);
-       if(longUpdateCounts == null && updateCounts != null)
+       }
+       if(longUpdateCounts == null && updateCounts != null) {
            longUpdateCounts = copyUpdateCount(updateCounts);
+       }
 
     }
 

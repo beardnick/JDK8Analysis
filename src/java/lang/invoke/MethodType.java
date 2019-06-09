@@ -163,8 +163,9 @@ class MethodType implements java.io.Serializable {
     }
     private static void checkPtype(Class<?> ptype) {
         Objects.requireNonNull(ptype);
-        if (ptype == void.class)
+        if (ptype == void.class) {
             throw newIllegalArgumentException("parameter type cannot be void");
+        }
     }
     /** Return number of extra slots (count of long/double args). */
     private static int checkPtypes(Class<?>[] ptypes) {
@@ -181,11 +182,14 @@ class MethodType implements java.io.Serializable {
     static void checkSlotCount(int count) {
         assert((MAX_JVM_ARITY & (MAX_JVM_ARITY+1)) == 0);
         // MAX_JVM_ARITY must be power of 2 minus 1 for following code trick to work:
-        if ((count & MAX_JVM_ARITY) != count)
+        if ((count & MAX_JVM_ARITY) != count) {
             throw newIllegalArgumentException("bad parameter count "+count);
+        }
     }
     private static IndexOutOfBoundsException newIndexOutOfBoundsException(Object num) {
-        if (num instanceof Integer)  num = "bad index: "+num;
+        if (num instanceof Integer) {
+            num = "bad index: "+num;
+        }
         return new IndexOutOfBoundsException(num.toString());
     }
 
@@ -299,8 +303,9 @@ class MethodType implements java.io.Serializable {
     /*trusted*/ static
     MethodType makeImpl(Class<?> rtype, Class<?>[] ptypes, boolean trusted) {
         MethodType mt = internTable.get(new MethodType(ptypes, rtype));
-        if (mt != null)
+        if (mt != null) {
             return mt;
+        }
         if (ptypes.length == 0) {
             ptypes = NO_PTYPES; trusted = true;
         }
@@ -330,11 +335,15 @@ class MethodType implements java.io.Serializable {
         int ootIndex = objectArgCount*2 + ivarargs;
         if (ootIndex < objectOnlyTypes.length) {
             mt = objectOnlyTypes[ootIndex];
-            if (mt != null)  return mt;
+            if (mt != null) {
+                return mt;
+            }
         }
         Class<?>[] ptypes = new Class<?>[objectArgCount + ivarargs];
         Arrays.fill(ptypes, Object.class);
-        if (ivarargs != 0)  ptypes[objectArgCount] = Object[].class;
+        if (ivarargs != 0) {
+            ptypes[objectArgCount] = Object[].class;
+        }
         mt = makeImpl(Object.class, ptypes, true);
         if (ootIndex < objectOnlyTypes.length) {
             objectOnlyTypes[ootIndex] = mt;     // cache it here also!
@@ -367,7 +376,9 @@ class MethodType implements java.io.Serializable {
      * @throws NullPointerException if {@code nptype} is null
      */
     public MethodType changeParameterType(int num, Class<?> nptype) {
-        if (parameterType(num) == nptype)  return this;
+        if (parameterType(num) == nptype) {
+            return this;
+        }
         checkPtype(nptype);
         Class<?>[] nptypes = ptypes.clone();
         nptypes[num] = nptype;
@@ -387,12 +398,15 @@ class MethodType implements java.io.Serializable {
      */
     public MethodType insertParameterTypes(int num, Class<?>... ptypesToInsert) {
         int len = ptypes.length;
-        if (num < 0 || num > len)
+        if (num < 0 || num > len) {
             throw newIndexOutOfBoundsException(num);
+        }
         int ins = checkPtypes(ptypesToInsert);
         checkSlotCount(parameterSlotCount() + ptypesToInsert.length + ins);
         int ilen = ptypesToInsert.length;
-        if (ilen == 0)  return this;
+        if (ilen == 0) {
+            return this;
+        }
         Class<?>[] nptypes = Arrays.copyOfRange(ptypes, 0, len+ilen);
         System.arraycopy(nptypes, num, nptypes, num+ilen, len-num);
         System.arraycopy(ptypesToInsert, 0, nptypes, num, ilen);
@@ -455,14 +469,17 @@ class MethodType implements java.io.Serializable {
      * @throws NullPointerException if {@code ptypesToInsert} or any of its elements is null
      */
     /*non-public*/ MethodType replaceParameterTypes(int start, int end, Class<?>... ptypesToInsert) {
-        if (start == end)
+        if (start == end) {
             return insertParameterTypes(start, ptypesToInsert);
+        }
         int len = ptypes.length;
-        if (!(0 <= start && start <= end && end <= len))
+        if (!(0 <= start && start <= end && end <= len)) {
             throw newIndexOutOfBoundsException("start="+start+" end="+end);
+        }
         int ilen = ptypesToInsert.length;
-        if (ilen == 0)
+        if (ilen == 0) {
             return dropParameterTypes(start, end);
+        }
         return dropParameterTypes(start, end).insertParameterTypes(start, ptypesToInsert);
     }
 
@@ -474,9 +491,13 @@ class MethodType implements java.io.Serializable {
     /*non-public*/ MethodType asSpreaderType(Class<?> arrayType, int arrayLength) {
         assert(parameterCount() >= arrayLength);
         int spreadPos = ptypes.length - arrayLength;
-        if (arrayLength == 0)  return this;  // nothing to change
+        if (arrayLength == 0) {
+            return this;  // nothing to change
+        }
         if (arrayType == Object[].class) {
-            if (isGeneric())  return this;  // nothing to change
+            if (isGeneric()) {
+                return this;  // nothing to change
+            }
             if (spreadPos == 0) {
                 // no leading arguments to preserve; go generic
                 MethodType res = genericMethodType(arrayLength);
@@ -504,8 +525,9 @@ class MethodType implements java.io.Serializable {
     /*non-public*/ Class<?> leadingReferenceParameter() {
         Class<?> ptype;
         if (ptypes.length == 0 ||
-            (ptype = ptypes[0]).isPrimitive())
+            (ptype = ptypes[0]).isPrimitive()) {
             throw newIllegalArgumentException("no leading reference parameter");
+        }
         return ptype;
     }
 
@@ -547,9 +569,12 @@ class MethodType implements java.io.Serializable {
      */
     public MethodType dropParameterTypes(int start, int end) {
         int len = ptypes.length;
-        if (!(0 <= start && start <= end && end <= len))
+        if (!(0 <= start && start <= end && end <= len)) {
             throw newIndexOutOfBoundsException("start="+start+" end="+end);
-        if (start == end)  return this;
+        }
+        if (start == end) {
+            return this;
+        }
         Class<?>[] nptypes;
         if (start == 0) {
             if (end == len) {
@@ -580,7 +605,9 @@ class MethodType implements java.io.Serializable {
      * @throws NullPointerException if {@code nrtype} is null
      */
     public MethodType changeReturnType(Class<?> nrtype) {
-        if (returnType() == nrtype)  return this;
+        if (returnType() == nrtype) {
+            return this;
+        }
         return makeImpl(nrtype, ptypes, true);
     }
 
@@ -689,8 +716,9 @@ class MethodType implements java.io.Serializable {
         if (uwt == null) {
             // fill in lazily
             uwt = MethodTypeForm.canonicalize(wt, MethodTypeForm.UNWRAP, MethodTypeForm.UNWRAP);
-            if (uwt == null)
+            if (uwt == null) {
                 uwt = wt;    // type has no wrappers or prims at all
+            }
             wt.wrapAlt = uwt;
         }
         return uwt;
@@ -773,8 +801,9 @@ class MethodType implements java.io.Serializable {
     @Override
     public int hashCode() {
       int hashCode = 31 + rtype.hashCode();
-      for (Class<?> ptype : ptypes)
+      for (Class<?> ptype : ptypes) {
           hashCode = 31*hashCode + ptype.hashCode();
+      }
       return hashCode;
     }
 
@@ -793,7 +822,9 @@ class MethodType implements java.io.Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append("(");
         for (int i = 0; i < ptypes.length; i++) {
-            if (i > 0)  sb.append(",");
+            if (i > 0) {
+                sb.append(",");
+            }
             sb.append(ptypes[i].getSimpleName());
         }
         sb.append(")");
@@ -806,23 +837,28 @@ class MethodType implements java.io.Serializable {
      */
     /*non-public*/
     boolean isViewableAs(MethodType newType, boolean keepInterfaces) {
-        if (!VerifyType.isNullConversion(returnType(), newType.returnType(), keepInterfaces))
+        if (!VerifyType.isNullConversion(returnType(), newType.returnType(), keepInterfaces)) {
             return false;
+        }
         return parametersAreViewableAs(newType, keepInterfaces);
     }
     /** True if the new parameters can be viewed (w/o casting) under the old parameter types. */
     /*non-public*/
     boolean parametersAreViewableAs(MethodType newType, boolean keepInterfaces) {
-        if (form == newType.form && form.erasedType == this)
+        if (form == newType.form && form.erasedType == this) {
             return true;  // my reference parameters are all Object
-        if (ptypes == newType.ptypes)
+        }
+        if (ptypes == newType.ptypes) {
             return true;
+        }
         int argc = parameterCount();
-        if (argc != newType.parameterCount())
+        if (argc != newType.parameterCount()) {
             return false;
+        }
         for (int i = 0; i < argc; i++) {
-            if (!VerifyType.isNullConversion(newType.parameterType(i), parameterType(i), keepInterfaces))
+            if (!VerifyType.isNullConversion(newType.parameterType(i), parameterType(i), keepInterfaces)) {
                 return false;
+            }
         }
         return true;
     }
@@ -832,19 +868,25 @@ class MethodType implements java.io.Serializable {
         MethodTypeForm newForm = newType.form();
         if (oldForm == newForm)
             // same parameter count, same primitive/object mix
+        {
             return true;
-        if (!canConvert(returnType(), newType.returnType()))
+        }
+        if (!canConvert(returnType(), newType.returnType())) {
             return false;
+        }
         Class<?>[] srcTypes = newType.ptypes;
         Class<?>[] dstTypes = ptypes;
-        if (srcTypes == dstTypes)
+        if (srcTypes == dstTypes) {
             return true;
+        }
         int argc;
-        if ((argc = srcTypes.length) != dstTypes.length)
+        if ((argc = srcTypes.length) != dstTypes.length) {
             return false;
+        }
         if (argc <= 1) {
-            if (argc == 1 && !canConvert(srcTypes[0], dstTypes[0]))
+            if (argc == 1 && !canConvert(srcTypes[0], dstTypes[0])) {
                 return false;
+            }
             return true;
         }
         if ((oldForm.primitiveParameterCount() == 0 && oldForm.erasedType == this) ||
@@ -862,7 +904,9 @@ class MethodType implements java.io.Serializable {
      */
     /*non-public*/
     boolean explicitCastEquivalentToAsType(MethodType newType) {
-        if (this == newType)  return true;
+        if (this == newType) {
+            return true;
+        }
         if (!explicitCastEquivalentToAsType(rtype, newType.rtype)) {
             return false;
         }
@@ -895,7 +939,9 @@ class MethodType implements java.io.Serializable {
      * Boxing primitives to references is the same for both operators.
      */
     private static boolean explicitCastEquivalentToAsType(Class<?> src, Class<?> dst) {
-        if (src == dst || dst == Object.class || dst == void.class)  return true;
+        if (src == dst || dst == Object.class || dst == void.class) {
+            return true;
+        }
         if (src.isPrimitive()) {
             // Could be a prim/prim conversion, where casting is a strict superset.
             // Or a boxing conversion, which is always to an exact wrapper class.
@@ -921,12 +967,16 @@ class MethodType implements java.io.Serializable {
     /*non-public*/
     static boolean canConvert(Class<?> src, Class<?> dst) {
         // short-circuit a few cases:
-        if (src == dst || src == Object.class || dst == Object.class)  return true;
+        if (src == dst || src == Object.class || dst == Object.class) {
+            return true;
+        }
         // the remainder of this logic is documented in MethodHandle.asType
         if (src.isPrimitive()) {
             // can force void to an explicit null, a la reflect.Method.invoke
             // can also force void to a primitive zero, by analogy
-            if (src == void.class)  return true;  //or !dst.isPrimitive()?
+            if (src == void.class) {
+                return true;  //or !dst.isPrimitive()?
+            }
             Wrapper sw = Wrapper.forPrimitiveType(src);
             if (dst.isPrimitive()) {
                 // P->P must widen
@@ -937,7 +987,9 @@ class MethodType implements java.io.Serializable {
             }
         } else if (dst.isPrimitive()) {
             // any value can be dropped
-            if (dst == void.class)  return true;
+            if (dst == void.class) {
+                return true;
+            }
             Wrapper dw = Wrapper.forPrimitiveType(dst);
             // R->P must be able to unbox (from a dynamically chosen type) and widen
             // For example:
@@ -989,7 +1041,9 @@ class MethodType implements java.io.Serializable {
 
     /*non-public*/ Invokers invokers() {
         Invokers inv = invokers;
-        if (inv != null)  return inv;
+        if (inv != null) {
+            return inv;
+        }
         invokers = inv = new Invokers(this);
         return inv;
     }
@@ -1018,8 +1072,9 @@ class MethodType implements java.io.Serializable {
      * @throws IllegalArgumentException if {@code num} is negative or greater than {@code parameterCount()}
      */
     /*non-public*/ int parameterSlotDepth(int num) {
-        if (num < 0 || num > ptypes.length)
+        if (num < 0 || num > ptypes.length) {
             parameterType(num);  // force a range check
+        }
         return form.parameterToArgSlot(num-1);
     }
 
@@ -1062,8 +1117,9 @@ class MethodType implements java.io.Serializable {
     {
         if (!descriptor.startsWith("(") ||  // also generates NPE if needed
             descriptor.indexOf(')') < 0 ||
-            descriptor.indexOf('.') >= 0)
+            descriptor.indexOf('.') >= 0) {
             throw newIllegalArgumentException("not a method descriptor: "+descriptor);
+        }
         List<Class<?>> types = BytecodeDescriptor.parseMethod(descriptor, loader);
         Class<?> rtype = types.remove(types.size() - 1);
         checkSlotCount(types.size());
@@ -1224,7 +1280,9 @@ s.writeObject(this.parameterArray());
          * @return the interned element
          */
         public T get(T elem) {
-            if (elem == null) throw new NullPointerException();
+            if (elem == null) {
+                throw new NullPointerException();
+            }
             expungeStaleElements();
 
             WeakEntry<T> value = map.get(new WeakEntry<>(elem));
@@ -1247,7 +1305,9 @@ s.writeObject(this.parameterArray());
          * @return element that was actually added
          */
         public T add(T elem) {
-            if (elem == null) throw new NullPointerException();
+            if (elem == null) {
+                throw new NullPointerException();
+            }
 
             // Playing double race here, and so spinloop is required.
             // First race is with two concurrent updaters.

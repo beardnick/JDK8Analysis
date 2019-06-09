@@ -154,10 +154,11 @@ final class ForEachOps {
         @Override
         public <S> Void evaluateParallel(PipelineHelper<T> helper,
                                          Spliterator<S> spliterator) {
-            if (ordered)
+            if (ordered) {
                 new ForEachOrderedTask<>(helper, spliterator, this).invoke();
-            else
+            } else {
                 new ForEachTask<>(helper, spliterator, helper.wrapSink(this)).invoke();
+            }
             return null;
         }
 
@@ -279,8 +280,9 @@ final class ForEachOps {
         public void compute() {
             Spliterator<S> rightSplit = spliterator, leftSplit;
             long sizeEstimate = rightSplit.estimateSize(), sizeThreshold;
-            if ((sizeThreshold = targetSize) == 0L)
+            if ((sizeThreshold = targetSize) == 0L) {
                 targetSize = sizeThreshold = AbstractTask.suggestTargetSize(sizeEstimate);
+            }
             boolean isShortCircuit = StreamOpFlag.SHORT_CIRCUIT.isKnown(helper.getStreamAndOpFlags());
             boolean forkRight = false;
             Sink<S> taskSink = sink;
@@ -501,8 +503,9 @@ final class ForEachOps {
             // of right subtree (if any, which can be this task's right sibling)
             //
             ForEachOrderedTask<S, T> leftDescendant = completionMap.remove(this);
-            if (leftDescendant != null)
+            if (leftDescendant != null) {
                 leftDescendant.tryComplete();
+            }
         }
     }
 }

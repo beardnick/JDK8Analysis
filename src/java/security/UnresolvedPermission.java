@@ -156,8 +156,9 @@ implements java.io.Serializable
     {
         super(type);
 
-        if (type == null)
-                throw new NullPointerException("type can't be null");
+        if (type == null) {
+            throw new NullPointerException("type can't be null");
+        }
 
         this.type = type;
         this.name = name;
@@ -241,7 +242,9 @@ implements java.io.Serializable
                         break;
                     }
                 }
-                if (!match) return null;
+                if (!match) {
+                    return null;
+                }
             }
         }
         try {
@@ -325,11 +328,13 @@ implements java.io.Serializable
      * certificates as this object.
      */
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
+        }
 
-        if (! (obj instanceof UnresolvedPermission))
+        if (! (obj instanceof UnresolvedPermission)) {
             return false;
+        }
         UnresolvedPermission that = (UnresolvedPermission) obj;
 
         // check type
@@ -376,7 +381,9 @@ implements java.io.Serializable
                     break;
                 }
             }
-            if (!match) return false;
+            if (!match) {
+                return false;
+            }
         }
 
         for (i = 0; that.certs != null && i < that.certs.length; i++) {
@@ -387,7 +394,9 @@ implements java.io.Serializable
                     break;
                 }
             }
-            if (!match) return false;
+            if (!match) {
+                return false;
+            }
         }
         return true;
     }
@@ -400,10 +409,12 @@ implements java.io.Serializable
 
     public int hashCode() {
         int hash = type.hashCode();
-        if (name != null)
+        if (name != null) {
             hash ^= name.hashCode();
-        if (actions != null)
+        }
+        if (actions != null) {
             hash ^= actions.hashCode();
+        }
         return hash;
     }
 
@@ -552,8 +563,9 @@ implements java.io.Serializable
 
         ois.defaultReadObject();
 
-        if (type == null)
-                throw new NullPointerException("type can't be null");
+        if (type == null) {
+            throw new NullPointerException("type can't be null");
+        }
 
         // process any new-style certs in the stream (if present)
         int size = ois.readInt();

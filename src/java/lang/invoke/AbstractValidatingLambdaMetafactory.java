@@ -345,7 +345,9 @@ import static sun.invoke.util.Wrapper.isWrapperType;
                || !fromType.equals(void.class) && isAdaptableTo(fromType, toType, false);
     }
     private boolean isAdaptableToAsReturnStrict(Class<?> fromType, Class<?> toType) {
-        if (fromType.equals(void.class)) return toType.equals(void.class);
+        if (fromType.equals(void.class)) {
+            return toType.equals(void.class);
+        }
         return isAdaptableTo(fromType, toType, true);
     }
 

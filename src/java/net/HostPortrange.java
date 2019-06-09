@@ -174,11 +174,13 @@ class HostPortrange {
         for (int i=0; i<len; i++) {
             char c = s.charAt(i);
             if ((c >= 'a' && c <= 'z') || (c == '.')) {
-                if (sb != null)
+                if (sb != null) {
                     sb.append(c);
+                }
             } else if ((c >= '0' && c <= '9') || (c == '-')) {
-                if (sb != null)
+                if (sb != null) {
                     sb.append(c);
+                }
             } else if (c >= 'A' && c <= 'Z') {
                 if (sb == null) {
                     sb = new StringBuilder(len);

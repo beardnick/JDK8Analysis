@@ -366,10 +366,12 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
         while((oldValue = get(key)) != null) {
             V newValue = remappingFunction.apply(key, oldValue);
             if (newValue != null) {
-                if (replace(key, oldValue, newValue))
+                if (replace(key, oldValue, newValue)) {
                     return newValue;
-            } else if (remove(key, oldValue))
-               return null;
+                }
+            } else if (remove(key, oldValue)) {
+                return null;
+            }
         }
         return oldValue;
     }
@@ -501,8 +503,9 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
             if (oldValue != null) {
                 V newValue = remappingFunction.apply(oldValue, value);
                 if (newValue != null) {
-                    if (replace(key, oldValue, newValue))
+                    if (replace(key, oldValue, newValue)) {
                         return newValue;
+                    }
                 } else if (remove(key, oldValue)) {
                     return null;
                 }

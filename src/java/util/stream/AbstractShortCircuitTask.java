@@ -148,8 +148,9 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
      * @param result the result found
      */
     protected void shortCircuit(R result) {
-        if (result != null)
+        if (result != null) {
             sharedResult.compareAndSet(null, result);
+        }
     }
 
     /**
@@ -161,11 +162,13 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
     @Override
     protected void setLocalResult(R localResult) {
         if (isRoot()) {
-            if (localResult != null)
+            if (localResult != null) {
                 sharedResult.compareAndSet(null, localResult);
+            }
         }
-        else
+        else {
             super.setLocalResult(localResult);
+        }
     }
 
     /**
@@ -186,8 +189,9 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
             R answer = sharedResult.get();
             return (answer == null) ? getEmptyResult() : answer;
         }
-        else
+        else {
             return super.getLocalResult();
+        }
     }
 
     /**
@@ -206,8 +210,9 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
     protected boolean taskCanceled() {
         boolean cancel = canceled;
         if (!cancel) {
-            for (K parent = getParent(); !cancel && parent != null; parent = parent.getParent())
+            for (K parent = getParent(); !cancel && parent != null; parent = parent.getParent()) {
                 cancel = parent.canceled;
+            }
         }
 
         return cancel;
@@ -226,8 +231,9 @@ abstract class AbstractShortCircuitTask<P_IN, P_OUT, R,
             // If node is a left child of parent, then has a right sibling
             if (parent.leftChild == node) {
                 K rightSibling = parent.rightChild;
-                if (!rightSibling.canceled)
+                if (!rightSibling.canceled) {
                     rightSibling.cancel();
+                }
             }
         }
     }

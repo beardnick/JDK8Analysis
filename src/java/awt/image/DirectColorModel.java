@@ -429,7 +429,9 @@ public class DirectColorModel extends PackedColorModel {
      *         from 0 to 255.
      */
     final public int getAlpha(int pixel) {
-        if (!supportsAlpha) return 255;
+        if (!supportsAlpha) {
+            return 255;
+        }
         int a = ((pixel & maskArray[3]) >>> maskOffsets[3]);
         if (scaleFactors[3] != 1.0f) {
             a = (int)(a * scaleFactors[3] + 0.5f);

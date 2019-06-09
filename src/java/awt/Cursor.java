@@ -302,8 +302,9 @@ public class Cursor implements java.io.Serializable {
 
         if (cursor == null) {
             synchronized(systemCustomCursors) {
-                if (systemCustomCursorProperties == null)
+                if (systemCustomCursorProperties == null) {
                     loadSystemCustomCursorProperties();
+                }
             }
 
             String prefix = CursorDotPrefix + name;
@@ -321,17 +322,21 @@ public class Cursor implements java.io.Serializable {
 
             String localized = systemCustomCursorProperties.getProperty(prefix + DotNameSuffix);
 
-            if (localized == null) localized = name;
+            if (localized == null) {
+                localized = name;
+            }
 
             String hotspot = systemCustomCursorProperties.getProperty(prefix + DotHotspotSuffix);
 
-            if (hotspot == null)
+            if (hotspot == null) {
                 throw new AWTException("no hotspot property defined for cursor: " + name);
+            }
 
             StringTokenizer st = new StringTokenizer(hotspot, ",");
 
-            if (st.countTokens() != 2)
+            if (st.countTokens() != 2) {
                 throw new AWTException("failed to parse hotspot property for cursor: " + name);
+            }
 
             int x = 0;
             int y = 0;
@@ -456,8 +461,9 @@ public class Cursor implements java.io.Serializable {
                                            systemCustomCursorPropertiesFile);
                             systemCustomCursorProperties.load(fis);
                         } finally {
-                            if (fis != null)
+                            if (fis != null) {
                                 fis.close();
+                            }
                         }
                         return null;
                     }

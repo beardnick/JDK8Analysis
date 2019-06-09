@@ -80,8 +80,9 @@ public class PKIXCertPathBuilderResult extends PKIXCertPathValidatorResult
         PublicKey subjectPublicKey)
     {
         super(trustAnchor, policyTree, subjectPublicKey);
-        if (certPath == null)
+        if (certPath == null) {
             throw new NullPointerException("certPath must be non-null");
+        }
         this.certPath = certPath;
     }
 

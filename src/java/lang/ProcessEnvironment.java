@@ -74,22 +74,25 @@ final class ProcessEnvironment extends HashMap<String,String>
     private static String validateName(String name) {
         // An initial `=' indicates a magic Windows variable name -- OK
         if (name.indexOf('=', 1)   != -1 ||
-            name.indexOf('\u0000') != -1)
+            name.indexOf('\u0000') != -1) {
             throw new IllegalArgumentException
                 ("Invalid environment variable name: \"" + name + "\"");
+        }
         return name;
     }
 
     private static String validateValue(String value) {
-        if (value.indexOf('\u0000') != -1)
+        if (value.indexOf('\u0000') != -1) {
             throw new IllegalArgumentException
                 ("Invalid environment variable value: \"" + value + "\"");
+        }
         return value;
     }
 
     private static String nonNullString(Object o) {
-        if (o == null)
+        if (o == null) {
             throw new NullPointerException();
+        }
         return (String) o;
     }
 
@@ -210,7 +213,9 @@ final class ProcessEnvironment extends HashMap<String,String>
                     c2 = Character.toUpperCase(c2);
                     if (c1 != c2)
                         // No overflow because of numeric promotion
+                    {
                         return c1 - c2;
+                    }
                 }
             }
             return n1 - n2;
@@ -249,9 +254,10 @@ final class ProcessEnvironment extends HashMap<String,String>
               (eql = envblock.indexOf('='     , beg+1)) != -1);
              beg = end + 1) {
             // Ignore corrupted environment strings.
-            if (eql < end)
+            if (eql < end) {
                 theEnvironment.put(envblock.substring(beg, eql),
                                    envblock.substring(eql+1,end));
+            }
         }
 
         theCaseInsensitiveEnvironment = new TreeMap<>(nameComparator);
@@ -336,8 +342,9 @@ final class ProcessEnvironment extends HashMap<String,String>
     // add the environment variable to the child, if it exists in parent
     private static void addToEnvIfSet(StringBuilder sb, String name) {
         String s = getenv(name);
-        if (s != null)
+        if (s != null) {
             addToEnv(sb, name, s);
+        }
     }
 
     private static void addToEnv(StringBuilder sb, String name, String val) {

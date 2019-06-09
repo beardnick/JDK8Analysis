@@ -271,8 +271,9 @@ public final class NetworkInterface {
      *          If the specified name is {@code null}.
      */
     public static NetworkInterface getByName(String name) throws SocketException {
-        if (name == null)
+        if (name == null) {
             throw new NullPointerException();
+        }
         return getByName0(name);
     }
 
@@ -288,8 +289,9 @@ public final class NetworkInterface {
      * @since 1.7
      */
     public static NetworkInterface getByIndex(int index) throws SocketException {
-        if (index < 0)
+        if (index < 0) {
             throw new IllegalArgumentException("Interface index can't be negative");
+        }
         return getByIndex0(index);
     }
 
@@ -343,8 +345,9 @@ public final class NetworkInterface {
         final NetworkInterface[] netifs = getAll();
 
         // specified to return null if no network interfaces
-        if (netifs == null)
+        if (netifs == null) {
             return null;
+        }
 
         return new Enumeration<NetworkInterface>() {
             private int i = 0;

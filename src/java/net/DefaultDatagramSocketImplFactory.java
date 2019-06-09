@@ -102,8 +102,9 @@ class DefaultDatagramSocketImplFactory
         try {
             prefix = AccessController.doPrivileged(
                 new sun.security.action.GetPropertyAction("impl.prefix", null));
-            if (prefix != null)
+            if (prefix != null) {
                 prefixImplClass = Class.forName("java.net."+prefix+"DatagramSocketImpl");
+            }
         } catch (Exception e) {
             System.err.println("Can't find class: java.net." +
                                 prefix +
@@ -126,12 +127,14 @@ class DefaultDatagramSocketImplFactory
                 throw new SocketException("can't instantiate DatagramSocketImpl");
             }
         } else {
-            if (isMulticast)
+            if (isMulticast) {
                 exclusiveBind = false;
-            if (useDualStackImpl && !isMulticast)
+            }
+            if (useDualStackImpl && !isMulticast) {
                 return new DualStackPlainDatagramSocketImpl(exclusiveBind);
-            else
+            } else {
                 return new TwoStacksPlainDatagramSocketImpl(exclusiveBind);
+            }
         }
     }
 }

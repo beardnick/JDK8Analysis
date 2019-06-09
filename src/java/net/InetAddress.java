@@ -494,10 +494,12 @@ class InetAddress implements java.io.Serializable {
      */
     public boolean isReachable(NetworkInterface netif, int ttl,
                                int timeout) throws IOException {
-        if (ttl < 0)
+        if (ttl < 0) {
             throw new IllegalArgumentException("ttl can't be negative");
-        if (timeout < 0)
+        }
+        if (timeout < 0) {
             throw new IllegalArgumentException("timeout can't be negative");
+        }
 
         return impl.isReachable(this, timeout, netif, ttl);
     }
@@ -916,8 +918,9 @@ class InetAddress implements java.io.Serializable {
     }
 
     private static NameService createNSProvider(String provider) {
-        if (provider == null)
+        if (provider == null) {
             return null;
+        }
 
         NameService nameService = null;
         if (provider.equals("default")) {
@@ -981,8 +984,9 @@ class InetAddress implements java.io.Serializable {
                 new GetPropertyAction(propPrefix + n));
         while (provider != null) {
             NameService ns = createNSProvider(provider);
-            if (ns != null)
+            if (ns != null) {
                 nameServices.add(ns);
+            }
 
             n++;
             provider = AccessController.doPrivileged(
@@ -1276,8 +1280,9 @@ class InetAddress implements java.io.Serializable {
             addresses = getAddressesFromNameService(host, reqAddr);
         }
 
-        if (addresses == unknown_array)
+        if (addresses == unknown_array) {
             throw new UnknownHostException(host);
+        }
 
         return addresses.clone();
     }
@@ -1361,8 +1366,9 @@ class InetAddress implements java.io.Serializable {
                 // Cache the address.
                 cacheAddresses(host, addresses, success);
 
-                if (!success && ex != null)
+                if (!success && ex != null) {
                     throw ex;
+                }
 
             } finally {
                 // Delete host from the lookupTable and notify
@@ -1486,9 +1492,11 @@ class InetAddress implements java.io.Serializable {
                 long now = System.currentTimeMillis();
                 if (cachedLocalHost != null) {
                     if ((now - cacheTime) < maxCacheTime) // Less than 5s old?
+                    {
                         ret = cachedLocalHost;
-                    else
+                    } else {
                         cachedLocalHost = null;
+                    }
                 }
 
                 // we are calling getAddressesFromNameService directly

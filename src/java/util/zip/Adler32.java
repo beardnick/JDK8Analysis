@@ -106,8 +106,9 @@ class Adler32 implements Checksum {
         int limit = buffer.limit();
         assert (pos <= limit);
         int rem = limit - pos;
-        if (rem <= 0)
+        if (rem <= 0) {
             return;
+        }
         if (buffer instanceof DirectBuffer) {
             adler = updateByteBuffer(adler, ((DirectBuffer)buffer).address(), pos, rem);
         } else if (buffer.hasArray()) {

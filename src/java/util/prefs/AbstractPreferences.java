@@ -197,17 +197,20 @@ public abstract class AbstractPreferences extends Preferences {
      */
     protected AbstractPreferences(AbstractPreferences parent, String name) {
         if (parent==null) {
-            if (!name.equals(""))
+            if (!name.equals("")) {
                 throw new IllegalArgumentException("Root name '"+name+
                                                    "' must be \"\"");
+            }
             this.absolutePath = "/";
             root = this;
         } else {
-            if (name.indexOf('/') != -1)
+            if (name.indexOf('/') != -1) {
                 throw new IllegalArgumentException("Name '" + name +
                                                  "' contains '/'");
-            if (name.equals(""))
-              throw new IllegalArgumentException("Illegal name: empty string");
+            }
+            if (name.equals("")) {
+                throw new IllegalArgumentException("Illegal name: empty string");
+            }
 
             root = parent.root;
             absolutePath = (parent==root ? "/" + name
@@ -237,16 +240,20 @@ public abstract class AbstractPreferences extends Preferences {
      *         removed with the {@link #removeNode()} method.
      */
     public void put(String key, String value) {
-        if (key==null || value==null)
+        if (key==null || value==null) {
             throw new NullPointerException();
-        if (key.length() > MAX_KEY_LENGTH)
+        }
+        if (key.length() > MAX_KEY_LENGTH) {
             throw new IllegalArgumentException("Key too long: "+key);
-        if (value.length() > MAX_VALUE_LENGTH)
+        }
+        if (value.length() > MAX_VALUE_LENGTH) {
             throw new IllegalArgumentException("Value too long: "+value);
+        }
 
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
+            }
 
             putSpi(key, value);
             enqueuePreferenceChangeEvent(key, value);
@@ -276,11 +283,13 @@ public abstract class AbstractPreferences extends Preferences {
      *         <tt>null</tt> default <i>is</i> permitted.)
      */
     public String get(String key, String def) {
-        if (key==null)
+        if (key==null) {
             throw new NullPointerException("Null key");
+        }
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
+            }
 
             String result = null;
             try {
@@ -310,8 +319,9 @@ public abstract class AbstractPreferences extends Preferences {
     public void remove(String key) {
         Objects.requireNonNull(key, "Specified key cannot be null");
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
+            }
 
             removeSpi(key);
             enqueuePreferenceChangeEvent(key, null);
@@ -335,8 +345,9 @@ public abstract class AbstractPreferences extends Preferences {
     public void clear() throws BackingStoreException {
         synchronized(lock) {
             String[] keys = keys();
-            for (int i=0; i<keys.length; i++)
+            for (int i=0; i<keys.length; i++) {
                 remove(keys[i]);
+            }
         }
     }
 
@@ -386,8 +397,9 @@ public abstract class AbstractPreferences extends Preferences {
         int result = def;
         try {
             String value = get(key, null);
-            if (value != null)
+            if (value != null) {
                 result = Integer.parseInt(value);
+            }
         } catch (NumberFormatException e) {
             // Ignoring exception causes specified default to be returned
         }
@@ -441,8 +453,9 @@ public abstract class AbstractPreferences extends Preferences {
         long result = def;
         try {
             String value = get(key, null);
-            if (value != null)
+            if (value != null) {
                 result = Long.parseLong(value);
+            }
         } catch (NumberFormatException e) {
             // Ignoring exception causes specified default to be returned
         }
@@ -499,10 +512,11 @@ public abstract class AbstractPreferences extends Preferences {
         boolean result = def;
         String value = get(key, null);
         if (value != null) {
-            if (value.equalsIgnoreCase("true"))
+            if (value.equalsIgnoreCase("true")) {
                 result = true;
-            else if (value.equalsIgnoreCase("false"))
+            } else if (value.equalsIgnoreCase("false")) {
                 result = false;
+            }
         }
 
         return result;
@@ -554,8 +568,9 @@ public abstract class AbstractPreferences extends Preferences {
         float result = def;
         try {
             String value = get(key, null);
-            if (value != null)
+            if (value != null) {
                 result = Float.parseFloat(value);
+            }
         } catch (NumberFormatException e) {
             // Ignoring exception causes specified default to be returned
         }
@@ -609,8 +624,9 @@ public abstract class AbstractPreferences extends Preferences {
         double result = def;
         try {
             String value = get(key, null);
-            if (value != null)
+            if (value != null) {
                 result = Double.parseDouble(value);
+            }
         } catch (NumberFormatException e) {
             // Ignoring exception causes specified default to be returned
         }
@@ -655,8 +671,9 @@ public abstract class AbstractPreferences extends Preferences {
         byte[] result = def;
         String value = get(key, null);
         try {
-            if (value != null)
+            if (value != null) {
                 result = Base64.base64ToByteArray(value);
+            }
         }
         catch (RuntimeException e) {
             // Ignoring exception causes specified default to be returned
@@ -682,8 +699,9 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public String[] keys() throws BackingStoreException {
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
+            }
 
             return keysSpi();
         }
@@ -711,12 +729,14 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public String[] childrenNames() throws BackingStoreException {
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
+            }
 
             Set<String> s = new TreeSet<>(kidCache.keySet());
-            for (String kid : childrenNamesSpi())
+            for (String kid : childrenNamesSpi()) {
                 s.add(kid);
+            }
             return s.toArray(EMPTY_STRING_ARRAY);
         }
     }
@@ -749,8 +769,9 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public Preferences parent() {
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
+            }
 
             return parent;
         }
@@ -803,14 +824,18 @@ public abstract class AbstractPreferences extends Preferences {
      */
     public Preferences node(String path) {
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
-            if (path.equals(""))
+            }
+            if (path.equals("")) {
                 return this;
-            if (path.equals("/"))
+            }
+            if (path.equals("/")) {
                 return root;
-            if (path.charAt(0) != '/')
+            }
+            if (path.charAt(0) != '/') {
                 return node(new StringTokenizer(path, "/", true));
+            }
         }
 
         // Absolute path.  Note that we've dropped our lock to avoid deadlock
@@ -823,23 +848,29 @@ public abstract class AbstractPreferences extends Preferences {
     private Preferences node(StringTokenizer path) {
         String token = path.nextToken();
         if (token.equals("/"))  // Check for consecutive slashes
+        {
             throw new IllegalArgumentException("Consecutive slashes in path");
+        }
         synchronized(lock) {
             AbstractPreferences child = kidCache.get(token);
             if (child == null) {
-                if (token.length() > MAX_NAME_LENGTH)
+                if (token.length() > MAX_NAME_LENGTH) {
                     throw new IllegalArgumentException(
                         "Node name " + token + " too long");
+                }
                 child = childSpi(token);
-                if (child.newNode)
+                if (child.newNode) {
                     enqueueNodeAddedEvent(child);
+                }
                 kidCache.put(token, child);
             }
-            if (!path.hasMoreTokens())
+            if (!path.hasMoreTokens()) {
                 return child;
+            }
             path.nextToken();  // Consume slash
-            if (!path.hasMoreTokens())
+            if (!path.hasMoreTokens()) {
                 throw new IllegalArgumentException("Path ends with slash");
+            }
             return child.node(path);
         }
     }
@@ -868,14 +899,18 @@ public abstract class AbstractPreferences extends Preferences {
         throws BackingStoreException
     {
         synchronized(lock) {
-            if (path.equals(""))
+            if (path.equals("")) {
                 return !removed;
-            if (removed)
+            }
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
-            if (path.equals("/"))
+            }
+            if (path.equals("/")) {
                 return true;
-            if (path.charAt(0) != '/')
+            }
+            if (path.charAt(0) != '/') {
                 return nodeExists(new StringTokenizer(path, "/", true));
+            }
         }
 
         // Absolute path.  Note that we've dropped our lock to avoid deadlock
@@ -891,18 +926,24 @@ public abstract class AbstractPreferences extends Preferences {
     {
         String token = path.nextToken();
         if (token.equals("/"))  // Check for consecutive slashes
+        {
             throw new IllegalArgumentException("Consecutive slashes in path");
+        }
         synchronized(lock) {
             AbstractPreferences child = kidCache.get(token);
-            if (child == null)
+            if (child == null) {
                 child = getChild(token);
-            if (child==null)
+            }
+            if (child==null) {
                 return false;
-            if (!path.hasMoreTokens())
+            }
+            if (!path.hasMoreTokens()) {
                 return true;
+            }
             path.nextToken();  // Consume slash
-            if (!path.hasMoreTokens())
+            if (!path.hasMoreTokens()) {
                 throw new IllegalArgumentException("Path ends with slash");
+            }
             return child.nodeExists(path);
         }
     }
@@ -940,8 +981,9 @@ public abstract class AbstractPreferences extends Preferences {
      *         communicate with it.
      */
     public void removeNode() throws BackingStoreException {
-        if (this==root)
+        if (this==root) {
             throw new UnsupportedOperationException("Can't remove the root!");
+        }
         synchronized(parent.lock) {
             removeNode2();
             parent.kidCache.remove(name);
@@ -954,14 +996,17 @@ public abstract class AbstractPreferences extends Preferences {
      */
     private void removeNode2() throws BackingStoreException {
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node already removed.");
+            }
 
             // Ensure that all children are cached
             String[] kidNames = childrenNamesSpi();
-            for (int i=0; i<kidNames.length; i++)
-                if (!kidCache.containsKey(kidNames[i]))
+            for (int i=0; i<kidNames.length; i++) {
+                if (!kidCache.containsKey(kidNames[i])) {
                     kidCache.put(kidNames[i], childSpi(kidNames[i]));
+                }
+            }
 
             // Recursively remove all cached children
             for (Iterator<AbstractPreferences> i = kidCache.values().iterator();
@@ -1030,11 +1075,13 @@ public abstract class AbstractPreferences extends Preferences {
     }
 
     public void addPreferenceChangeListener(PreferenceChangeListener pcl) {
-        if (pcl==null)
+        if (pcl==null) {
             throw new NullPointerException("Change listener is null.");
+        }
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
+            }
 
             // Copy-on-write
             PreferenceChangeListener[] old = prefListeners;
@@ -1047,32 +1094,39 @@ public abstract class AbstractPreferences extends Preferences {
 
     public void removePreferenceChangeListener(PreferenceChangeListener pcl) {
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
-            if ((prefListeners == null) || (prefListeners.length == 0))
+            }
+            if ((prefListeners == null) || (prefListeners.length == 0)) {
                 throw new IllegalArgumentException("Listener not registered.");
+            }
 
             // Copy-on-write
             PreferenceChangeListener[] newPl =
                 new PreferenceChangeListener[prefListeners.length - 1];
             int i = 0;
-            while (i < newPl.length && prefListeners[i] != pcl)
+            while (i < newPl.length && prefListeners[i] != pcl) {
                 newPl[i] = prefListeners[i++];
+            }
 
-            if (i == newPl.length &&  prefListeners[i] != pcl)
+            if (i == newPl.length &&  prefListeners[i] != pcl) {
                 throw new IllegalArgumentException("Listener not registered.");
-            while (i < newPl.length)
+            }
+            while (i < newPl.length) {
                 newPl[i] = prefListeners[++i];
+            }
             prefListeners = newPl;
         }
     }
 
     public void addNodeChangeListener(NodeChangeListener ncl) {
-        if (ncl==null)
+        if (ncl==null) {
             throw new NullPointerException("Change listener is null.");
+        }
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
+            }
 
             // Copy-on-write
             if (nodeListeners == null) {
@@ -1090,24 +1144,30 @@ public abstract class AbstractPreferences extends Preferences {
 
     public void removeNodeChangeListener(NodeChangeListener ncl) {
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed.");
-            if ((nodeListeners == null) || (nodeListeners.length == 0))
+            }
+            if ((nodeListeners == null) || (nodeListeners.length == 0)) {
                 throw new IllegalArgumentException("Listener not registered.");
+            }
 
             // Copy-on-write
             int i = 0;
-            while (i < nodeListeners.length && nodeListeners[i] != ncl)
+            while (i < nodeListeners.length && nodeListeners[i] != ncl) {
                 i++;
-            if (i == nodeListeners.length)
+            }
+            if (i == nodeListeners.length) {
                 throw new IllegalArgumentException("Listener not registered.");
+            }
             NodeChangeListener[] newNl =
                 new NodeChangeListener[nodeListeners.length - 1];
-            if (i != 0)
+            if (i != 0) {
                 System.arraycopy(nodeListeners, 0, newNl, 0, i);
-            if (i != newNl.length)
+            }
+            if (i != newNl.length) {
                 System.arraycopy(nodeListeners, i + 1,
                                  newNl, i, newNl.length - i);
+            }
             nodeListeners = newNl;
         }
     }
@@ -1257,9 +1317,11 @@ public abstract class AbstractPreferences extends Preferences {
         synchronized(lock) {
             // assert kidCache.get(nodeName)==null;
             String[] kidNames = childrenNames();
-            for (int i=0; i<kidNames.length; i++)
-                if (kidNames[i].equals(nodeName))
+            for (int i=0; i<kidNames.length; i++) {
+                if (kidNames[i].equals(nodeName)) {
                     return childSpi(kidNames[i]);
+                }
+            }
         }
         return null;
     }
@@ -1333,14 +1395,16 @@ public abstract class AbstractPreferences extends Preferences {
         AbstractPreferences[] cachedKids;
 
         synchronized(lock) {
-            if (removed)
+            if (removed) {
                 throw new IllegalStateException("Node has been removed");
+            }
             syncSpi();
             cachedKids = cachedChildren();
         }
 
-        for (int i=0; i<cachedKids.length; i++)
+        for (int i=0; i<cachedKids.length; i++) {
             cachedKids[i].sync2();
+        }
     }
 
     /**
@@ -1394,13 +1458,15 @@ public abstract class AbstractPreferences extends Preferences {
 
         synchronized(lock) {
             flushSpi();
-            if(removed)
+            if(removed) {
                 return;
+            }
             cachedKids = cachedChildren();
         }
 
-        for (int i = 0; i < cachedKids.length; i++)
+        for (int i = 0; i < cachedKids.length; i++) {
             cachedKids[i].flush2();
+        }
     }
 
     /**
@@ -1478,8 +1544,9 @@ public abstract class AbstractPreferences extends Preferences {
                 EventObject event = null;
                 synchronized(eventQueue) {
                     try {
-                        while (eventQueue.isEmpty())
+                        while (eventQueue.isEmpty()) {
                             eventQueue.wait();
+                        }
                         event = eventQueue.remove(0);
                     } catch (InterruptedException e) {
                         // XXX Log "Event dispatch thread interrupted. Exiting"
@@ -1492,18 +1559,21 @@ public abstract class AbstractPreferences extends Preferences {
                 if (event instanceof PreferenceChangeEvent) {
                     PreferenceChangeEvent pce = (PreferenceChangeEvent)event;
                     PreferenceChangeListener[] listeners = src.prefListeners();
-                    for (int i=0; i<listeners.length; i++)
+                    for (int i=0; i<listeners.length; i++) {
                         listeners[i].preferenceChange(pce);
+                    }
                 } else {
                     NodeChangeEvent nce = (NodeChangeEvent)event;
                     NodeChangeListener[] listeners = src.nodeListeners();
                     if (nce instanceof NodeAddedEvent) {
-                        for (int i=0; i<listeners.length; i++)
+                        for (int i=0; i<listeners.length; i++) {
                             listeners[i].childAdded(nce);
+                        }
                     } else {
                         // assert nce instanceof NodeRemovedEvent;
-                        for (int i=0; i<listeners.length; i++)
+                        for (int i=0; i<listeners.length; i++) {
                             listeners[i].childRemoved(nce);
+                        }
                     }
                 }
             }

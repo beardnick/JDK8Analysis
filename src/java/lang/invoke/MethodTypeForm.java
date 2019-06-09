@@ -169,10 +169,13 @@ final class MethodTypeForm {
             if (pt != Object.class) {
                 ++pac;
                 Wrapper w = Wrapper.forPrimitiveType(pt);
-                if (w.isDoubleWord())  ++lac;
+                if (w.isDoubleWord()) {
+                    ++lac;
+                }
                 if (w.isSubwordOrInt() && pt != int.class) {
-                    if (bpts == epts)
+                    if (bpts == epts) {
                         bpts = bpts.clone();
+                    }
                     bpts[i] = int.class;
                 }
             }
@@ -183,14 +186,18 @@ final class MethodTypeForm {
         if (rt != Object.class) {
             ++prc;          // even void.class counts as a prim here
             Wrapper w = Wrapper.forPrimitiveType(rt);
-            if (w.isDoubleWord())  ++lrc;
-            if (w.isSubwordOrInt() && rt != int.class)
+            if (w.isDoubleWord()) {
+                ++lrc;
+            }
+            if (w.isSubwordOrInt() && rt != int.class) {
                 bt = int.class;
+            }
             // adjust #slots, #args
-            if (rt == void.class)
+            if (rt == void.class) {
                 rtypeCount = rslotCount = 0;
-            else
+            } else {
                 rslotCount += lrc;
+            }
         }
         if (epts == bpts && bt == rt) {
             this.basicType = erasedType;
@@ -215,7 +222,9 @@ final class MethodTypeForm {
             for (int i = 0; i < epts.length; i++) {
                 Class<?> pt = epts[i];
                 Wrapper w = Wrapper.forBasicType(pt);
-                if (w.isDoubleWord())  --slot;
+                if (w.isDoubleWord()) {
+                    --slot;
+                }
                 --slot;
                 slotToArgTab[slot] = i+1; // "+1" see argSlotToParameter note
                 argToSlotTab[1+i]  = slot;
@@ -244,7 +253,9 @@ final class MethodTypeForm {
         this.argToSlotTable = argToSlotTab;
         this.slotToArgTable = slotToArgTab;
 
-        if (pslotCount >= 256)  throw newIllegalArgumentException("too many arguments");
+        if (pslotCount >= 256) {
+            throw newIllegalArgumentException("too many arguments");
+        }
 
         // Initialize caches, but only for basic types
         assert(basicType == erasedType);
@@ -290,8 +301,12 @@ final class MethodTypeForm {
         return primCounts != 0;
     }
     public boolean hasNonVoidPrimitives() {
-        if (primCounts == 0)  return false;
-        if (primitiveParameterCount() != 0)  return true;
+        if (primCounts == 0) {
+            return false;
+        }
+        if (primitiveParameterCount() != 0) {
+            return true;
+        }
         return (primitiveReturnCount() != 0 && returnCount() != 0);
     }
     public boolean hasLongPrimitives() {
@@ -344,8 +359,12 @@ final class MethodTypeForm {
             return null;
         }
         // Find the erased version of the method type:
-        if (rtc == null)  rtc = rtype;
-        if (ptc == null)  ptc = ptypes;
+        if (rtc == null) {
+            rtc = rtype;
+        }
+        if (ptc == null) {
+            ptc = ptypes;
+        }
         return MethodType.makeImpl(rtc, ptc, true);
     }
 
@@ -360,7 +379,9 @@ final class MethodTypeForm {
             switch (how) {
                 case UNWRAP:
                     ct = Wrapper.asPrimitiveType(t);
-                    if (ct != t)  return ct;
+                    if (ct != t) {
+                        return ct;
+                    }
                     break;
                 case RAW_RETURN:
                 case ERASE:
@@ -380,19 +401,23 @@ final class MethodTypeForm {
                 case WRAP:
                     return Wrapper.asWrapperType(t);
                 case INTS:
-                    if (t == int.class || t == long.class)
+                    if (t == int.class || t == long.class) {
                         return null;  // no change
-                    if (t == double.class)
+                    }
+                    if (t == double.class) {
                         return long.class;
+                    }
                     return int.class;
                 case LONGS:
-                    if (t == long.class)
+                    if (t == long.class) {
                         return null;  // no change
+                    }
                     return long.class;
                 case RAW_RETURN:
                     if (t == int.class || t == long.class ||
-                        t == float.class || t == double.class)
+                        t == float.class || t == double.class) {
                         return null;  // no change
+                    }
                     // everything else returns as an int
                     return int.class;
             }
@@ -408,11 +433,13 @@ final class MethodTypeForm {
         Class<?>[] cs = null;
         for (int imax = ts.length, i = 0; i < imax; i++) {
             Class<?> c = canonicalize(ts[i], how);
-            if (c == void.class)
+            if (c == void.class) {
                 c = null;  // a Void parameter was unwrapped to void; ignore
+            }
             if (c != null) {
-                if (cs == null)
+                if (cs == null) {
                     cs = ts.clone();
+                }
                 cs[i] = c;
             }
         }

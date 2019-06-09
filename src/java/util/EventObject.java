@@ -52,8 +52,9 @@ public class EventObject implements java.io.Serializable {
      * @exception  IllegalArgumentException  if source is null.
      */
     public EventObject(Object source) {
-        if (source == null)
+        if (source == null) {
             throw new IllegalArgumentException("null source");
+        }
 
         this.source = source;
     }

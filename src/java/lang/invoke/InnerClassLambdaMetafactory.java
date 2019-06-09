@@ -298,10 +298,11 @@ import static jdk.internal.org.objectweb.asm.Opcodes.*;
             }
         }
 
-        if (isSerializable)
+        if (isSerializable) {
             generateSerializationFriendlyMethods();
-        else if (accidentallySerializable)
+        } else if (accidentallySerializable) {
             generateSerializationHostileMethods();
+        }
 
         cw.visitEnd();
 

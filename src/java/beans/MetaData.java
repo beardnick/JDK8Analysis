@@ -310,16 +310,19 @@ static final class java_sql_Timestamp_PersistenceDelegate extends java_util_Date
      * Invoke Timstamp getNanos.
      */
     private static int getNanos(Object obj) {
-        if (getNanosMethod == null)
+        if (getNanosMethod == null) {
             throw new AssertionError("Should not get here");
+        }
         try {
             return (Integer)getNanosMethod.invoke(obj);
         } catch (InvocationTargetException e) {
             Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException)
+            if (cause instanceof RuntimeException) {
                 throw (RuntimeException)cause;
-            if (cause instanceof Error)
+            }
+            if (cause instanceof Error) {
                 throw (Error)cause;
+            }
             throw new AssertionError(e);
         } catch (IllegalAccessException iae) {
             throw new AssertionError(iae);

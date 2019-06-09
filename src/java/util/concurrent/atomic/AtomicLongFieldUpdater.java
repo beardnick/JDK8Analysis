@@ -84,10 +84,11 @@ public abstract class AtomicLongFieldUpdater<T> {
     public static <U> AtomicLongFieldUpdater<U> newUpdater(Class<U> tclass,
                                                            String fieldName) {
         Class<?> caller = Reflection.getCallerClass();
-        if (AtomicLong.VM_SUPPORTS_LONG_CAS)
+        if (AtomicLong.VM_SUPPORTS_LONG_CAS) {
             return new CASUpdater<U>(tclass, fieldName, caller);
-        else
+        } else {
             return new LockedUpdater<U>(tclass, fieldName, caller);
+        }
     }
 
     /**
@@ -398,11 +399,13 @@ public abstract class AtomicLongFieldUpdater<T> {
             }
 
             Class<?> fieldt = field.getType();
-            if (fieldt != long.class)
+            if (fieldt != long.class) {
                 throw new IllegalArgumentException("Must be long type");
+            }
 
-            if (!Modifier.isVolatile(modifiers))
+            if (!Modifier.isVolatile(modifiers)) {
                 throw new IllegalArgumentException("Must be volatile type");
+            }
 
             this.cclass = (Modifier.isProtected(modifiers) &&
                            caller != tclass) ? caller : null;
@@ -411,39 +414,53 @@ public abstract class AtomicLongFieldUpdater<T> {
         }
 
         private void fullCheck(T obj) {
-            if (!tclass.isInstance(obj))
+            if (!tclass.isInstance(obj)) {
                 throw new ClassCastException();
-            if (cclass != null)
+            }
+            if (cclass != null) {
                 ensureProtectedAccess(obj);
+            }
         }
 
         public boolean compareAndSet(T obj, long expect, long update) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             return unsafe.compareAndSwapLong(obj, offset, expect, update);
         }
 
         public boolean weakCompareAndSet(T obj, long expect, long update) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             return unsafe.compareAndSwapLong(obj, offset, expect, update);
         }
 
         public void set(T obj, long newValue) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             unsafe.putLongVolatile(obj, offset, newValue);
         }
 
         public void lazySet(T obj, long newValue) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             unsafe.putOrderedLong(obj, offset, newValue);
         }
 
         public long get(T obj) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             return unsafe.getLongVolatile(obj, offset);
         }
 
         public long getAndSet(T obj, long newValue) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             return unsafe.getAndSetLong(obj, offset, newValue);
         }
 
@@ -456,7 +473,9 @@ public abstract class AtomicLongFieldUpdater<T> {
         }
 
         public long getAndAdd(T obj, long delta) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             return unsafe.getAndAddLong(obj, offset, delta);
         }
 
@@ -522,11 +541,13 @@ public abstract class AtomicLongFieldUpdater<T> {
             }
 
             Class<?> fieldt = field.getType();
-            if (fieldt != long.class)
+            if (fieldt != long.class) {
                 throw new IllegalArgumentException("Must be long type");
+            }
 
-            if (!Modifier.isVolatile(modifiers))
+            if (!Modifier.isVolatile(modifiers)) {
                 throw new IllegalArgumentException("Must be volatile type");
+            }
 
             this.cclass = (Modifier.isProtected(modifiers) &&
                            caller != tclass) ? caller : null;
@@ -535,18 +556,23 @@ public abstract class AtomicLongFieldUpdater<T> {
         }
 
         private void fullCheck(T obj) {
-            if (!tclass.isInstance(obj))
+            if (!tclass.isInstance(obj)) {
                 throw new ClassCastException();
-            if (cclass != null)
+            }
+            if (cclass != null) {
                 ensureProtectedAccess(obj);
+            }
         }
 
         public boolean compareAndSet(T obj, long expect, long update) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             synchronized (this) {
                 long v = unsafe.getLong(obj, offset);
-                if (v != expect)
+                if (v != expect) {
                     return false;
+                }
                 unsafe.putLong(obj, offset, update);
                 return true;
             }
@@ -557,7 +583,9 @@ public abstract class AtomicLongFieldUpdater<T> {
         }
 
         public void set(T obj, long newValue) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             synchronized (this) {
                 unsafe.putLong(obj, offset, newValue);
             }
@@ -568,7 +596,9 @@ public abstract class AtomicLongFieldUpdater<T> {
         }
 
         public long get(T obj) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             synchronized (this) {
                 return unsafe.getLong(obj, offset);
             }

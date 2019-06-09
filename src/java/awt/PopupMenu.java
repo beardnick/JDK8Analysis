@@ -120,8 +120,9 @@ public class PopupMenu extends Menu {
                 super.addNotify();
             }
             else {
-                if (peer == null)
+                if (peer == null) {
                     peer = Toolkit.getDefaultToolkit().createPopupMenu(this);
+                }
                 int nitems = getItemCount();
                 for (int i = 0 ; i < nitems ; i++) {
                     MenuItem mi = getItem(i);

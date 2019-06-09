@@ -84,7 +84,9 @@ class LambdaFormEditor {
                 PACKED_BYTE_MAX_LENGTH = (STRESS_TEST ? 3 : 64 / PACKED_BYTE_SIZE);
 
         private static long packedBytes(byte[] bytes) {
-            if (bytes.length > PACKED_BYTE_MAX_LENGTH)  return 0;
+            if (bytes.length > PACKED_BYTE_MAX_LENGTH) {
+                return 0;
+            }
             long pb = 0;
             int bitset = 0;
             for (int i = 0; i < bytes.length; i++) {
@@ -92,8 +94,9 @@ class LambdaFormEditor {
                 bitset |= b;
                 pb |= (long)b << (i * PACKED_BYTE_SIZE);
             }
-            if (!inRange(bitset))
+            if (!inRange(bitset)) {
                 return 0;
+            }
             return pb;
         }
         private static long packedBytes(int b0, int b1) {
@@ -131,11 +134,15 @@ class LambdaFormEditor {
         private byte byteAt(int i) {
             long pb = packedBytes;
             if (pb == 0) {
-                if (i >= fullBytes.length)  return 0;
+                if (i >= fullBytes.length) {
+                    return 0;
+                }
                 return fullBytes[i];
             }
             assert(fullBytes == null);
-            if (i > PACKED_BYTE_MAX_LENGTH)  return 0;
+            if (i > PACKED_BYTE_MAX_LENGTH) {
+                return 0;
+            }
             int pos = (i * PACKED_BYTE_SIZE);
             return (byte)((pb >>> pos) & PACKED_BYTE_MASK);
         }
@@ -164,24 +171,27 @@ class LambdaFormEditor {
         }
         static Transform of(Kind k, int b1) {
             byte b0 = bval(k);
-            if (inRange(b0 | b1))
+            if (inRange(b0 | b1)) {
                 return new Transform(packedBytes(b0, b1));
-            else
+            } else {
                 return new Transform(fullBytes(b0, b1));
+            }
         }
         static Transform of(Kind k, int b1, int b2) {
             byte b0 = (byte) k.ordinal();
-            if (inRange(b0 | b1 | b2))
+            if (inRange(b0 | b1 | b2)) {
                 return new Transform(packedBytes(b0, b1, b2));
-            else
+            } else {
                 return new Transform(fullBytes(b0, b1, b2));
+            }
         }
         static Transform of(Kind k, int b1, int b2, int b3) {
             byte b0 = (byte) k.ordinal();
-            if (inRange(b0 | b1 | b2 | b3))
+            if (inRange(b0 | b1 | b2 | b3)) {
                 return new Transform(packedBytes(b0, b1, b2, b3));
-            else
+            } else {
                 return new Transform(fullBytes(b0, b1, b2, b3));
+            }
         }
         private static final byte[] NO_BYTES = {};
         static Transform of(Kind k, int... b123) {
@@ -204,10 +214,11 @@ class LambdaFormEditor {
                 fullBytes[i++] = bv;
             }
             long packedBytes = packedBytes(fullBytes);
-            if (packedBytes != 0)
+            if (packedBytes != 0) {
                 return new Transform(packedBytes);
-            else
+            } else {
                 return new Transform(fullBytes);
+            }
         }
 
         Transform withResult(LambdaForm result) {
@@ -238,7 +249,9 @@ class LambdaFormEditor {
                 while (bits != 0) {
                     buf.append(bits & PACKED_BYTE_MASK);
                     bits >>>= PACKED_BYTE_SIZE;
-                    if (bits != 0)  buf.append(",");
+                    if (bits != 0) {
+                        buf.append(",");
+                    }
                 }
                 buf.append(")");
             }
@@ -270,12 +283,16 @@ class LambdaFormEditor {
         } else if (c instanceof Transform) {
             // one-element cache avoids overhead of an array
             Transform t = (Transform)c;
-            if (t.equals(key))  k = t;
+            if (t.equals(key)) {
+                k = t;
+            }
         } else {
             Transform[] ta = (Transform[])c;
             for (int i = 0; i < ta.length; i++) {
                 Transform t = ta[i];
-                if (t == null)  break;
+                if (t == null) {
+                    break;
+                }
                 if (t.equals(key)) { k = t; break; }
             }
         }
@@ -297,7 +314,9 @@ class LambdaFormEditor {
                 @SuppressWarnings("unchecked")
                 ConcurrentHashMap<Transform,Transform> m = (ConcurrentHashMap<Transform,Transform>) c;
                 Transform k = m.putIfAbsent(key, key);
-                if (k == null) return form;
+                if (k == null) {
+                    return form;
+                }
                 LambdaForm result = k.get();
                 if (result != null) {
                     return result;
@@ -312,8 +331,9 @@ class LambdaFormEditor {
             assert(pass == 0);
             synchronized (lambdaForm) {
                 c = lambdaForm.transformCache;
-                if (c instanceof ConcurrentHashMap)
+                if (c instanceof ConcurrentHashMap) {
                     continue;
+                }
                 if (c == null) {
                     lambdaForm.transformCache = key;
                     return form;
@@ -518,8 +538,9 @@ class LambdaFormEditor {
     LambdaForm spreadArgumentsForm(int pos, Class<?> arrayType, int arrayLength) {
         Class<?> elementType = arrayType.getComponentType();
         Class<?> erasedArrayType = arrayType;
-        if (!elementType.isPrimitive())
+        if (!elementType.isPrimitive()) {
             erasedArrayType = Object[].class;
+        }
         BasicType bt = basicType(elementType);
         int elementTypeKey = bt.ordinal();
         if (bt.basicTypeClass() != elementType) {
@@ -569,7 +590,9 @@ class LambdaFormEditor {
         Transform.Kind kind = (dropResult
                 ? Transform.Kind.COLLECT_ARGS_TO_VOID
                 : Transform.Kind.COLLECT_ARGS);
-        if (dropResult && collectorArity == 0)  pos = 1;  // pure side effect
+        if (dropResult && collectorArity == 0) {
+            pos = 1;  // pure side effect
+        }
         Transform key = Transform.of(kind, pos, collectorArity, BasicType.basicTypesOrd(newTypes));
         LambdaForm form = getInCache(key);
         if (form != null) {
@@ -590,8 +613,9 @@ class LambdaFormEditor {
         int argTypeKey = argType.ordinal();
         if (argType.basicTypeClass() != elementType) {
             // return null if it requires more metadata (like String[].class)
-            if (!elementType.isPrimitive())
+            if (!elementType.isPrimitive()) {
                 return null;
+            }
             argTypeKey = TYPE_LIMIT + Wrapper.forPrimitiveType(elementType).ordinal();
         }
         assert(collectorType.parameterList().equals(Collections.nCopies(collectorArity, elementType)));
@@ -723,10 +747,11 @@ class LambdaFormEditor {
         Name callFilter;
         if (constantZero) {
             // Synthesize a constant zero value for the given type.
-            if (newType == V_TYPE)
+            if (newType == V_TYPE) {
                 callFilter = null;
-            else
+            } else {
                 callFilter = new Name(constantZero(newType));
+            }
         } else {
             BoundMethodHandle.SpeciesData oldData = oldSpeciesData();
             BoundMethodHandle.SpeciesData newData = newSpeciesData(L_TYPE);
@@ -750,8 +775,9 @@ class LambdaFormEditor {
             }
         }
 
-        if (callFilter != null)
+        if (callFilter != null) {
             buf.insertExpression(insPos++, callFilter);
+        }
         buf.setResult(callFilter);
 
         form = buf.endEdit();
@@ -779,11 +805,15 @@ class LambdaFormEditor {
         boolean nullPerm = true;
         for (int i = 0; i < reorder.length; i++) {
             int inArg = reorder[i];
-            if (inArg != i)  nullPerm = false;
+            if (inArg != i) {
+                nullPerm = false;
+            }
             inTypes = Math.max(inTypes, inArg+1);
         }
         assert(skip + reorder.length == lambdaForm.arity);
-        if (nullPerm)  return lambdaForm;  // do not bother to cache
+        if (nullPerm) {
+            return lambdaForm;  // do not bother to cache
+        }
         Transform key = Transform.of(Transform.Kind.PERMUTE_ARGS, reorder);
         LambdaForm form = getInCache(key);
         if (form != null) {

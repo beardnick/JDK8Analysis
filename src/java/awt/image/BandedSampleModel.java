@@ -158,10 +158,11 @@ public final class BandedSampleModel extends ComponentSampleModel
      *         one of the supported data types
      */
     public SampleModel createSubsetSampleModel(int bands[]) {
-        if (bands.length > bankIndices.length)
+        if (bands.length > bankIndices.length) {
             throw new RasterFormatException("There are only " +
                                             bankIndices.length +
                                             " bands");
+        }
         int newBankIndices[] = new int[bands.length];
         int newBandOffsets[] = new int[bands.length];
 

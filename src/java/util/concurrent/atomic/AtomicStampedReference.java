@@ -163,8 +163,9 @@ public class AtomicStampedReference<V> {
      */
     public void set(V newReference, int newStamp) {
         Pair<V> current = pair;
-        if (newReference != current.reference || newStamp != current.stamp)
+        if (newReference != current.reference || newStamp != current.stamp) {
             this.pair = Pair.of(newReference, newStamp);
+        }
     }
 
     /**

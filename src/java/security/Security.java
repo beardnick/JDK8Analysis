@@ -644,8 +644,9 @@ public final class Security {
             }
         }
 
-        if ((candidates == null) || (candidates.isEmpty()))
+        if ((candidates == null) || (candidates.isEmpty())) {
             return null;
+        }
 
         Object[] candidatesArray = candidates.toArray();
         Provider[] result = new Provider[candidatesArray.length];
@@ -761,8 +762,9 @@ public final class Security {
                                                       key));
         }
         String name = props.getProperty(key);
-        if (name != null)
+        if (name != null) {
             name = name.trim(); // could be a class name with trailing ws
+        }
         return name;
     }
 
@@ -977,11 +979,13 @@ public final class Security {
     private static boolean isStandardAttr(String attribute) {
         // For now, we just have two standard attributes:
         // KeySize and ImplementedIn.
-        if (attribute.equalsIgnoreCase("KeySize"))
+        if (attribute.equalsIgnoreCase("KeySize")) {
             return true;
+        }
 
-        if (attribute.equalsIgnoreCase("ImplementedIn"))
+        if (attribute.equalsIgnoreCase("ImplementedIn")) {
             return true;
+        }
 
         return false;
     }

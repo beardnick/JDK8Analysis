@@ -138,8 +138,9 @@ public final class OptionalInt {
      * null
      */
     public void ifPresent(IntConsumer consumer) {
-        if (isPresent)
+        if (isPresent) {
             consumer.accept(value);
+        }
     }
 
     /**

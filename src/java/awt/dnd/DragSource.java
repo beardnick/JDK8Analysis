@@ -301,7 +301,9 @@ public class DragSource implements Serializable {
         SunDragSourceContextPeer.setDragDropInProgress(true);
 
         try {
-            if (flavorMap != null) this.flavorMap = flavorMap;
+            if (flavorMap != null) {
+                this.flavorMap = flavorMap;
+            }
 
             DragSourceContextPeer dscp = Toolkit.getDefaultToolkit().createDragSourceContextPeer(trigger);
 

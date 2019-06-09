@@ -106,8 +106,9 @@ public abstract class AbstractSelector
      */
     public final void close() throws IOException {
         boolean open = selectorOpen.getAndSet(false);
-        if (!open)
+        if (!open) {
             return;
+        }
         implCloseSelector();
     }
 
@@ -215,8 +216,9 @@ public abstract class AbstractSelector
         }
         AbstractInterruptibleChannel.blockedOn(interruptor);
         Thread me = Thread.currentThread();
-        if (me.isInterrupted())
+        if (me.isInterrupted()) {
             interruptor.interrupt(me);
+        }
     }
 
     /**

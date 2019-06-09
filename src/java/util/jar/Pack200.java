@@ -796,12 +796,13 @@ public abstract class Pack200 {
                 // The first time, we must decide which class to use.
                 implName = java.security.AccessController.doPrivileged(
                     new sun.security.action.GetPropertyAction(prop,""));
-                if (implName != null && !implName.equals(""))
+                if (implName != null && !implName.equals("")) {
                     impl = Class.forName(implName);
-                else if (PACK_PROVIDER.equals(prop))
+                } else if (PACK_PROVIDER.equals(prop)) {
                     impl = com.sun.java.util.jar.pack.PackerImpl.class;
-                else
+                } else {
                     impl = com.sun.java.util.jar.pack.UnpackerImpl.class;
+                }
             }
             // We have a class.  Now instantiate it.
             return impl.newInstance();

@@ -205,25 +205,27 @@ public class RandomAccessFile implements DataOutput, DataInput, Closeable {
     {
         String name = (file != null ? file.getPath() : null);
         int imode = -1;
-        if (mode.equals("r"))
+        if (mode.equals("r")) {
             imode = O_RDONLY;
-        else if (mode.startsWith("rw")) {
+        } else if (mode.startsWith("rw")) {
             imode = O_RDWR;
             rw = true;
             if (mode.length() > 2) {
-                if (mode.equals("rws"))
+                if (mode.equals("rws")) {
                     imode |= O_SYNC;
-                else if (mode.equals("rwd"))
+                } else if (mode.equals("rwd")) {
                     imode |= O_DSYNC;
-                else
+                } else {
                     imode = -1;
+                }
             }
         }
-        if (imode < 0)
+        if (imode < 0) {
             throw new IllegalArgumentException("Illegal mode \"" + mode
                                                + "\" must be one of "
                                                + "\"r\", \"rw\", \"rws\","
                                                + " or \"rwd\"");
+        }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkRead(name);
@@ -434,8 +436,9 @@ public class RandomAccessFile implements DataOutput, DataInput, Closeable {
         int n = 0;
         do {
             int count = this.read(b, off + n, len - n);
-            if (count < 0)
+            if (count < 0) {
                 throw new EOFException();
+            }
             n += count;
         } while (n < len);
     }
@@ -640,8 +643,9 @@ public class RandomAccessFile implements DataOutput, DataInput, Closeable {
      */
     public final boolean readBoolean() throws IOException {
         int ch = this.read();
-        if (ch < 0)
+        if (ch < 0) {
             throw new EOFException();
+        }
         return (ch != 0);
     }
 
@@ -665,8 +669,9 @@ public class RandomAccessFile implements DataOutput, DataInput, Closeable {
      */
     public final byte readByte() throws IOException {
         int ch = this.read();
-        if (ch < 0)
+        if (ch < 0) {
             throw new EOFException();
+        }
         return (byte)(ch);
     }
 
@@ -685,8 +690,9 @@ public class RandomAccessFile implements DataOutput, DataInput, Closeable {
      */
     public final int readUnsignedByte() throws IOException {
         int ch = this.read();
-        if (ch < 0)
+        if (ch < 0) {
             throw new EOFException();
+        }
         return ch;
     }
 
@@ -713,8 +719,9 @@ public class RandomAccessFile implements DataOutput, DataInput, Closeable {
     public final short readShort() throws IOException {
         int ch1 = this.read();
         int ch2 = this.read();
-        if ((ch1 | ch2) < 0)
+        if ((ch1 | ch2) < 0) {
             throw new EOFException();
+        }
         return (short)((ch1 << 8) + (ch2 << 0));
     }
 
@@ -741,8 +748,9 @@ public class RandomAccessFile implements DataOutput, DataInput, Closeable {
     public final int readUnsignedShort() throws IOException {
         int ch1 = this.read();
         int ch2 = this.read();
-        if ((ch1 | ch2) < 0)
+        if ((ch1 | ch2) < 0) {
             throw new EOFException();
+        }
         return (ch1 << 8) + (ch2 << 0);
     }
 
@@ -769,8 +777,9 @@ public class RandomAccessFile implements DataOutput, DataInput, Closeable {
     public final char readChar() throws IOException {
         int ch1 = this.read();
         int ch2 = this.read();
-        if ((ch1 | ch2) < 0)
+        if ((ch1 | ch2) < 0) {
             throw new EOFException();
+        }
         return (char)((ch1 << 8) + (ch2 << 0));
     }
 
@@ -799,8 +808,9 @@ public class RandomAccessFile implements DataOutput, DataInput, Closeable {
         int ch2 = this.read();
         int ch3 = this.read();
         int ch4 = this.read();
-        if ((ch1 | ch2 | ch3 | ch4) < 0)
+        if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
+        }
         return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
     }
 

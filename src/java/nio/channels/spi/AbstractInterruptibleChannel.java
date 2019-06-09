@@ -109,8 +109,9 @@ public abstract class AbstractInterruptibleChannel
      */
     public final void close() throws IOException {
         synchronized (closeLock) {
-            if (!open)
+            if (!open) {
                 return;
+            }
             open = false;
             implCloseChannel();
         }
@@ -157,8 +158,9 @@ public abstract class AbstractInterruptibleChannel
             interruptor = new Interruptible() {
                     public void interrupt(Thread target) {
                         synchronized (closeLock) {
-                            if (!open)
+                            if (!open) {
                                 return;
+                            }
                             open = false;
                             interrupted = target;
                             try {
@@ -169,8 +171,9 @@ public abstract class AbstractInterruptibleChannel
         }
         blockedOn(interruptor);
         Thread me = Thread.currentThread();
-        if (me.isInterrupted())
+        if (me.isInterrupted()) {
             interruptor.interrupt(me);
+        }
     }
 
     /**
@@ -201,8 +204,9 @@ public abstract class AbstractInterruptibleChannel
             interrupted = null;
             throw new ClosedByInterruptException();
         }
-        if (!completed && !open)
+        if (!completed && !open) {
             throw new AsynchronousCloseException();
+        }
     }
 
 

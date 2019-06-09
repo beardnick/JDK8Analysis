@@ -68,8 +68,9 @@ public abstract class Executable extends AccessibleObject
         /* Avoid unnecessary cloning */
         if (params1.length == params2.length) {
             for (int i = 0; i < params1.length; i++) {
-                if (params1[i] != params2[i])
+                if (params1[i] != params2[i]) {
                     return false;
+                }
             }
             return true;
         }
@@ -87,8 +88,9 @@ public abstract class Executable extends AccessibleObject
     void separateWithCommas(Class<?>[] types, StringBuilder sb) {
         for (int j = 0; j < types.length; j++) {
             sb.append(types[j].getTypeName());
-            if (j < (types.length - 1))
+            if (j < (types.length - 1)) {
                 sb.append(",");
+            }
         }
 
     }
@@ -100,13 +102,16 @@ public abstract class Executable extends AccessibleObject
             sb.append(Modifier.toString(mod)).append(' ');
         } else {
             int access_mod = mod & Modifier.ACCESS_MODIFIERS;
-            if (access_mod != 0)
+            if (access_mod != 0) {
                 sb.append(Modifier.toString(access_mod)).append(' ');
-            if (isDefault)
+            }
+            if (isDefault) {
                 sb.append("default ");
+            }
             mod = (mod & ~Modifier.ACCESS_MODIFIERS);
-            if (mod != 0)
+            if (mod != 0) {
                 sb.append(Modifier.toString(mod)).append(' ');
+            }
         }
     }
 
@@ -150,8 +155,9 @@ public abstract class Executable extends AccessibleObject
                 boolean first = true;
                 sb.append('<');
                 for(TypeVariable<?> typeparm: typeparms) {
-                    if (!first)
+                    if (!first) {
                         sb.append(',');
+                    }
                     // Class objects can't occur here; no need to test
                     // and call Class.getName().
                     sb.append(typeparm.toString());
@@ -167,10 +173,13 @@ public abstract class Executable extends AccessibleObject
             for (int j = 0; j < params.length; j++) {
                 String param = params[j].getTypeName();
                 if (isVarArgs() && (j == params.length - 1)) // replace T[] with T...
+                {
                     param = param.replaceFirst("\\[\\]$", "...");
+                }
                 sb.append(param);
-                if (j < (params.length - 1))
+                if (j < (params.length - 1)) {
                     sb.append(',');
+                }
             }
             sb.append(')');
             Type[] exceptions = getGenericExceptionTypes();
@@ -180,8 +189,9 @@ public abstract class Executable extends AccessibleObject
                     sb.append((exceptions[k] instanceof Class)?
                               ((Class)exceptions[k]).getName():
                               exceptions[k].toString());
-                    if (k < (exceptions.length - 1))
+                    if (k < (exceptions.length - 1)) {
                         sb.append(',');
+                    }
                 }
             }
             return sb.toString();
@@ -280,10 +290,11 @@ public abstract class Executable extends AccessibleObject
      *     type that cannot be instantiated for any reason
      */
     public Type[] getGenericParameterTypes() {
-        if (hasGenericInformation())
+        if (hasGenericInformation()) {
             return getGenericInfo().getParameterTypes();
-        else
+        } else {
             return getParameterTypes();
+        }
     }
 
     /**
@@ -367,15 +378,18 @@ public abstract class Executable extends AccessibleObject
             // modifiers?  Probably not in the general case, since
             // we'd have no way of knowing about them, but there
             // may be specific cases.
+        {
             out[i] = new Parameter("arg" + i, 0, this, i);
+        }
         return out;
     }
 
     private void verifyParameters(final Parameter[] parameters) {
         final int mask = Modifier.FINAL | Modifier.SYNTHETIC | Modifier.MANDATED;
 
-        if (getParameterTypes().length != parameters.length)
+        if (getParameterTypes().length != parameters.length) {
             throw new MalformedParametersException("Wrong number of parameters in MethodParameters attribute");
+        }
 
         for (Parameter parameter : parameters) {
             final String name = parameter.getRealName();
@@ -480,10 +494,11 @@ public abstract class Executable extends AccessibleObject
     public Type[] getGenericExceptionTypes() {
         Type[] result;
         if (hasGenericInformation() &&
-            ((result = getGenericInfo().getExceptionTypes()).length > 0))
+            ((result = getGenericInfo().getExceptionTypes()).length > 0)) {
             return result;
-        else
+        } else {
             return getExceptionTypes();
+        }
     }
 
     /**
@@ -551,13 +566,15 @@ public abstract class Executable extends AccessibleObject
     Annotation[][] sharedGetParameterAnnotations(Class<?>[] parameterTypes,
                                                  byte[] parameterAnnotations) {
         int numParameters = parameterTypes.length;
-        if (parameterAnnotations == null)
+        if (parameterAnnotations == null) {
             return new Annotation[numParameters][0];
+        }
 
         Annotation[][] result = parseParameterAnnotations(parameterAnnotations);
 
-        if (result.length != numParameters)
+        if (result.length != numParameters) {
             handleParameterNumberMismatch(result.length, numParameters);
+        }
         return result;
     }
 
@@ -668,8 +685,9 @@ public abstract class Executable extends AccessibleObject
      * @since 1.8
      */
     public AnnotatedType getAnnotatedReceiverType() {
-        if (Modifier.isStatic(this.getModifiers()))
+        if (Modifier.isStatic(this.getModifiers())) {
             return null;
+        }
         return TypeAnnotationParser.buildAnnotatedType(getTypeAnnotationBytes0(),
                 sun.misc.SharedSecrets.getJavaLangAccess().
                         getConstantPool(getDeclaringClass()),

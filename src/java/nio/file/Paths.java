@@ -130,12 +130,14 @@ public final class Paths {
      */
     public static Path get(URI uri) {
         String scheme =  uri.getScheme();
-        if (scheme == null)
+        if (scheme == null) {
             throw new IllegalArgumentException("Missing scheme");
+        }
 
         // check for default provider to avoid loading of installed providers
-        if (scheme.equalsIgnoreCase("file"))
+        if (scheme.equalsIgnoreCase("file")) {
             return FileSystems.getDefault().provider().getPath(uri);
+        }
 
         // try to find provider
         for (FileSystemProvider provider: FileSystemProvider.installedProviders()) {

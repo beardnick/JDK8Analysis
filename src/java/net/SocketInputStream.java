@@ -264,14 +264,17 @@ class SocketInputStream extends FileInputStream
     private boolean closing = false;
     public void close() throws IOException {
         // Prevent recursion. See BugId 4484411
-        if (closing)
+        if (closing) {
             return;
+        }
         closing = true;
         if (socket != null) {
-            if (!socket.isClosed())
+            if (!socket.isClosed()) {
                 socket.close();
-        } else
+            }
+        } else {
             impl.close();
+        }
         closing = false;
     }
 

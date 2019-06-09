@@ -124,10 +124,12 @@ public final class AclEntry {
          *          if the type or who component have not been set
          */
         public AclEntry build() {
-            if (type == null)
+            if (type == null) {
                 throw new IllegalStateException("Missing type component");
-            if (who == null)
+            }
+            if (who == null) {
                 throw new IllegalStateException("Missing who component");
+            }
             return new AclEntry(type, who, perms, flags);
         }
 
@@ -138,8 +140,9 @@ public final class AclEntry {
          * @return  this builder
          */
         public Builder setType(AclEntryType type) {
-            if (type == null)
+            if (type == null) {
                 throw new NullPointerException();
+            }
             this.type = type;
             return this;
         }
@@ -151,8 +154,9 @@ public final class AclEntry {
          * @return  this builder
          */
         public Builder setPrincipal(UserPrincipal who) {
-            if (who == null)
+            if (who == null) {
                 throw new NullPointerException();
+            }
             this.who = who;
             return this;
         }
@@ -160,8 +164,9 @@ public final class AclEntry {
         // check set only contains elements of the given type
         private static void checkSet(Set<?> set, Class<?> type) {
             for (Object e: set) {
-                if (e == null)
+                if (e == null) {
                     throw new NullPointerException();
+                }
                 type.cast(e);
             }
         }
@@ -203,8 +208,9 @@ public final class AclEntry {
             Set<AclEntryPermission> set = EnumSet.noneOf(AclEntryPermission.class);
             // copy and check for null elements
             for (AclEntryPermission p: perms) {
-                if (p == null)
+                if (p == null) {
                     throw new NullPointerException();
+                }
                 set.add(p);
             }
             this.perms = set;
@@ -248,8 +254,9 @@ public final class AclEntry {
             Set<AclEntryFlag> set = EnumSet.noneOf(AclEntryFlag.class);
             // copy and check for null elements
             for (AclEntryFlag f: flags) {
-                if (f == null)
+                if (f == null) {
                     throw new NullPointerException();
+                }
                 set.add(f);
             }
             this.flags = set;
@@ -340,19 +347,25 @@ public final class AclEntry {
      */
     @Override
     public boolean equals(Object ob) {
-        if (ob == this)
+        if (ob == this) {
             return true;
-        if (ob == null || !(ob instanceof AclEntry))
+        }
+        if (ob == null || !(ob instanceof AclEntry)) {
             return false;
+        }
         AclEntry other = (AclEntry)ob;
-        if (this.type != other.type)
+        if (this.type != other.type) {
             return false;
-        if (!this.who.equals(other.who))
+        }
+        if (!this.who.equals(other.who)) {
             return false;
-        if (!this.perms.equals(other.perms))
+        }
+        if (!this.perms.equals(other.perms)) {
             return false;
-        if (!this.flags.equals(other.flags))
+        }
+        if (!this.flags.equals(other.flags)) {
             return false;
+        }
         return true;
     }
 
@@ -369,8 +382,9 @@ public final class AclEntry {
     @Override
     public int hashCode() {
         // return cached hash if available
-        if (hash != 0)
+        if (hash != 0) {
             return hash;
+        }
         int h = type.hashCode();
         h = hash(h, who);
         h = hash(h, perms);

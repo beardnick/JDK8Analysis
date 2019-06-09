@@ -771,8 +771,9 @@ public abstract class MethodHandle {
 
     /** Override this to change asType behavior. */
     /*non-public*/ MethodHandle asTypeUncached(MethodType newType) {
-        if (!type.isConvertibleTo(newType))
+        if (!type.isConvertibleTo(newType)) {
             throw new WrongMethodTypeException("cannot convert "+this+" to "+newType);
+        }
         return asTypeCache = MethodHandleImpl.makePairwiseConvert(this, newType, true);
     }
 
@@ -883,8 +884,9 @@ assertEquals("[A, B, C]", (String) caToString2.invokeExact('A', "BC".toCharArray
     private MethodType asSpreaderChecks(Class<?> arrayType, int arrayLength) {
         spreadArrayChecks(arrayType, arrayLength);
         int nargs = type().parameterCount();
-        if (nargs < arrayLength || arrayLength < 0)
+        if (nargs < arrayLength || arrayLength < 0) {
             throw newIllegalArgumentException("bad spread array length");
+        }
         Class<?> arrayElement = arrayType.getComponentType();
         MethodType mtype = type();
         boolean match = true, fail = false;
@@ -898,9 +900,13 @@ assertEquals("[A, B, C]", (String) caToString2.invokeExact('A', "BC".toCharArray
                 }
             }
         }
-        if (match)  return mtype;
+        if (match) {
+            return mtype;
+        }
         MethodType needType = mtype.asSpreaderType(arrayType, arrayLength);
-        if (!fail)  return needType;
+        if (!fail) {
+            return needType;
+        }
         // elicit an error:
         this.asType(needType);
         throw newInternalError("should not return", null);
@@ -908,15 +914,18 @@ assertEquals("[A, B, C]", (String) caToString2.invokeExact('A', "BC".toCharArray
 
     private void spreadArrayChecks(Class<?> arrayType, int arrayLength) {
         Class<?> arrayElement = arrayType.getComponentType();
-        if (arrayElement == null)
+        if (arrayElement == null) {
             throw newIllegalArgumentException("not an array type", arrayType);
+        }
         if ((arrayLength & 0x7F) != arrayLength) {
-            if ((arrayLength & 0xFF) != arrayLength)
+            if ((arrayLength & 0xFF) != arrayLength) {
                 throw newIllegalArgumentException("array length is not legal", arrayLength);
+            }
             assert(arrayLength >= 128);
             if (arrayElement == long.class ||
-                arrayElement == double.class)
+                arrayElement == double.class) {
                 throw newIllegalArgumentException("array length is not legal for long[] or double[]", arrayLength);
+            }
         }
     }
 
@@ -1014,8 +1023,12 @@ assertEquals("[123]", (String) longsToString.invokeExact((long)123));
         int nargs = type().parameterCount();
         if (nargs != 0) {
             Class<?> lastParam = type().parameterType(nargs-1);
-            if (lastParam == arrayType)  return true;
-            if (lastParam.isAssignableFrom(arrayType))  return false;
+            if (lastParam == arrayType) {
+                return true;
+            }
+            if (lastParam.isAssignableFrom(arrayType)) {
+                return false;
+            }
         }
         throw newIllegalArgumentException("array type not assignable to trailing argument", this, arrayType);
     }
@@ -1173,8 +1186,9 @@ assertEquals("[three, thee, tee]", Arrays.toString((Object[])ls.get(0)));
     public MethodHandle asVarargsCollector(Class<?> arrayType) {
         arrayType.getClass(); // explicit NPE
         boolean lastMatch = asCollectorChecks(arrayType, 0);
-        if (isVarargsCollector() && lastMatch)
+        if (isVarargsCollector() && lastMatch) {
             return this;
+        }
         return MethodHandleImpl.makeVarargsCollector(this, arrayType);
     }
 
@@ -1294,7 +1308,9 @@ assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
      */
     @Override
     public String toString() {
-        if (DEBUG_METHOD_HANDLE_NAMES)  return "MethodHandle"+debugString();
+        if (DEBUG_METHOD_HANDLE_NAMES) {
+            return "MethodHandle"+debugString();
+        }
         return standardString();
     }
     String standardString() {
@@ -1319,7 +1335,9 @@ assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
 
     /*non-public*/
     MethodHandle setVarargs(MemberName member) throws IllegalAccessException {
-        if (!member.isVarargs())  return this;
+        if (!member.isVarargs()) {
+            return this;
+        }
         Class<?> arrayType = type().lastParameterType();
         if (arrayType.isArray()) {
             return MethodHandleImpl.makeVarargsCollector(this, arrayType);
@@ -1428,7 +1446,9 @@ assertEquals("[three, thee, tee]", asListFix.invoke((Object)argv).toString());
     /*non-public*/
     void updateForm(LambdaForm newForm) {
         assert(newForm.customized == null || newForm.customized == this);
-        if (form == newForm)  return;
+        if (form == newForm) {
+            return;
+        }
         newForm.prepare();  // as in MethodHandle.<init>
         UNSAFE.putObject(this, FORM_OFFSET, newForm);
         UNSAFE.fullFence();

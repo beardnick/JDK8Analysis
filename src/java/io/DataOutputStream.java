@@ -360,15 +360,17 @@ class DataOutputStream extends FilterOutputStream implements DataOutput {
             }
         }
 
-        if (utflen > 65535)
+        if (utflen > 65535) {
             throw new UTFDataFormatException(
                 "encoded string too long: " + utflen + " bytes");
+        }
 
         byte[] bytearr = null;
         if (out instanceof DataOutputStream) {
             DataOutputStream dos = (DataOutputStream)out;
-            if(dos.bytearr == null || (dos.bytearr.length < (utflen+2)))
+            if(dos.bytearr == null || (dos.bytearr.length < (utflen+2))) {
                 dos.bytearr = new byte[(utflen*2) + 2];
+            }
             bytearr = dos.bytearr;
         } else {
             bytearr = new byte[utflen+2];
@@ -380,7 +382,9 @@ class DataOutputStream extends FilterOutputStream implements DataOutput {
         int i=0;
         for (i=0; i<strlen; i++) {
            c = str.charAt(i);
-           if (!((c >= 0x0001) && (c <= 0x007F))) break;
+           if (!((c >= 0x0001) && (c <= 0x007F))) {
+               break;
+           }
            bytearr[count++] = (byte) c;
         }
 

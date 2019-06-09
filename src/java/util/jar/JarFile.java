@@ -452,8 +452,9 @@ class JarFile extends ZipFile {
             // could be set to null after a call to
             // initializeVerifier if we have nothing to
             // verify
-            if (jv == null)
+            if (jv == null) {
                 return super.getInputStream(ze);
+            }
         }
 
         // wrap a verifier stream around the real stream
@@ -483,8 +484,9 @@ class JarFile extends ZipFile {
         CLASSPATH_LASTOCC[(int)'a'] = 8;
         CLASSPATH_LASTOCC[(int)'t'] = 9;
         CLASSPATH_LASTOCC[(int)'h'] = 10;
-        for (int i=0; i<9; i++)
+        for (int i=0; i<9; i++) {
             CLASSPATH_OPTOSFT[i] = 10;
+        }
         CLASSPATH_OPTOSFT[9]=1;
     }
 
@@ -548,13 +550,16 @@ class JarFile extends ZipFile {
      * attribute. A no-op on subsequent calls.
      */
     private void checkForSpecialAttributes() throws IOException {
-        if (hasCheckedSpecialAttributes) return;
+        if (hasCheckedSpecialAttributes) {
+            return;
+        }
         if (!isKnownNotToHaveSpecialAttributes()) {
             JarEntry manEntry = getManEntry();
             if (manEntry != null) {
                 byte[] b = getBytes(manEntry);
-                if (match(CLASSPATH_CHARS, b, CLASSPATH_LASTOCC, CLASSPATH_OPTOSFT))
+                if (match(CLASSPATH_CHARS, b, CLASSPATH_LASTOCC, CLASSPATH_OPTOSFT)) {
                     hasClassPathAttribute = true;
+                }
             }
         }
         hasCheckedSpecialAttributes = true;

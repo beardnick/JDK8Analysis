@@ -99,16 +99,21 @@ public final class VMID implements java.io.Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof VMID) {
             VMID vmid = (VMID) obj;
-            if (!uid.equals(vmid.uid))
+            if (!uid.equals(vmid.uid)) {
                 return false;
-            if ((addr == null) ^ (vmid.addr == null))
+            }
+            if ((addr == null) ^ (vmid.addr == null)) {
                 return false;
+            }
             if (addr != null) {
-                if (addr.length != vmid.addr.length)
+                if (addr.length != vmid.addr.length) {
                     return false;
-                for (int i = 0; i < addr.length; ++ i)
-                    if (addr[i] != vmid.addr[i])
+                }
+                for (int i = 0; i < addr.length; ++ i) {
+                    if (addr[i] != vmid.addr[i]) {
                         return false;
+                    }
+                }
             }
             return true;
         } else {
@@ -121,12 +126,13 @@ public final class VMID implements java.io.Serializable {
      */
     public String toString() {
         StringBuffer result = new StringBuffer();
-        if (addr != null)
+        if (addr != null) {
             for (int i = 0; i < addr.length; ++ i) {
                 int x = addr[i] & 0xFF;
                 result.append((x < 0x10 ? "0" : "") +
                               Integer.toString(x, 16));
             }
+        }
         result.append(':');
         result.append(uid.toString());
         return result.toString();

@@ -118,8 +118,9 @@ class FilterOutputStream extends OutputStream {
      * @see        java.io.FilterOutputStream#write(int)
      */
     public void write(byte b[], int off, int len) throws IOException {
-        if ((off | len | (b.length - (len + off)) | (off + len)) < 0)
+        if ((off | len | (b.length - (len + off)) | (off + len)) < 0) {
             throw new IndexOutOfBoundsException();
+        }
 
         for (int i = 0 ; i < len ; i++) {
             write(b[off + i]);

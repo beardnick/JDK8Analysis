@@ -59,21 +59,27 @@ class Invokers {
 
     /*non-public*/ MethodHandle exactInvoker() {
         MethodHandle invoker = cachedInvoker(INV_EXACT);
-        if (invoker != null)  return invoker;
+        if (invoker != null) {
+            return invoker;
+        }
         invoker = makeExactOrGeneralInvoker(true);
         return setCachedInvoker(INV_EXACT, invoker);
     }
 
     /*non-public*/ MethodHandle genericInvoker() {
         MethodHandle invoker = cachedInvoker(INV_GENERIC);
-        if (invoker != null)  return invoker;
+        if (invoker != null) {
+            return invoker;
+        }
         invoker = makeExactOrGeneralInvoker(false);
         return setCachedInvoker(INV_GENERIC, invoker);
     }
 
     /*non-public*/ MethodHandle basicInvoker() {
         MethodHandle invoker = cachedInvoker(INV_BASIC);
-        if (invoker != null)  return invoker;
+        if (invoker != null) {
+            return invoker;
+        }
         MethodType basicType = targetType.basicType();
         if (basicType != targetType) {
             // double cache; not used significantly
@@ -96,7 +102,9 @@ class Invokers {
     private synchronized MethodHandle setCachedInvoker(int idx, final MethodHandle invoker) {
         // Simulate a CAS, to avoid racy duplication of results.
         MethodHandle prev = invokers[idx];
-        if (prev != null)  return prev;
+        if (prev != null) {
+            return prev;
+        }
         return invokers[idx] = invoker;
     }
 
@@ -168,15 +176,22 @@ class Invokers {
     }
 
     private static Class<?> impliedRestargType(MethodType restargType, int fromPos) {
-        if (restargType.isGeneric())  return Object[].class;  // can be nothing else
+        if (restargType.isGeneric()) {
+            return Object[].class;  // can be nothing else
+        }
         int maxPos = restargType.parameterCount();
-        if (fromPos >= maxPos)  return Object[].class;  // reasonable default
+        if (fromPos >= maxPos) {
+            return Object[].class;  // reasonable default
+        }
         Class<?> argType = restargType.parameterType(fromPos);
         for (int i = fromPos+1; i < maxPos; i++) {
-            if (argType != restargType.parameterType(i))
+            if (argType != restargType.parameterType(i)) {
                 throw newIllegalArgumentException("need homogeneous rest arguments", restargType);
+            }
         }
-        if (argType == Object.class)  return Object[].class;
+        if (argType == Object.class) {
+            return Object[].class;
+        }
         return Array.newInstance(argType, 0).getClass();
     }
 
@@ -235,7 +250,9 @@ class Invokers {
         LambdaForm lform;
         if (isCached) {
             lform = mtype.form().cachedLambdaForm(which);
-            if (lform != null)  return lform;
+            if (lform != null) {
+                return lform;
+            }
         }
         // exactInvokerForm (Object,Object)Object
         //   link with java.lang.invoke.MethodHandle.invokeBasic(MethodHandle,Object,Object)Object/invokeSpecial
@@ -251,8 +268,9 @@ class Invokers {
         final int LINKER_CALL  = nameCursor++;
         MethodType invokerFormType = mtype.invokerType();
         if (isLinker) {
-            if (!customized)
+            if (!customized) {
                 invokerFormType = invokerFormType.appendParameterTypes(MemberName.class);
+            }
         } else {
             invokerFormType = invokerFormType.invokerType();
         }
@@ -285,10 +303,12 @@ class Invokers {
         }
         names[LINKER_CALL] = new Name(outCallType, outArgs);
         lform = new LambdaForm(debugName, INARG_LIMIT, names);
-        if (isLinker)
+        if (isLinker) {
             lform.compileToBytecode();  // JVM needs a real methodOop
-        if (isCached)
+        }
+        if (isCached) {
             lform = mtype.form().setCachedLambdaForm(which, lform);
+        }
         return lform;
     }
 
@@ -305,8 +325,9 @@ class Invokers {
         MethodHandle mh = (MethodHandle) mhObj;
         MethodType expected = (MethodType) expectedObj;
         MethodType actual = mh.type();
-        if (actual != expected)
+        if (actual != expected) {
             throw newWrongMethodTypeException(expected, actual);
+        }
     }
 
     /** Static definition of MethodHandle.invokeGeneric checking code.
@@ -353,7 +374,9 @@ class Invokers {
         mtype = mtype.basicType();  // normalize Z to I, String to Object, etc.
         final int which = (skipCallSite ? MethodTypeForm.LF_MH_LINKER : MethodTypeForm.LF_CS_LINKER);
         LambdaForm lform = mtype.form().cachedLambdaForm(which);
-        if (lform != null)  return lform;
+        if (lform != null) {
+            return lform;
+        }
         // exactInvokerForm (Object,Object)Object
         //   link with java.lang.invoke.MethodHandle.invokeBasic(MethodHandle,Object,Object)Object/invokeSpecial
         final int ARG_BASE     = 0;
@@ -368,8 +391,9 @@ class Invokers {
         Name[] names = arguments(nameCursor - INARG_LIMIT, invokerFormType);
         assert(names.length == nameCursor);
         assert(names[APPENDIX_ARG] != null);
-        if (!skipCallSite)
+        if (!skipCallSite) {
             names[CALL_MH] = new Name(NF_getCallSiteTarget, names[CSITE_ARG]);
+        }
         // (site.)invokedynamic(a*):R => mh = site.getTarget(); mh.invokeBasic(a*)
         final int PREPEND_MH = 0, PREPEND_COUNT = 1;
         Object[] outArgs = Arrays.copyOfRange(names, ARG_BASE, OUTARG_LIMIT + PREPEND_COUNT, Object[].class);

@@ -306,8 +306,12 @@ public abstract class GraphicsDevice {
         if (fullScreenWindow != null && windowedModeBounds != null) {
             // if the window went into fs mode before it was realized it may
             // have (0,0) dimensions
-            if (windowedModeBounds.width  == 0) windowedModeBounds.width  = 1;
-            if (windowedModeBounds.height == 0) windowedModeBounds.height = 1;
+            if (windowedModeBounds.width  == 0) {
+                windowedModeBounds.width  = 1;
+            }
+            if (windowedModeBounds.height == 0) {
+                windowedModeBounds.height = 1;
+            }
             fullScreenWindow.setBounds(windowedModeBounds);
         }
         // Set the full screen window

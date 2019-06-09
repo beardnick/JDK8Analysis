@@ -168,8 +168,9 @@ public class SwitchPoint {
      * @see MethodHandles#guardWithTest
      */
     public MethodHandle guardWithTest(MethodHandle target, MethodHandle fallback) {
-        if (mcs.getTarget() == K_false)
+        if (mcs.getTarget() == K_false) {
             return fallback;  // already invalid
+        }
         return MethodHandles.guardWithTest(mcsInvoker, target, fallback);
     }
 
@@ -215,11 +216,15 @@ public class SwitchPoint {
      *                              or the array contains a null
      */
     public static void invalidateAll(SwitchPoint[] switchPoints) {
-        if (switchPoints.length == 0)  return;
+        if (switchPoints.length == 0) {
+            return;
+        }
         MutableCallSite[] sites = new MutableCallSite[switchPoints.length];
         for (int i = 0; i < switchPoints.length; i++) {
             SwitchPoint spt = switchPoints[i];
-            if (spt == null)  break;  // MSC.syncAll will trigger a NPE
+            if (spt == null) {
+                break;  // MSC.syncAll will trigger a NPE
+            }
             sites[i] = spt.mcs;
             spt.mcs.setTarget(K_false);
         }

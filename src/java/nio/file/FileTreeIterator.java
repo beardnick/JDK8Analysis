@@ -75,8 +75,9 @@ class FileTreeIterator implements Iterator<Event>, Closeable {
 
         // IOException if there a problem accessing the starting file
         IOException ioe = next.ioeException();
-        if (ioe != null)
+        if (ioe != null) {
             throw ioe;
+        }
     }
 
     private void fetchNextIfNeeded() {
@@ -84,8 +85,9 @@ class FileTreeIterator implements Iterator<Event>, Closeable {
             FileTreeWalker.Event ev = walker.next();
             while (ev != null) {
                 IOException ioe = ev.ioeException();
-                if (ioe != null)
+                if (ioe != null) {
                     throw new UncheckedIOException(ioe);
+                }
 
                 // END_DIRECTORY events are ignored
                 if (ev.type() != FileTreeWalker.EventType.END_DIRECTORY) {
@@ -99,19 +101,22 @@ class FileTreeIterator implements Iterator<Event>, Closeable {
 
     @Override
     public boolean hasNext() {
-        if (!walker.isOpen())
+        if (!walker.isOpen()) {
             throw new IllegalStateException();
+        }
         fetchNextIfNeeded();
         return next != null;
     }
 
     @Override
     public Event next() {
-        if (!walker.isOpen())
+        if (!walker.isOpen()) {
             throw new IllegalStateException();
+        }
         fetchNextIfNeeded();
-        if (next == null)
+        if (next == null) {
             throw new NoSuchElementException();
+        }
         Event result = next;
         next = null;
         return result;

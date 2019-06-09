@@ -69,14 +69,18 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
     }
 
     static MethodHandle makeArrayElementAccessor(Class<?> arrayClass, boolean isSetter) {
-        if (arrayClass == Object[].class)
+        if (arrayClass == Object[].class) {
             return (isSetter ? ArrayAccessor.OBJECT_ARRAY_SETTER : ArrayAccessor.OBJECT_ARRAY_GETTER);
-        if (!arrayClass.isArray())
+        }
+        if (!arrayClass.isArray()) {
             throw newIllegalArgumentException("not an array: "+arrayClass);
+        }
         MethodHandle[] cache = ArrayAccessor.TYPED_ACCESSORS.get(arrayClass);
         int cacheIndex = (isSetter ? ArrayAccessor.SETTER_INDEX : ArrayAccessor.GETTER_INDEX);
         MethodHandle mh = cache[cacheIndex];
-        if (mh != null)  return mh;
+        if (mh != null) {
+            return mh;
+        }
         mh = ArrayAccessor.getAccessor(arrayClass, isSetter);
         MethodType correctType = ArrayAccessor.correctType(arrayClass, isSetter);
         if (mh.type() != correctType) {
@@ -141,7 +145,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
 
         static String name(Class<?> arrayClass, boolean isSetter) {
             Class<?> elemClass = arrayClass.getComponentType();
-            if (elemClass == null)  throw newIllegalArgumentException("not an array", arrayClass);
+            if (elemClass == null) {
+                throw newIllegalArgumentException("not an array", arrayClass);
+            }
             return (!isSetter ? "getElement" : "setElement") + Wrapper.basicTypeChar(elemClass);
         }
         static MethodType type(Class<?> arrayClass, boolean isSetter) {
@@ -189,15 +195,18 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
     static MethodHandle makePairwiseConvert(MethodHandle target, MethodType srcType,
                                             boolean strict, boolean monobox) {
         MethodType dstType = target.type();
-        if (srcType == dstType)
+        if (srcType == dstType) {
             return target;
+        }
         return makePairwiseConvertByEditor(target, srcType, strict, monobox);
     }
 
     private static int countNonNull(Object[] array) {
         int count = 0;
         for (Object x : array) {
-            if (x != null)  ++count;
+            if (x != null) {
+                ++count;
+            }
         }
         return count;
     }
@@ -206,8 +215,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
                                                     boolean strict, boolean monobox) {
         Object[] convSpecs = computeValueConversions(srcType, target.type(), strict, monobox);
         int convCount = countNonNull(convSpecs);
-        if (convCount == 0)
+        if (convCount == 0) {
             return target.viewAsType(srcType, strict);
+        }
         MethodType basicSrcType = srcType.basicType();
         MethodType midType = target.type().basicType();
         BoundMethodHandle mh = target.rebind();
@@ -215,7 +225,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
         // FIXME: Reduce number of bindings when there are repeated conversions.
         for (int i = 0; i < convSpecs.length-1; i++) {
             Object convSpec = convSpecs[i];
-            if (convSpec == null)  continue;
+            if (convSpec == null) {
+                continue;
+            }
             MethodHandle fn;
             if (convSpec instanceof Class) {
                 fn = Lazy.MH_castReference.bindTo(convSpec);
@@ -223,10 +235,11 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
                 fn = (MethodHandle) convSpec;
             }
             Class<?> newType = basicSrcType.parameterType(i);
-            if (--convCount == 0)
+            if (--convCount == 0) {
                 midType = srcType;
-            else
+            } else {
                 midType = midType.changeParameterType(i, newType);
+            }
             LambdaForm form2 = mh.editor().filterArgumentForm(1+i, BasicType.basicType(newType));
             mh = mh.copyWithExtendL(midType, form2, fn);
             mh = mh.rebind();
@@ -235,10 +248,11 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
         if (convSpec != null) {
             MethodHandle fn;
             if (convSpec instanceof Class) {
-                if (convSpec == void.class)
+                if (convSpec == void.class) {
                     fn = null;
-                else
+                } else {
                     fn = Lazy.MH_castReference.bindTo(convSpec);
+                }
             } else {
                 fn = (MethodHandle) convSpec;
             }
@@ -328,10 +342,11 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
                 conv = new Name(Lazy.MH_castReference, convClass, names[OUT_CALL]);
             } else {
                 MethodHandle fn = (MethodHandle) convSpec;
-                if (fn.type().parameterCount() == 0)
+                if (fn.type().parameterCount() == 0) {
                     conv = new Name(fn);  // don't pass retval to void conversion
-                else
+                } else {
                     conv = new Name(fn, names[OUT_CALL]);
+                }
             }
             assert(names[RETURN_CONV] == null);
             names[RETURN_CONV] = conv;
@@ -352,8 +367,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
     @SuppressWarnings("unchecked")
     static <T,U> T castReference(Class<? extends T> t, U x) {
         // inlined Class.cast because we can't ForceInline it
-        if (x != null && !t.isInstance(x))
+        if (x != null && !t.isInstance(x)) {
             throw newClassCastException(t, x);
+        }
         return (T) x;
     }
 
@@ -388,8 +404,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
      */
     static Object valueConversion(Class<?> src, Class<?> dst, boolean strict, boolean monobox) {
         assert(!VerifyType.isNullConversion(src, dst, /*keepInterfaces=*/ strict));  // caller responsibility
-        if (dst == void.class)
+        if (dst == void.class) {
             return dst;
+        }
         MethodHandle fn;
         if (src.isPrimitive()) {
             if (src == void.class) {
@@ -406,10 +423,11 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
                 if (!VerifyType.isNullConversion(wsrc.wrapperType(), dst, strict)) {
                     // Corner case, such as int->Long, which will probably fail.
                     MethodType mt = MethodType.methodType(dst, src);
-                    if (strict)
+                    if (strict) {
                         fn = fn.asType(mt);
-                    else
+                    } else {
                         fn = MethodHandleImpl.makePairwiseConvert(fn, mt, /*strict=*/ false);
+                    }
                 }
             }
         } else if (dst.isPrimitive()) {
@@ -439,8 +457,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
     static MethodHandle makeVarargsCollector(MethodHandle target, Class<?> arrayType) {
         MethodType type = target.type();
         int last = type.parameterCount() - 1;
-        if (type.parameterType(last) != arrayType)
+        if (type.parameterType(last) != arrayType) {
             target = target.asType(type.changeParameterType(last, arrayType));
+        }
         target = target.asFixedArity();  // make sure this attribute is turned off
         return new AsVarargsCollector(target, arrayType);
     }
@@ -477,7 +496,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
 
         @Override
         MethodHandle setVarargs(MemberName member) {
-            if (member.isVarargs())  return this;
+            if (member.isVarargs()) {
+                return this;
+            }
             return asFixedArity();
         }
 
@@ -493,8 +514,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
             }
             // check cache
             MethodHandle acc = asCollectorCache;
-            if (acc != null && acc.type().parameterCount() == newArity)
+            if (acc != null && acc.type().parameterCount() == newArity) {
                 return asTypeCache = acc.asType(newType);
+            }
             // build and cache a collector
             int arrayLength = newArity - collectArg;
             MethodHandle collector;
@@ -511,7 +533,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
         @Override
         boolean viewAsTypeChecks(MethodType newType, boolean strict) {
             super.viewAsTypeChecks(newType, true);
-            if (strict) return true;
+            if (strict) {
+                return true;
+            }
             // extra assertion for non-strict checks:
             assert (type().lastParameterType().getComponentType()
                     .isAssignableFrom(
@@ -528,7 +552,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
 
         for (int i = 0; i < spreadArgCount; i++) {
             Class<?> arg = VerifyType.spreadArgElementType(spreadArgType, i);
-            if (arg == null)  arg = Object.class;
+            if (arg == null) {
+                arg = Object.class;
+            }
             targetType = targetType.changeParameterType(spreadArgPos + i, arg);
         }
         target = target.asType(targetType);
@@ -572,13 +598,19 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
 
     static void checkSpreadArgument(Object av, int n) {
         if (av == null) {
-            if (n == 0)  return;
+            if (n == 0) {
+                return;
+            }
         } else if (av instanceof Object[]) {
             int len = ((Object[])av).length;
-            if (len == n)  return;
+            if (len == n) {
+                return;
+            }
         } else {
             int len = java.lang.reflect.Array.getLength(av);
-            if (len == n)  return;
+            if (len == n) {
+                return;
+            }
         }
         // fall through to error:
         throw newIllegalArgumentException("array is not of length "+n);
@@ -875,7 +907,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
     static
     LambdaForm makeGuardWithTestForm(MethodType basicType) {
         LambdaForm lform = basicType.form().cachedLambdaForm(MethodTypeForm.LF_GWT);
-        if (lform != null)  return lform;
+        if (lform != null) {
+            return lform;
+        }
         final int THIS_MH      = 0;  // the BMH_LLL
         final int ARG_BASE     = 1;  // start of incoming arguments
         final int ARG_LIMIT    = ARG_BASE + basicType.parameterCount();
@@ -1052,7 +1086,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
         try {
             return target.asFixedArity().invokeWithArguments(av);
         } catch (Throwable t) {
-            if (!exType.isInstance(t)) throw t;
+            if (!exType.isInstance(t)) {
+                throw t;
+            }
             return catcher.asFixedArity().invokeWithArguments(prepend(t, av));
         }
     }
@@ -1090,13 +1126,16 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
         default:             throw new InternalError(method.getName());
         }
         MethodHandle mh = FAKE_METHOD_HANDLE_INVOKE[idx];
-        if (mh != null)  return mh;
+        if (mh != null) {
+            return mh;
+        }
         MethodType type = MethodType.methodType(Object.class, UnsupportedOperationException.class,
                                                 MethodHandle.class, Object[].class);
         mh = throwException(type);
         mh = mh.bindTo(new UnsupportedOperationException("cannot reflectively invoke MethodHandle"));
-        if (!method.getInvocationType().equals(mh.type()))
+        if (!method.getInvocationType().equals(mh.type())) {
             throw new InternalError(method.toString());
+        }
         mh = mh.withInternalMemberName(method, false);
         mh = mh.asVarargsCollector(Object[].class);
         assert(method.isVarargs());
@@ -1139,11 +1178,13 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
 
         private static MethodHandle makeInjectedInvoker(Class<?> hostClass) {
             Class<?> bcc = UNSAFE.defineAnonymousClass(hostClass, T_BYTES, null);
-            if (hostClass.getClassLoader() != bcc.getClassLoader())
+            if (hostClass.getClassLoader() != bcc.getClassLoader()) {
                 throw new InternalError(hostClass.getName()+" (CL)");
+            }
             try {
-                if (hostClass.getProtectionDomain() != bcc.getProtectionDomain())
+                if (hostClass.getProtectionDomain() != bcc.getProtectionDomain()) {
                     throw new InternalError(hostClass.getName()+" (PD)");
+                }
             } catch (SecurityException ex) {
                 // Self-check was blocked by security manager.  This is OK.
                 // In fact the whole try body could be turned into an assertion.
@@ -1219,9 +1260,10 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
             // This method is called via MH_checkCallerClass and so it's
             // correct to ask for the immediate caller here.
             Class<?> actual = Reflection.getCallerClass();
-            if (actual != expected && actual != expected2)
+            if (actual != expected && actual != expected2) {
                 throw new InternalError("found "+actual.getName()+", expected "+expected.getName()
                                         +(expected == expected2 ? "" : ", or else "+expected2.getName()));
+            }
             return true;
         }
 
@@ -1239,7 +1281,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
                             byte[] bytes = new byte[len];
                             try (java.io.InputStream str = uconn.getInputStream()) {
                                 int nr = str.read(bytes);
-                                if (nr != len)  throw new java.io.IOException(tResource);
+                                if (nr != len) {
+                                    throw new java.io.IOException(tResource);
+                                }
                             }
                             values[0] = bytes;
                         } catch (java.io.IOException ex) {
@@ -1303,8 +1347,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
     }
 
     static MethodHandle makeWrappedMember(MethodHandle target, MemberName member, boolean isInvokeSpecial) {
-        if (member.equals(target.internalMemberName()) && isInvokeSpecial == target.isInvokeSpecial())
+        if (member.equals(target.internalMemberName()) && isInvokeSpecial == target.isInvokeSpecial()) {
             return target;
+        }
         return new WrappedMember(target, target.type(), member, isInvokeSpecial, null);
     }
 
@@ -1368,8 +1413,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
     }
 
     static MethodHandle makeIntrinsic(MethodHandle target, Intrinsic intrinsicName) {
-        if (intrinsicName == target.intrinsicName())
+        if (intrinsicName == target.intrinsicName()) {
             return target;
+        }
         return new IntrinsicMethodHandle(target, intrinsicName);
     }
 
@@ -1425,7 +1471,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
         ArrayList<MethodHandle> mhs = new ArrayList<>();
         for (;;) {
             MethodHandle mh = findCollector("array", mhs.size(), Object[].class);
-            if (mh == null)  break;
+            if (mh == null) {
+                break;
+            }
             mh = makeIntrinsic(mh, Intrinsic.NEW_ARRAY);
             mhs.add(mh);
         }
@@ -1486,7 +1534,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
         mhs.add(null);  // there is no empty fill; at least a0 is required
         for (;;) {
             MethodHandle mh = findCollector("fillArray", mhs.size(), Object[].class, Integer.class, Object[].class);
-            if (mh == null)  break;
+            if (mh == null) {
+                break;
+            }
             mhs.add(mh);
         }
         assert(mhs.size() == FILL_ARRAYS_COUNT);
@@ -1504,10 +1554,16 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
      */
     static MethodHandle varargsArray(int nargs) {
         MethodHandle mh = Lazy.ARRAYS[nargs];
-        if (mh != null)  return mh;
+        if (mh != null) {
+            return mh;
+        }
         mh = findCollector("array", nargs, Object[].class);
-        if (mh != null)  mh = makeIntrinsic(mh, Intrinsic.NEW_ARRAY);
-        if (mh != null)  return Lazy.ARRAYS[nargs] = mh;
+        if (mh != null) {
+            mh = makeIntrinsic(mh, Intrinsic.NEW_ARRAY);
+        }
+        if (mh != null) {
+            return Lazy.ARRAYS[nargs] = mh;
+        }
         mh = buildVarargsArray(Lazy.MH_fillNewArray, Lazy.MH_arrayIdentity, nargs);
         assert(assertCorrectArity(mh, nargs));
         mh = makeIntrinsic(mh, Intrinsic.NEW_ARRAY);
@@ -1535,15 +1591,17 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
         MethodHandle mh = finisher;
         if (rightLen > 0) {
             MethodHandle rightFiller = fillToRight(LEFT_ARGS + rightLen);
-            if (mh == Lazy.MH_arrayIdentity)
+            if (mh == Lazy.MH_arrayIdentity) {
                 mh = rightFiller;
-            else
+            } else {
                 mh = MethodHandles.collectArguments(mh, 0, rightFiller);
+            }
         }
-        if (mh == Lazy.MH_arrayIdentity)
+        if (mh == Lazy.MH_arrayIdentity) {
             mh = leftCollector;
-        else
+        } else {
             mh = MethodHandles.collectArguments(mh, 0, leftCollector);
+        }
         return mh;
     }
 
@@ -1555,14 +1613,17 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
      */
     private static MethodHandle fillToRight(int nargs) {
         MethodHandle filler = FILL_ARRAY_TO_RIGHT[nargs];
-        if (filler != null)  return filler;
+        if (filler != null) {
+            return filler;
+        }
         filler = buildFiller(nargs);
         assert(assertCorrectArity(filler, nargs - LEFT_ARGS + 1));
         return FILL_ARRAY_TO_RIGHT[nargs] = filler;
     }
     private static MethodHandle buildFiller(int nargs) {
-        if (nargs <= LEFT_ARGS)
+        if (nargs <= LEFT_ARGS) {
             return Lazy.MH_arrayIdentity;  // no args to fill; return the array unchanged
+        }
         // we need room for both mh and a in mh.invoke(a, arg*[nargs])
         final int CHUNK = LEFT_ARGS;
         int rightLen = nargs % CHUNK;
@@ -1571,11 +1632,16 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
             midLen = nargs - (rightLen = CHUNK);
             if (FILL_ARRAY_TO_RIGHT[midLen] == null) {
                 // build some precursors from left to right
-                for (int j = LEFT_ARGS % CHUNK; j < midLen; j += CHUNK)
-                    if (j > LEFT_ARGS)  fillToRight(j);
+                for (int j = LEFT_ARGS % CHUNK; j < midLen; j += CHUNK) {
+                    if (j > LEFT_ARGS) {
+                        fillToRight(j);
+                    }
+                }
             }
         }
-        if (midLen < LEFT_ARGS) rightLen = nargs - (midLen = LEFT_ARGS);
+        if (midLen < LEFT_ARGS) {
+            rightLen = nargs - (midLen = LEFT_ARGS);
+        }
         assert(rightLen > 0);
         MethodHandle midFill = fillToRight(midLen);  // recursive fill
         MethodHandle rightFill = Lazy.FILL_ARRAYS[rightLen].bindTo(midLen);  // [midLen..nargs-1]
@@ -1586,10 +1652,11 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
         //   right(mid(a, x10..x19), x20..x23)
         // The final product will look like this:
         //   right(mid(newArrayLeft(24, x0..x9), x10..x19), x20..x23)
-        if (midLen == LEFT_ARGS)
+        if (midLen == LEFT_ARGS) {
             return rightFill;
-        else
+        } else {
             return MethodHandles.collectArguments(rightFill, 0, midFill);
+        }
     }
 
     // Type-polymorphic version of varargs maker.
@@ -1609,22 +1676,29 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
      */
     static MethodHandle varargsArray(Class<?> arrayType, int nargs) {
         Class<?> elemType = arrayType.getComponentType();
-        if (elemType == null)  throw new IllegalArgumentException("not an array: "+arrayType);
+        if (elemType == null) {
+            throw new IllegalArgumentException("not an array: "+arrayType);
+        }
         // FIXME: Need more special casing and caching here.
         if (nargs >= MAX_JVM_ARITY/2 - 1) {
             int slots = nargs;
             final int MAX_ARRAY_SLOTS = MAX_JVM_ARITY - 1;  // 1 for receiver MH
-            if (slots <= MAX_ARRAY_SLOTS && elemType.isPrimitive())
+            if (slots <= MAX_ARRAY_SLOTS && elemType.isPrimitive()) {
                 slots *= Wrapper.forPrimitiveType(elemType).stackSlots();
-            if (slots > MAX_ARRAY_SLOTS)
+            }
+            if (slots > MAX_ARRAY_SLOTS) {
                 throw new IllegalArgumentException("too many arguments: "+arrayType.getSimpleName()+", length "+nargs);
+            }
         }
-        if (elemType == Object.class)
+        if (elemType == Object.class) {
             return varargsArray(nargs);
+        }
         // other cases:  primitive arrays, subtypes of Object[]
         MethodHandle cache[] = TYPED_COLLECTORS.get(elemType);
         MethodHandle mh = nargs < cache.length ? cache[nargs] : null;
-        if (mh != null)  return mh;
+        if (mh != null) {
+            return mh;
+        }
         if (nargs == 0) {
             Object example = java.lang.reflect.Array.newInstance(arrayType.getComponentType(), 0);
             mh = MethodHandles.constant(arrayType, example);
@@ -1642,8 +1716,9 @@ import static java.lang.invoke.MethodHandles.Lookup.IMPL_LOOKUP;
         mh = mh.asType(MethodType.methodType(arrayType, Collections.<Class<?>>nCopies(nargs, elemType)));
         mh = makeIntrinsic(mh, Intrinsic.NEW_ARRAY);
         assert(assertCorrectArity(mh, nargs));
-        if (nargs < cache.length)
+        if (nargs < cache.length) {
             cache[nargs] = mh;
+        }
         return mh;
     }
 

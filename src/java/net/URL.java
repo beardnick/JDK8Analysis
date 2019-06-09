@@ -567,8 +567,9 @@ public final class URL implements java.io.Serializable {
                 // contains a matching scheme then maintain backwards
                 // compatibility and treat it as if the spec didn't contain
                 // the scheme; see 5.2.3 of RFC2396
-                if (context.path != null && context.path.startsWith("/"))
+                if (context.path != null && context.path.startsWith("/")) {
                     newProtocol = null;
+                }
 
                 if (newProtocol == null) {
                     protocol = context.protocol;
@@ -628,11 +629,13 @@ public final class URL implements java.io.Serializable {
      */
     private boolean isValidProtocol(String protocol) {
         int len = protocol.length();
-        if (len < 1)
+        if (len < 1) {
             return false;
+        }
         char c = protocol.charAt(0);
-        if (!Character.isLetter(c))
+        if (!Character.isLetter(c)) {
             return false;
+        }
         for (int i = 1; i < len; i++) {
             c = protocol.charAt(i);
             if (!Character.isLetterOrDigit(c) && c != '.' && c != '+' &&
@@ -678,8 +681,9 @@ public final class URL implements java.io.Serializable {
             if (q != -1) {
                 query = file.substring(q+1);
                 path = file.substring(0, q);
-            } else
+            } else {
                 path = file;
+            }
         }
     }
 
@@ -856,8 +860,9 @@ public final class URL implements java.io.Serializable {
      *          {@code false} otherwise.
      */
     public boolean equals(Object obj) {
-        if (!(obj instanceof URL))
+        if (!(obj instanceof URL)) {
             return false;
+        }
         URL u2 = (URL)obj;
 
         return handler.equals(this, u2);
@@ -872,8 +877,9 @@ public final class URL implements java.io.Serializable {
      * @return  a hash code for this {@code URL}.
      */
     public synchronized int hashCode() {
-        if (hashCode != -1)
+        if (hashCode != -1) {
             return hashCode;
+        }
 
         hashCode = handler.hashCode(this);
         return hashCode;
@@ -1012,11 +1018,12 @@ public final class URL implements java.io.Serializable {
         SecurityManager sm = System.getSecurityManager();
         if (p.type() != Proxy.Type.DIRECT && sm != null) {
             InetSocketAddress epoint = (InetSocketAddress) p.address();
-            if (epoint.isUnresolved())
+            if (epoint.isUnresolved()) {
                 sm.checkConnect(epoint.getHostName(), epoint.getPort());
-            else
+            } else {
                 sm.checkConnect(epoint.getAddress().getHostAddress(),
                                 epoint.getPort());
+            }
         }
         return handler.openConnection(this, p);
     }
@@ -1251,8 +1258,9 @@ public final class URL implements java.io.Serializable {
         // Construct authority part
         if (authority == null &&
             ((host != null && host.length() > 0) || port != -1)) {
-            if (host == null)
+            if (host == null) {
                 host = "";
+            }
             authority = (port == -1) ? host : host + ":" + port;
 
             // Handle hosts with userInfo in them
@@ -1264,8 +1272,9 @@ public final class URL implements java.io.Serializable {
         } else if (authority != null) {
             // Construct user info part
             int ind = authority.indexOf('@');
-            if (ind != -1)
+            if (ind != -1) {
                 userInfo = authority.substring(0, ind);
+            }
         }
 
         // Construct path and query part
@@ -1277,8 +1286,9 @@ public final class URL implements java.io.Serializable {
             if (q != -1) {
                 query = file.substring(q+1);
                 path = file.substring(0, q);
-            } else
+            } else {
                 path = file;
+            }
         }
     }
 }

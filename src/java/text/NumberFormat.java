@@ -290,8 +290,9 @@ public abstract class NumberFormat extends Format  {
     public final String format(double number) {
         // Use fast-path for double result if that works
         String result = fastFormat(number);
-        if (result != null)
+        if (result != null) {
             return result;
+        }
 
         return format(number, new StringBuffer(),
                       DontCareFieldPosition.INSTANCE).toString();

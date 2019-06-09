@@ -66,8 +66,9 @@ final class ProcessImpl extends Process {
         if (append) {
             String path = f.getPath();
             SecurityManager sm = System.getSecurityManager();
-            if (sm != null)
+            if (sm != null) {
                 sm.checkWrite(path);
+            }
             long handle = openForAtomicAppend(path);
             final FileDescriptor fd = new FileDescriptor();
             fdAccess.setHandle(fd, handle);
@@ -104,30 +105,30 @@ final class ProcessImpl extends Process {
             } else {
                 stdHandles = new long[3];
 
-                if (redirects[0] == Redirect.PIPE)
+                if (redirects[0] == Redirect.PIPE) {
                     stdHandles[0] = -1L;
-                else if (redirects[0] == Redirect.INHERIT)
+                } else if (redirects[0] == Redirect.INHERIT) {
                     stdHandles[0] = fdAccess.getHandle(FileDescriptor.in);
-                else {
+                } else {
                     f0 = new FileInputStream(redirects[0].file());
                     stdHandles[0] = fdAccess.getHandle(f0.getFD());
                 }
 
-                if (redirects[1] == Redirect.PIPE)
+                if (redirects[1] == Redirect.PIPE) {
                     stdHandles[1] = -1L;
-                else if (redirects[1] == Redirect.INHERIT)
+                } else if (redirects[1] == Redirect.INHERIT) {
                     stdHandles[1] = fdAccess.getHandle(FileDescriptor.out);
-                else {
+                } else {
                     f1 = newFileOutputStream(redirects[1].file(),
                                              redirects[1].append());
                     stdHandles[1] = fdAccess.getHandle(f1.getFD());
                 }
 
-                if (redirects[2] == Redirect.PIPE)
+                if (redirects[2] == Redirect.PIPE) {
                     stdHandles[2] = -1L;
-                else if (redirects[2] == Redirect.INHERIT)
+                } else if (redirects[2] == Redirect.INHERIT) {
                     stdHandles[2] = fdAccess.getHandle(FileDescriptor.err);
-                else {
+                } else {
                     f2 = newFileOutputStream(redirects[2].file(),
                                              redirects[2].append());
                     stdHandles[2] = fdAccess.getHandle(f2.getFD());
@@ -139,10 +140,19 @@ final class ProcessImpl extends Process {
         } finally {
             // In theory, close() can throw IOException
             // (although it is rather unlikely to happen here)
-            try { if (f0 != null) f0.close(); }
+            try { if (f0 != null) {
+                f0.close();
+            }
+            }
             finally {
-                try { if (f1 != null) f1.close(); }
-                finally { if (f2 != null) f2.close(); }
+                try { if (f1 != null) {
+                    f1.close();
+                }
+                }
+                finally { if (f2 != null) {
+                    f2.close();
+                }
+                }
             }
         }
 
@@ -165,8 +175,9 @@ final class ProcessImpl extends Process {
     private static String[] getTokensFromCommand(String command) {
         ArrayList<String> matchList = new ArrayList<>(8);
         Matcher regexMatcher = LazyPattern.PATTERN.matcher(command);
-        while (regexMatcher.find())
+        while (regexMatcher.find()) {
             matchList.add(regexMatcher.group());
+        }
         return matchList.toArray(new String[matchList.size()]);
     }
 
@@ -324,8 +335,9 @@ final class ProcessImpl extends Process {
         if (security == null) {
             allowAmbiguousCommands = true;
             String value = System.getProperty("jdk.lang.Process.allowAmbiguousCommands");
-            if (value != null)
+            if (value != null) {
                 allowAmbiguousCommands = !"false".equalsIgnoreCase(value);
+            }
         }
         if (allowAmbiguousCommands) {
             // Legacy mode.
@@ -334,8 +346,9 @@ final class ProcessImpl extends Process {
             String executablePath = new File(cmd[0]).getPath();
 
             // No worry about internal, unpaired ["], and redirection/piping.
-            if (needsEscaping(VERIFICATION_LEGACY, executablePath) )
+            if (needsEscaping(VERIFICATION_LEGACY, executablePath) ) {
                 executablePath = quoteString(executablePath);
+            }
 
             cmdstr = createCommandLine(
                 //legacy mode doesn't worry about extended verification
@@ -359,16 +372,18 @@ final class ProcessImpl extends Process {
                 // Restore original command line.
                 StringBuilder join = new StringBuilder();
                 // terminal space in command line is ok
-                for (String s : cmd)
+                for (String s : cmd) {
                     join.append(s).append(' ');
+                }
 
                 // Parse the command line again.
                 cmd = getTokensFromCommand(join.toString());
                 executablePath = getExecutablePath(cmd[0]);
 
                 // Check new executable name once more
-                if (security != null)
+                if (security != null) {
                     security.checkExec(executablePath);
+                }
             }
 
             // Quotation protects from interpretation of the [path] argument as
@@ -389,27 +404,27 @@ final class ProcessImpl extends Process {
         java.security.AccessController.doPrivileged(
         new java.security.PrivilegedAction<Void>() {
         public Void run() {
-            if (stdHandles[0] == -1L)
+            if (stdHandles[0] == -1L) {
                 stdin_stream = ProcessBuilder.NullOutputStream.INSTANCE;
-            else {
+            } else {
                 FileDescriptor stdin_fd = new FileDescriptor();
                 fdAccess.setHandle(stdin_fd, stdHandles[0]);
                 stdin_stream = new BufferedOutputStream(
                     new FileOutputStream(stdin_fd));
             }
 
-            if (stdHandles[1] == -1L)
+            if (stdHandles[1] == -1L) {
                 stdout_stream = ProcessBuilder.NullInputStream.INSTANCE;
-            else {
+            } else {
                 FileDescriptor stdout_fd = new FileDescriptor();
                 fdAccess.setHandle(stdout_fd, stdHandles[1]);
                 stdout_stream = new BufferedInputStream(
                     new FileInputStream(stdout_fd));
             }
 
-            if (stdHandles[2] == -1L)
+            if (stdHandles[2] == -1L) {
                 stderr_stream = ProcessBuilder.NullInputStream.INSTANCE;
-            else {
+            } else {
                 FileDescriptor stderr_fd = new FileDescriptor();
                 fdAccess.setHandle(stderr_fd, stdHandles[2]);
                 stderr_stream = new FileInputStream(stderr_fd);
@@ -439,16 +454,18 @@ final class ProcessImpl extends Process {
 
     public int exitValue() {
         int exitCode = getExitCodeProcess(handle);
-        if (exitCode == STILL_ACTIVE)
+        if (exitCode == STILL_ACTIVE) {
             throw new IllegalThreadStateException("process has not exited");
+        }
         return exitCode;
     }
     private static native int getExitCodeProcess(long handle);
 
     public int waitFor() throws InterruptedException {
         waitForInterruptibly(handle);
-        if (Thread.interrupted())
+        if (Thread.interrupted()) {
             throw new InterruptedException();
+        }
         return exitValue();
     }
 
@@ -458,8 +475,12 @@ final class ProcessImpl extends Process {
     public boolean waitFor(long timeout, TimeUnit unit)
         throws InterruptedException
     {
-        if (getExitCodeProcess(handle) != STILL_ACTIVE) return true;
-        if (timeout <= 0) return false;
+        if (getExitCodeProcess(handle) != STILL_ACTIVE) {
+            return true;
+        }
+        if (timeout <= 0) {
+            return false;
+        }
 
         long remainingNanos  = unit.toNanos(timeout);
         long deadline = System.nanoTime() + remainingNanos ;
@@ -468,8 +489,9 @@ final class ProcessImpl extends Process {
             // Round up to next millisecond
             long msTimeout = TimeUnit.NANOSECONDS.toMillis(remainingNanos + 999_999L);
             waitForTimeoutInterruptibly(handle, msTimeout);
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
+            }
             if (getExitCodeProcess(handle) != STILL_ACTIVE) {
                 return true;
             }

@@ -188,8 +188,9 @@ public class Timer {
      * @throws NullPointerException if {@code task} is null
      */
     public void schedule(TimerTask task, long delay) {
-        if (delay < 0)
+        if (delay < 0) {
             throw new IllegalArgumentException("Negative delay.");
+        }
         sched(task, System.currentTimeMillis()+delay, 0);
     }
 
@@ -241,10 +242,12 @@ public class Timer {
      * @throws NullPointerException if {@code task} is null
      */
     public void schedule(TimerTask task, long delay, long period) {
-        if (delay < 0)
+        if (delay < 0) {
             throw new IllegalArgumentException("Negative delay.");
-        if (period <= 0)
+        }
+        if (period <= 0) {
             throw new IllegalArgumentException("Non-positive period.");
+        }
         sched(task, System.currentTimeMillis()+delay, -period);
     }
 
@@ -282,8 +285,9 @@ public class Timer {
      * @throws NullPointerException if {@code task} or {@code firstTime} is null
      */
     public void schedule(TimerTask task, Date firstTime, long period) {
-        if (period <= 0)
+        if (period <= 0) {
             throw new IllegalArgumentException("Non-positive period.");
+        }
         sched(task, firstTime.getTime(), -period);
     }
 
@@ -321,10 +325,12 @@ public class Timer {
      * @throws NullPointerException if {@code task} is null
      */
     public void scheduleAtFixedRate(TimerTask task, long delay, long period) {
-        if (delay < 0)
+        if (delay < 0) {
             throw new IllegalArgumentException("Negative delay.");
-        if (period <= 0)
+        }
+        if (period <= 0) {
             throw new IllegalArgumentException("Non-positive period.");
+        }
         sched(task, System.currentTimeMillis()+delay, period);
     }
 
@@ -365,8 +371,9 @@ public class Timer {
      */
     public void scheduleAtFixedRate(TimerTask task, Date firstTime,
                                     long period) {
-        if (period <= 0)
+        if (period <= 0) {
             throw new IllegalArgumentException("Non-positive period.");
+        }
         sched(task, firstTime.getTime(), period);
     }
 
@@ -384,30 +391,35 @@ public class Timer {
      * @throws NullPointerException if {@code task} is null
      */
     private void sched(TimerTask task, long time, long period) {
-        if (time < 0)
+        if (time < 0) {
             throw new IllegalArgumentException("Illegal execution time.");
+        }
 
         // Constrain value of period sufficiently to prevent numeric
         // overflow while still being effectively infinitely large.
-        if (Math.abs(period) > (Long.MAX_VALUE >> 1))
+        if (Math.abs(period) > (Long.MAX_VALUE >> 1)) {
             period >>= 1;
+        }
 
         synchronized(queue) {
-            if (!thread.newTasksMayBeScheduled)
+            if (!thread.newTasksMayBeScheduled) {
                 throw new IllegalStateException("Timer already cancelled.");
+            }
 
             synchronized(task.lock) {
-                if (task.state != TimerTask.VIRGIN)
+                if (task.state != TimerTask.VIRGIN) {
                     throw new IllegalStateException(
                         "Task already scheduled or cancelled");
+                }
                 task.nextExecutionTime = time;
                 task.period = period;
                 task.state = TimerTask.SCHEDULED;
             }
 
             queue.add(task);
-            if (queue.getMin() == task)
+            if (queue.getMin() == task) {
                 queue.notify();
+            }
         }
     }
 
@@ -464,8 +476,9 @@ public class Timer {
                  }
              }
 
-             if (result != 0)
+             if (result != 0) {
                  queue.heapify();
+             }
          }
 
          return result;
@@ -522,10 +535,12 @@ class TimerThread extends Thread {
                 boolean taskFired;
                 synchronized(queue) {
                     // Wait for queue to become non-empty
-                    while (queue.isEmpty() && newTasksMayBeScheduled)
+                    while (queue.isEmpty() && newTasksMayBeScheduled) {
                         queue.wait();
-                    if (queue.isEmpty())
+                    }
+                    if (queue.isEmpty()) {
                         break; // Queue is empty and will forever remain; die
+                    }
 
                     // Queue nonempty; look at first evt and do the right thing
                     long currentTime, executionTime;
@@ -549,10 +564,14 @@ class TimerThread extends Thread {
                         }
                     }
                     if (!taskFired) // Task hasn't yet fired; wait
+                    {
                         queue.wait(executionTime - currentTime);
+                    }
                 }
                 if (taskFired)  // Task fired; run it, holding no locks
+                {
                     task.run();
+                }
             } catch(InterruptedException e) {
             }
         }
@@ -595,8 +614,9 @@ class TaskQueue {
      */
     void add(TimerTask task) {
         // Grow backing store if necessary
-        if (size + 1 == queue.length)
+        if (size + 1 == queue.length) {
             queue = Arrays.copyOf(queue, 2*queue.length);
+        }
 
         queue[++size] = task;
         fixUp(size);
@@ -661,8 +681,9 @@ class TaskQueue {
      */
     void clear() {
         // Null out task references to prevent memory leak
-        for (int i=1; i<=size; i++)
+        for (int i=1; i<=size; i++) {
             queue[i] = null;
+        }
 
         size = 0;
     }
@@ -679,8 +700,9 @@ class TaskQueue {
     private void fixUp(int k) {
         while (k > 1) {
             int j = k >> 1;
-            if (queue[j].nextExecutionTime <= queue[k].nextExecutionTime)
+            if (queue[j].nextExecutionTime <= queue[k].nextExecutionTime) {
                 break;
+            }
             TimerTask tmp = queue[j];  queue[j] = queue[k]; queue[k] = tmp;
             k = j;
         }
@@ -700,10 +722,12 @@ class TaskQueue {
         int j;
         while ((j = k << 1) <= size && j > 0) {
             if (j < size &&
-                queue[j].nextExecutionTime > queue[j+1].nextExecutionTime)
+                queue[j].nextExecutionTime > queue[j+1].nextExecutionTime) {
                 j++; // j indexes smallest kid
-            if (queue[k].nextExecutionTime <= queue[j].nextExecutionTime)
+            }
+            if (queue[k].nextExecutionTime <= queue[j].nextExecutionTime) {
                 break;
+            }
             TimerTask tmp = queue[j];  queue[j] = queue[k]; queue[k] = tmp;
             k = j;
         }
@@ -714,7 +738,8 @@ class TaskQueue {
      * assuming nothing about the order of the elements prior to the call.
      */
     void heapify() {
-        for (int i = size/2; i >= 1; i--)
+        for (int i = size/2; i >= 1; i--) {
             fixDown(i);
+        }
     }
 }

@@ -351,14 +351,20 @@ public class BufferedImageFilter extends ImageFilter implements Cloneable {
 
         case SINGLEFRAMEDONE:
         case STATICIMAGEDONE:
-            if (width <= 0 || height <= 0) break;
+            if (width <= 0 || height <= 0) {
+                break;
+            }
             if (model instanceof DirectColorModel) {
-                if (intPixels == null) break;
+                if (intPixels == null) {
+                    break;
+                }
                 wr = createDCMraster();
             }
             else if (model instanceof IndexColorModel) {
                 int[] bandOffsets = {0};
-                if (bytePixels == null) break;
+                if (bytePixels == null) {
+                    break;
+                }
                 DataBufferByte db = new DataBufferByte(bytePixels,
                                                        width*height);
                 wr = Raster.createInterleavedRaster(db, width, height, width,
@@ -366,7 +372,9 @@ public class BufferedImageFilter extends ImageFilter implements Cloneable {
             }
             else {
                 convertToRGB();
-                if (intPixels == null) break;
+                if (intPixels == null) {
+                    break;
+                }
                 wr = createDCMraster();
             }
             BufferedImage bi = new BufferedImage(model, wr,

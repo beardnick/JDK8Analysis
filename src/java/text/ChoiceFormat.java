@@ -291,16 +291,23 @@ public class ChoiceFormat extends NumberFormat {
                 || text.indexOf('#') >= 0
                 || text.indexOf('\u2264') >= 0
                 || text.indexOf('|') >= 0;
-            if (needQuote) result.append('\'');
-            if (text.indexOf('\'') < 0) result.append(text);
-            else {
+            if (needQuote) {
+                result.append('\'');
+            }
+            if (text.indexOf('\'') < 0) {
+                result.append(text);
+            } else {
                 for (int j=0; j<text.length(); ++j) {
                     char c = text.charAt(j);
                     result.append(c);
-                    if (c == '\'') result.append(c);
+                    if (c == '\'') {
+                        result.append(c);
+                    }
                 }
             }
-            if (needQuote) result.append('\'');
+            if (needQuote) {
+                result.append('\'');
+            }
         }
         return result.toString();
     }
@@ -398,7 +405,9 @@ public class ChoiceFormat extends NumberFormat {
             }
         }
         --i;
-        if (i < 0) i = 0;
+        if (i < 0) {
+            i = 0;
+        }
         // return either a formatted number, or a string
         return toAppendTo.append(choiceFormats[i]);
     }
@@ -429,7 +438,9 @@ public class ChoiceFormat extends NumberFormat {
                 if (status.index > furthest) {
                     furthest = status.index;
                     bestNumber = tempNumber;
-                    if (furthest == text.length()) break;
+                    if (furthest == text.length()) {
+                        break;
+                    }
                 }
             }
         }
@@ -493,11 +504,16 @@ public class ChoiceFormat extends NumberFormat {
      * Equality comparision between two
      */
     public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (this == obj)                      // quick check
-            return true;
-        if (getClass() != obj.getClass())
+        if (obj == null) {
             return false;
+        }
+        if (this == obj)                      // quick check
+        {
+            return true;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         ChoiceFormat other = (ChoiceFormat) obj;
         return (Arrays.equals(choiceLimits, other.choiceLimits)
              && Arrays.equals(choiceFormats, other.choiceFormats));

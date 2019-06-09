@@ -316,8 +316,9 @@ public final class Collectors {
     private static <K, V, M extends Map<K,V>>
     BinaryOperator<M> mapMerger(BinaryOperator<V> mergeFunction) {
         return (m1, m2) -> {
-            for (Map.Entry<K,V> e : m2.entrySet())
+            for (Map.Entry<K,V> e : m2.entrySet()) {
                 m1.merge(e.getKey(), e.getValue(), mergeFunction);
+            }
             return m1;
         };
     }
@@ -379,9 +380,9 @@ public final class Collectors {
                                                                 Function<R,RR> finisher) {
         Set<Collector.Characteristics> characteristics = downstream.characteristics();
         if (characteristics.contains(Collector.Characteristics.IDENTITY_FINISH)) {
-            if (characteristics.size() == 1)
+            if (characteristics.size() == 1) {
                 characteristics = Collectors.CH_NOID;
-            else {
+            } else {
                 characteristics = EnumSet.copyOf(characteristics);
                 characteristics.remove(Collector.Characteristics.IDENTITY_FINISH);
                 characteristics = Collections.unmodifiableSet(characteristics);
@@ -553,10 +554,11 @@ public final class Collectors {
         // Better error bounds to add both terms as the final sum
         double tmp = summands[0] + summands[1];
         double simpleSum = summands[summands.length - 1];
-        if (Double.isNaN(tmp) && Double.isInfinite(simpleSum))
+        if (Double.isNaN(tmp) && Double.isInfinite(simpleSum)) {
             return simpleSum;
-        else
+        } else {
             return tmp;
+        }
     }
 
     /**
@@ -714,7 +716,10 @@ public final class Collectors {
 
         return new CollectorImpl<T, OptionalBox, Optional<T>>(
                 OptionalBox::new, OptionalBox::accept,
-                (a, b) -> { if (b.present) a.accept(b.value); return a; },
+                (a, b) -> { if (b.present) {
+                    a.accept(b.value);
+                }
+                    return a; },
                 a -> Optional.ofNullable(a.value), CH_NOID);
     }
 

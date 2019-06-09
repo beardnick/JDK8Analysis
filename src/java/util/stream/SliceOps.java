@@ -113,8 +113,9 @@ final class SliceOps {
      */
     public static <T> Stream<T> makeRef(AbstractPipeline<?, T, ?> upstream,
                                         long skip, long limit) {
-        if (skip < 0)
+        if (skip < 0) {
             throw new IllegalArgumentException("Skip must be non-negative: " + skip);
+        }
 
         return new ReferencePipeline.StatefulOp<T, T>(upstream, StreamShape.REFERENCE,
                                                       flags(limit)) {
@@ -229,8 +230,9 @@ final class SliceOps {
      */
     public static IntStream makeInt(AbstractPipeline<?, Integer, ?> upstream,
                                     long skip, long limit) {
-        if (skip < 0)
+        if (skip < 0) {
             throw new IllegalArgumentException("Skip must be non-negative: " + skip);
+        }
 
         return new IntPipeline.StatefulOp<Integer>(upstream, StreamShape.INT_VALUE,
                                                    flags(limit)) {
@@ -338,8 +340,9 @@ final class SliceOps {
      */
     public static LongStream makeLong(AbstractPipeline<?, Long, ?> upstream,
                                       long skip, long limit) {
-        if (skip < 0)
+        if (skip < 0) {
             throw new IllegalArgumentException("Skip must be non-negative: " + skip);
+        }
 
         return new LongPipeline.StatefulOp<Long>(upstream, StreamShape.LONG_VALUE,
                                                  flags(limit)) {
@@ -447,8 +450,9 @@ final class SliceOps {
      */
     public static DoubleStream makeDouble(AbstractPipeline<?, Double, ?> upstream,
                                           long skip, long limit) {
-        if (skip < 0)
+        if (skip < 0) {
             throw new IllegalArgumentException("Skip must be non-negative: " + skip);
+        }
 
         return new DoublePipeline.StatefulOp<Double>(upstream, StreamShape.DOUBLE_VALUE,
                                                      flags(limit)) {
@@ -627,11 +631,11 @@ final class SliceOps {
                     thisNodeSize = 0;
                     result = getEmptyResult();
                 }
-                else if (thisNodeSize == 0)
+                else if (thisNodeSize == 0) {
                     result = getEmptyResult();
-                else if (leftChild.thisNodeSize == 0)
+                } else if (leftChild.thisNodeSize == 0) {
                     result = rightChild.getLocalResult();
-                else {
+                } else {
                     result = Nodes.conc(op.getOutputShape(),
                                         leftChild.getLocalResult(), rightChild.getLocalResult());
                 }
@@ -640,8 +644,9 @@ final class SliceOps {
             }
             if (targetSize >= 0
                 && !isRoot()
-                && isLeftCompleted(targetOffset + targetSize))
-                    cancelLaterNodes();
+                && isLeftCompleted(targetOffset + targetSize)) {
+                cancelLaterNodes();
+            }
 
             super.onCompletion(caller);
         }
@@ -649,8 +654,9 @@ final class SliceOps {
         @Override
         protected void cancel() {
             super.cancel();
-            if (completed)
+            if (completed) {
                 setLocalResult(getEmptyResult());
+            }
         }
 
         private Node<P_OUT> doTruncate(Node<P_OUT> input) {
@@ -668,8 +674,9 @@ final class SliceOps {
          */
         private boolean isLeftCompleted(long target) {
             long size = completed ? thisNodeSize : completedSize(target);
-            if (size >= target)
+            if (size >= target) {
                 return true;
+            }
             for (SliceTask<P_IN, P_OUT> parent = getParent(), node = this;
                  parent != null;
                  node = parent, parent = parent.getParent()) {
@@ -677,8 +684,9 @@ final class SliceOps {
                     SliceTask<P_IN, P_OUT> left = parent.leftChild;
                     if (left != null) {
                         size += left.completedSize(target);
-                        if (size >= target)
+                        if (size >= target) {
                             return true;
+                        }
                     }
                 }
             }
@@ -696,9 +704,9 @@ final class SliceOps {
          * @return return the number of completed elements
          */
         private long completedSize(long target) {
-            if (completed)
+            if (completed) {
                 return thisNodeSize;
-            else {
+            } else {
                 SliceTask<P_IN, P_OUT> left = leftChild;
                 SliceTask<P_IN, P_OUT> right = rightChild;
                 if (left == null || right == null) {

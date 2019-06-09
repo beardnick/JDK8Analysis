@@ -151,8 +151,9 @@ class StreamSpliterators {
          */
         final boolean doAdvance() {
             if (buffer == null) {
-                if (finished)
+                if (finished) {
                     return false;
+                }
 
                 init();
                 initPartialTraversalState();
@@ -192,8 +193,9 @@ class StreamSpliterators {
                 Spliterator<P_IN> split = spliterator.trySplit();
                 return (split == null) ? null : wrap(split);
             }
-            else
+            else {
                 return null;
+            }
         }
 
         /**
@@ -204,9 +206,9 @@ class StreamSpliterators {
         private boolean fillBuffer() {
             while (buffer.count() == 0) {
                 if (bufferSink.cancellationRequested() || !pusher.getAsBoolean()) {
-                    if (finished)
+                    if (finished) {
                         return false;
-                    else {
+                    } else {
                         bufferSink.end(); // might trigger more elements
                         finished = true;
                     }
@@ -255,8 +257,9 @@ class StreamSpliterators {
 
         @Override
         public Comparator<? super P_OUT> getComparator() {
-            if (!hasCharacteristics(SORTED))
+            if (!hasCharacteristics(SORTED)) {
                 throw new IllegalStateException();
+            }
             return null;
         }
 
@@ -298,8 +301,9 @@ class StreamSpliterators {
         public boolean tryAdvance(Consumer<? super P_OUT> consumer) {
             Objects.requireNonNull(consumer);
             boolean hasNext = doAdvance();
-            if (hasNext)
+            if (hasNext) {
                 consumer.accept(buffer.get(nextToConsume));
+            }
             return hasNext;
         }
 
@@ -356,8 +360,9 @@ class StreamSpliterators {
         public boolean tryAdvance(IntConsumer consumer) {
             Objects.requireNonNull(consumer);
             boolean hasNext = doAdvance();
-            if (hasNext)
+            if (hasNext) {
                 consumer.accept(buffer.get(nextToConsume));
+            }
             return hasNext;
         }
 
@@ -414,8 +419,9 @@ class StreamSpliterators {
         public boolean tryAdvance(LongConsumer consumer) {
             Objects.requireNonNull(consumer);
             boolean hasNext = doAdvance();
-            if (hasNext)
+            if (hasNext) {
                 consumer.accept(buffer.get(nextToConsume));
+            }
             return hasNext;
         }
 
@@ -472,8 +478,9 @@ class StreamSpliterators {
         public boolean tryAdvance(DoubleConsumer consumer) {
             Objects.requireNonNull(consumer);
             boolean hasNext = doAdvance();
-            if (hasNext)
+            if (hasNext) {
                 consumer.accept(buffer.get(nextToConsume));
+            }
             return hasNext;
         }
 
@@ -632,11 +639,13 @@ class StreamSpliterators {
         protected abstract T_SPLITR makeSpliterator(T_SPLITR s, long sliceOrigin, long sliceFence, long origin, long fence);
 
         public T_SPLITR trySplit() {
-            if (sliceOrigin >= fence)
+            if (sliceOrigin >= fence) {
                 return null;
+            }
 
-            if (index >= fence)
+            if (index >= fence) {
                 return null;
+            }
 
             // Keep splitting until the left and right splits intersect with the slice
             // thereby ensuring the size estimate decreases.
@@ -646,8 +655,9 @@ class StreamSpliterators {
             while (true) {
                 @SuppressWarnings("unchecked")
                 T_SPLITR leftSplit = (T_SPLITR) s.trySplit();
-                if (leftSplit == null)
+                if (leftSplit == null) {
                     return null;
+                }
 
                 long leftSplitFenceUnbounded = index + leftSplit.estimateSize();
                 long leftSplitFence = Math.min(leftSplitFenceUnbounded, sliceFence);
@@ -710,16 +720,18 @@ class StreamSpliterators {
             public boolean tryAdvance(Consumer<? super T> action) {
                 Objects.requireNonNull(action);
 
-                if (sliceOrigin >= fence)
+                if (sliceOrigin >= fence) {
                     return false;
+                }
 
                 while (sliceOrigin > index) {
                     s.tryAdvance(e -> {});
                     index++;
                 }
 
-                if (index >= fence)
+                if (index >= fence) {
                     return false;
+                }
 
                 index++;
                 return s.tryAdvance(action);
@@ -729,11 +741,13 @@ class StreamSpliterators {
             public void forEachRemaining(Consumer<? super T> action) {
                 Objects.requireNonNull(action);
 
-                if (sliceOrigin >= fence)
+                if (sliceOrigin >= fence) {
                     return;
+                }
 
-                if (index >= fence)
+                if (index >= fence) {
                     return;
+                }
 
                 if (index >= sliceOrigin && (index + s.estimateSize()) <= sliceFence) {
                     // The spliterator is contained within the slice
@@ -772,16 +786,18 @@ class StreamSpliterators {
             public boolean tryAdvance(T_CONS action) {
                 Objects.requireNonNull(action);
 
-                if (sliceOrigin >= fence)
+                if (sliceOrigin >= fence) {
                     return false;
+                }
 
                 while (sliceOrigin > index) {
                     s.tryAdvance(emptyConsumer());
                     index++;
                 }
 
-                if (index >= fence)
+                if (index >= fence) {
                     return false;
+                }
 
                 index++;
                 return s.tryAdvance(action);
@@ -791,11 +807,13 @@ class StreamSpliterators {
             public void forEachRemaining(T_CONS action) {
                 Objects.requireNonNull(action);
 
-                if (sliceOrigin >= fence)
+                if (sliceOrigin >= fence) {
                     return;
+                }
 
-                if (index >= fence)
+                if (index >= fence) {
                     return;
+                }
 
                 if (index >= sliceOrigin && (index + s.estimateSize()) <= sliceFence) {
                     // The spliterator is contained within the slice
@@ -944,34 +962,38 @@ class StreamSpliterators {
             assert numElements > 0;
             do {
                 remainingPermits = permits.get();
-                if (remainingPermits == 0)
+                if (remainingPermits == 0) {
                     return unlimited ? numElements : 0;
+                }
                 grabbing = Math.min(remainingPermits, numElements);
             } while (grabbing > 0 &&
                      !permits.compareAndSet(remainingPermits, remainingPermits - grabbing));
 
-            if (unlimited)
+            if (unlimited) {
                 return Math.max(numElements - grabbing, 0);
-            else if (remainingPermits > skipThreshold)
+            } else if (remainingPermits > skipThreshold) {
                 return Math.max(grabbing - (remainingPermits - skipThreshold), 0);
-            else
+            } else {
                 return grabbing;
+            }
         }
 
         enum PermitStatus { NO_MORE, MAYBE_MORE, UNLIMITED }
 
         /** Call to check if permits might be available before acquiring data */
         protected final PermitStatus permitStatus() {
-            if (permits.get() > 0)
+            if (permits.get() > 0) {
                 return PermitStatus.MAYBE_MORE;
-            else
+            } else {
                 return unlimited ?  PermitStatus.UNLIMITED : PermitStatus.NO_MORE;
+            }
         }
 
         public final T_SPLITR trySplit() {
             // Stop splitting when there are no more limit permits
-            if (permits.get() == 0)
+            if (permits.get() == 0) {
                 return null;
+            }
             @SuppressWarnings("unchecked")
             T_SPLITR split = (T_SPLITR) s.trySplit();
             return split == null ? null : makeSpliterator(split);
@@ -1010,9 +1032,9 @@ class StreamSpliterators {
                 Objects.requireNonNull(action);
 
                 while (permitStatus() != PermitStatus.NO_MORE) {
-                    if (!s.tryAdvance(this))
+                    if (!s.tryAdvance(this)) {
                         return false;
-                    else if (acquirePermits(1) == 1) {
+                    } else if (acquirePermits(1) == 1) {
                         action.accept(tmpSlot);
                         tmpSlot = null;
                         return true;
@@ -1030,14 +1052,16 @@ class StreamSpliterators {
                 while ((permitStatus = permitStatus()) != PermitStatus.NO_MORE) {
                     if (permitStatus == PermitStatus.MAYBE_MORE) {
                         // Optimistically traverse elements up to a threshold of CHUNK_SIZE
-                        if (sb == null)
+                        if (sb == null) {
                             sb = new ArrayBuffer.OfRef<>(CHUNK_SIZE);
-                        else
+                        } else {
                             sb.reset();
+                        }
                         long permitsRequested = 0;
                         do { } while (s.tryAdvance(sb) && ++permitsRequested < CHUNK_SIZE);
-                        if (permitsRequested == 0)
+                        if (permitsRequested == 0) {
                             return;
+                        }
                         sb.forEach(action, acquirePermits(permitsRequested));
                     }
                     else {
@@ -1082,9 +1106,9 @@ class StreamSpliterators {
                 T_CONS consumer = (T_CONS) this;
 
                 while (permitStatus() != PermitStatus.NO_MORE) {
-                    if (!s.tryAdvance(consumer))
+                    if (!s.tryAdvance(consumer)) {
                         return false;
-                    else if (acquirePermits(1) == 1) {
+                    } else if (acquirePermits(1) == 1) {
                         acceptConsumed(action);
                         return true;
                     }
@@ -1103,16 +1127,18 @@ class StreamSpliterators {
                 while ((permitStatus = permitStatus()) != PermitStatus.NO_MORE) {
                     if (permitStatus == PermitStatus.MAYBE_MORE) {
                         // Optimistically traverse elements up to a threshold of CHUNK_SIZE
-                        if (sb == null)
+                        if (sb == null) {
                             sb = bufferCreate(CHUNK_SIZE);
-                        else
+                        } else {
                             sb.reset();
+                        }
                         @SuppressWarnings("unchecked")
                         T_CONS sbc = (T_CONS) sb;
                         long permitsRequested = 0;
                         do { } while (s.tryAdvance(sbc) && ++permitsRequested < CHUNK_SIZE);
-                        if (permitsRequested == 0)
+                        if (permitsRequested == 0) {
                             return;
+                        }
                         sb.forEach(action, acquirePermits(permitsRequested));
                     }
                     else {
@@ -1359,8 +1385,9 @@ class StreamSpliterators {
 
             @Override
             public Spliterator<T> trySplit() {
-                if (estimate == 0)
+                if (estimate == 0) {
                     return null;
+                }
                 return new InfiniteSupplyingSpliterator.OfRef<>(estimate >>>= 1, s);
             }
         }
@@ -1384,8 +1411,9 @@ class StreamSpliterators {
 
             @Override
             public Spliterator.OfInt trySplit() {
-                if (estimate == 0)
+                if (estimate == 0) {
                     return null;
+                }
                 return new InfiniteSupplyingSpliterator.OfInt(estimate = estimate >>> 1, s);
             }
         }
@@ -1409,8 +1437,9 @@ class StreamSpliterators {
 
             @Override
             public Spliterator.OfLong trySplit() {
-                if (estimate == 0)
+                if (estimate == 0) {
                     return null;
+                }
                 return new InfiniteSupplyingSpliterator.OfLong(estimate = estimate >>> 1, s);
             }
         }
@@ -1434,8 +1463,9 @@ class StreamSpliterators {
 
             @Override
             public Spliterator.OfDouble trySplit() {
-                if (estimate == 0)
+                if (estimate == 0) {
                     return null;
+                }
                 return new InfiniteSupplyingSpliterator.OfDouble(estimate = estimate >>> 1, s);
             }
         }

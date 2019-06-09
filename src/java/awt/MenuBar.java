@@ -142,8 +142,9 @@ public class MenuBar extends MenuComponent implements MenuContainer, Accessible 
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = Toolkit.getDefaultToolkit().createMenuBar(this);
+            }
 
             int nmenus = getMenuCount();
             for (int i = 0 ; i < nmenus ; i++) {

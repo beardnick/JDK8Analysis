@@ -99,8 +99,9 @@ public class BufferedWriter extends Writer {
      */
     public BufferedWriter(Writer out, int sz) {
         super(out);
-        if (sz <= 0)
+        if (sz <= 0) {
             throw new IllegalArgumentException("Buffer size <= 0");
+        }
         this.out = out;
         cb = new char[sz];
         nChars = sz;
@@ -112,8 +113,9 @@ public class BufferedWriter extends Writer {
 
     /** Checks to make sure that the stream has not been closed */
     private void ensureOpen() throws IOException {
-        if (out == null)
+        if (out == null) {
             throw new IOException("Stream closed");
+        }
     }
 
     /**
@@ -124,8 +126,9 @@ public class BufferedWriter extends Writer {
     void flushBuffer() throws IOException {
         synchronized (lock) {
             ensureOpen();
-            if (nextChar == 0)
+            if (nextChar == 0) {
                 return;
+            }
             out.write(cb, 0, nextChar);
             nextChar = 0;
         }
@@ -139,8 +142,9 @@ public class BufferedWriter extends Writer {
     public void write(int c) throws IOException {
         synchronized (lock) {
             ensureOpen();
-            if (nextChar >= nChars)
+            if (nextChar >= nChars) {
                 flushBuffer();
+            }
             cb[nextChar++] = (char) c;
         }
     }
@@ -150,7 +154,9 @@ public class BufferedWriter extends Writer {
      * out of file descriptors and we're trying to print a stack trace.
      */
     private int min(int a, int b) {
-        if (a < b) return a;
+        if (a < b) {
+            return a;
+        }
         return b;
     }
 
@@ -195,8 +201,9 @@ public class BufferedWriter extends Writer {
                 System.arraycopy(cbuf, b, cb, nextChar, d);
                 b += d;
                 nextChar += d;
-                if (nextChar >= nChars)
+                if (nextChar >= nChars) {
                     flushBuffer();
+                }
             }
         }
     }
@@ -226,8 +233,9 @@ public class BufferedWriter extends Writer {
                 s.getChars(b, b + d, cb, nextChar);
                 b += d;
                 nextChar += d;
-                if (nextChar >= nChars)
+                if (nextChar >= nChars) {
                     flushBuffer();
+                }
             }
         }
     }

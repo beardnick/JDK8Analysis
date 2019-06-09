@@ -97,12 +97,13 @@ public class ActivationException extends Exception {
      * @return  the detail message
      */
     public String getMessage() {
-        if (detail == null)
+        if (detail == null) {
             return super.getMessage();
-        else
+        } else {
             return super.getMessage() +
                 "; nested exception is: \n\t" +
                 detail.toString();
+        }
     }
 
     /**

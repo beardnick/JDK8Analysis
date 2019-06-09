@@ -312,8 +312,9 @@ public class Executors {
      * @throws NullPointerException if executor null
      */
     public static ExecutorService unconfigurableExecutorService(ExecutorService executor) {
-        if (executor == null)
+        if (executor == null) {
             throw new NullPointerException();
+        }
         return new DelegatedExecutorService(executor);
     }
 
@@ -328,8 +329,9 @@ public class Executors {
      * @throws NullPointerException if executor null
      */
     public static ScheduledExecutorService unconfigurableScheduledExecutorService(ScheduledExecutorService executor) {
-        if (executor == null)
+        if (executor == null) {
             throw new NullPointerException();
+        }
         return new DelegatedScheduledExecutorService(executor);
     }
 
@@ -402,8 +404,9 @@ public class Executors {
      * @throws NullPointerException if task null
      */
     public static <T> Callable<T> callable(Runnable task, T result) {
-        if (task == null)
+        if (task == null) {
             throw new NullPointerException();
+        }
         return new RunnableAdapter<T>(task, result);
     }
 
@@ -415,8 +418,9 @@ public class Executors {
      * @throws NullPointerException if task null
      */
     public static Callable<Object> callable(Runnable task) {
-        if (task == null)
+        if (task == null) {
             throw new NullPointerException();
+        }
         return new RunnableAdapter<Object>(task, null);
     }
 
@@ -428,8 +432,9 @@ public class Executors {
      * @throws NullPointerException if action null
      */
     public static Callable<Object> callable(final PrivilegedAction<?> action) {
-        if (action == null)
+        if (action == null) {
             throw new NullPointerException();
+        }
         return new Callable<Object>() {
             public Object call() { return action.run(); }};
     }
@@ -443,8 +448,9 @@ public class Executors {
      * @throws NullPointerException if action null
      */
     public static Callable<Object> callable(final PrivilegedExceptionAction<?> action) {
-        if (action == null)
+        if (action == null) {
             throw new NullPointerException();
+        }
         return new Callable<Object>() {
             public Object call() throws Exception { return action.run(); }};
     }
@@ -464,8 +470,9 @@ public class Executors {
      * @throws NullPointerException if callable null
      */
     public static <T> Callable<T> privilegedCallable(Callable<T> callable) {
-        if (callable == null)
+        if (callable == null) {
             throw new NullPointerException();
+        }
         return new PrivilegedCallable<T>(callable);
     }
 
@@ -490,8 +497,9 @@ public class Executors {
      * class loader
      */
     public static <T> Callable<T> privilegedCallableUsingCurrentClassLoader(Callable<T> callable) {
-        if (callable == null)
+        if (callable == null) {
             throw new NullPointerException();
+        }
         return new PrivilegedCallableUsingCurrentClassLoader<T>(callable);
     }
 
@@ -612,10 +620,12 @@ public class Executors {
             Thread t = new Thread(group, r,
                                   namePrefix + threadNumber.getAndIncrement(),
                                   0);
-            if (t.isDaemon())
+            if (t.isDaemon()) {
                 t.setDaemon(false);
-            if (t.getPriority() != Thread.NORM_PRIORITY)
+            }
+            if (t.getPriority() != Thread.NORM_PRIORITY) {
                 t.setPriority(Thread.NORM_PRIORITY);
+            }
             return t;
         }
     }

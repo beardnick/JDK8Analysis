@@ -98,7 +98,9 @@ public class BeanContextChildSupport implements BeanContextChild, BeanContextSer
      * @throws PropertyVetoException if the change is rejected
      */
     public synchronized void setBeanContext(BeanContext bc) throws PropertyVetoException {
-        if (bc == beanContext) return;
+        if (bc == beanContext) {
+            return;
+        }
 
         BeanContext oldValue = beanContext;
         BeanContext newValue = bc;
@@ -123,7 +125,9 @@ public class BeanContextChildSupport implements BeanContextChild, BeanContextSer
             }
         }
 
-        if (beanContext != null) releaseBeanContextResources();
+        if (beanContext != null) {
+            releaseBeanContextResources();
+        }
 
         beanContext       = newValue;
         rejectedSetBCOnce = false;
@@ -133,7 +137,9 @@ public class BeanContextChildSupport implements BeanContextChild, BeanContextSer
                            newValue
         );
 
-        if (beanContext != null) initializeBeanContextResources();
+        if (beanContext != null) {
+            initializeBeanContextResources();
+        }
     }
 
     /**
@@ -321,11 +327,11 @@ public class BeanContextChildSupport implements BeanContextChild, BeanContextSer
          * serializable.
          */
 
-        if (!equals(beanContextChildPeer) && !(beanContextChildPeer instanceof Serializable))
+        if (!equals(beanContextChildPeer) && !(beanContextChildPeer instanceof Serializable)) {
             throw new IOException("BeanContextChildSupport beanContextChildPeer not Serializable");
-
-        else
+        } else {
             oos.defaultWriteObject();
+        }
 
     }
 

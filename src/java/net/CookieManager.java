@@ -178,7 +178,9 @@ public class CookieManager extends CookieHandler
      *                          has no effects on current cookie policy.
      */
     public void setCookiePolicy(CookiePolicy cookiePolicy) {
-        if (cookiePolicy != null) policyCallback = cookiePolicy;
+        if (cookiePolicy != null) {
+            policyCallback = cookiePolicy;
+        }
     }
 
 
@@ -204,8 +206,9 @@ public class CookieManager extends CookieHandler
         Map<String, List<String>> cookieMap =
                         new java.util.HashMap<String, List<String>>();
         // if there's no default CookieStore, no way for us to get any cookie
-        if (cookieJar == null)
+        if (cookieJar == null) {
             return Collections.unmodifiableMap(cookieMap);
+        }
 
         boolean secureLink = "https".equalsIgnoreCase(uri.getScheme());
         List<HttpCookie> cookies = new java.util.ArrayList<HttpCookie>();
@@ -260,8 +263,9 @@ public class CookieManager extends CookieHandler
 
 
         // if there's no default CookieStore, no need to remember any cookie
-        if (cookieJar == null)
+        if (cookieJar == null) {
             return;
+        }
 
     PlatformLogger logger = PlatformLogger.getLogger("java.net.CookieManager");
         for (String headerKey : responseHeaders.keySet()) {
@@ -310,8 +314,9 @@ public class CookieManager extends CookieHandler
                         // the default Domain can only domain-match itself.)
                         if (cookie.getDomain() == null) {
                             String host = uri.getHost();
-                            if (host != null && !host.contains("."))
+                            if (host != null && !host.contains(".")) {
                                 host += ".local";
+                            }
                             cookie.setDomain(host);
                         }
                         String ports = cookie.getPortlist();
@@ -393,12 +398,15 @@ public class CookieManager extends CookieHandler
      * path-matches algorithm, as defined by RFC 2965
      */
     private boolean pathMatches(String path, String pathToMatchWith) {
-        if (path == pathToMatchWith)
+        if (path == pathToMatchWith) {
             return true;
-        if (path == null || pathToMatchWith == null)
+        }
+        if (path == null || pathToMatchWith == null) {
             return false;
-        if (path.startsWith(pathToMatchWith))
+        }
+        if (path.startsWith(pathToMatchWith)) {
             return true;
+        }
 
         return false;
     }
@@ -429,20 +437,29 @@ public class CookieManager extends CookieHandler
 
     static class CookiePathComparator implements Comparator<HttpCookie> {
         public int compare(HttpCookie c1, HttpCookie c2) {
-            if (c1 == c2) return 0;
-            if (c1 == null) return -1;
-            if (c2 == null) return 1;
+            if (c1 == c2) {
+                return 0;
+            }
+            if (c1 == null) {
+                return -1;
+            }
+            if (c2 == null) {
+                return 1;
+            }
 
             // path rule only applies to the cookies with same name
-            if (!c1.getName().equals(c2.getName())) return 0;
+            if (!c1.getName().equals(c2.getName())) {
+                return 0;
+            }
 
             // those with more specific Path attributes precede those with less specific
-            if (c1.getPath().startsWith(c2.getPath()))
+            if (c1.getPath().startsWith(c2.getPath())) {
                 return -1;
-            else if (c2.getPath().startsWith(c1.getPath()))
+            } else if (c2.getPath().startsWith(c1.getPath())) {
                 return 1;
-            else
+            } else {
                 return 0;
+            }
         }
     }
 }

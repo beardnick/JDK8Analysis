@@ -171,8 +171,9 @@ public class CoderResult {
      *          if the {@link #isError() isError} does not return <tt>true</tt>
      */
     public int length() {
-        if (!isError())
+        if (!isError()) {
             throw new UnsupportedOperationException();
+        }
         return length;
     }
 
@@ -198,8 +199,9 @@ public class CoderResult {
         protected abstract CoderResult create(int len);
 
         private synchronized CoderResult get(int len) {
-            if (len <= 0)
+            if (len <= 0) {
                 throw new IllegalArgumentException("Non-positive length");
+            }
             Integer k = new Integer(len);
             WeakReference<CoderResult> w;
             CoderResult e = null;

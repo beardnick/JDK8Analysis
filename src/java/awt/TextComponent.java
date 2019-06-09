@@ -181,8 +181,11 @@ public class TextComponent extends Component implements Accessible {
 
     public InputMethodRequests getInputMethodRequests() {
         TextComponentPeer peer = (TextComponentPeer)this.peer;
-        if (peer != null) return peer.getInputMethodRequests();
-        else return null;
+        if (peer != null) {
+            return peer.getInputMethodRequests();
+        } else {
+            return null;
+        }
     }
 
 
@@ -727,7 +730,9 @@ public class TextComponent extends Component implements Accessible {
      */
     private boolean canAccessClipboard() {
         SecurityManager sm = System.getSecurityManager();
-        if (sm == null) return true;
+        if (sm == null) {
+            return true;
+        }
         try {
             sm.checkPermission(SecurityConstants.AWT.ACCESS_CLIPBOARD_PERMISSION);
             return true;

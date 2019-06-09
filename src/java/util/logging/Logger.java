@@ -1376,7 +1376,9 @@ public class Logger {
            logp(Level.FINER, sourceClass, sourceMethod, msg);
            return;
         }
-        if (!isLoggable(Level.FINER)) return;
+        if (!isLoggable(Level.FINER)) {
+            return;
+        }
         for (int i = 0; i < params.length; i++) {
             msg = msg + " {" + i + "}";
         }

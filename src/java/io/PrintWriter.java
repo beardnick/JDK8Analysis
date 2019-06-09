@@ -305,8 +305,9 @@ public class PrintWriter extends Writer {
 
     /** Checks to make sure that the stream has not been closed */
     private void ensureOpen() throws IOException {
-        if (out == null)
+        if (out == null) {
             throw new IOException("Stream closed");
+        }
     }
 
     /**
@@ -334,8 +335,9 @@ public class PrintWriter extends Writer {
     public void close() {
         try {
             synchronized (lock) {
-                if (out == null)
+                if (out == null) {
                     return;
+                }
                 out.close();
                 out = null;
             }
@@ -478,8 +480,9 @@ public class PrintWriter extends Writer {
             synchronized (lock) {
                 ensureOpen();
                 out.write(lineSeparator);
-                if (autoFlush)
+                if (autoFlush) {
                     out.flush();
+                }
             }
         }
         catch (InterruptedIOException x) {
@@ -900,11 +903,13 @@ public class PrintWriter extends Writer {
             synchronized (lock) {
                 ensureOpen();
                 if ((formatter == null)
-                    || (formatter.locale() != Locale.getDefault()))
+                    || (formatter.locale() != Locale.getDefault())) {
                     formatter = new Formatter(this);
+                }
                 formatter.format(Locale.getDefault(), format, args);
-                if (autoFlush)
+                if (autoFlush) {
                     out.flush();
+                }
             }
         } catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
@@ -959,11 +964,13 @@ public class PrintWriter extends Writer {
         try {
             synchronized (lock) {
                 ensureOpen();
-                if ((formatter == null) || (formatter.locale() != l))
+                if ((formatter == null) || (formatter.locale() != l)) {
                     formatter = new Formatter(this, l);
+                }
                 formatter.format(l, format, args);
-                if (autoFlush)
+                if (autoFlush) {
                     out.flush();
+                }
             }
         } catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
@@ -998,10 +1005,11 @@ public class PrintWriter extends Writer {
      * @since  1.5
      */
     public PrintWriter append(CharSequence csq) {
-        if (csq == null)
+        if (csq == null) {
             write("null");
-        else
+        } else {
             write(csq.toString());
+        }
         return this;
     }
 

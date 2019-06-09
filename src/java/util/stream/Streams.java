@@ -731,15 +731,17 @@ final class Streams {
                     hasNext = bSpliterator.tryAdvance(consumer);
                 }
             }
-            else
+            else {
                 hasNext = bSpliterator.tryAdvance(consumer);
+            }
             return hasNext;
         }
 
         @Override
         public void forEachRemaining(Consumer<? super T> consumer) {
-            if (beforeSplit)
+            if (beforeSplit) {
                 aSpliterator.forEachRemaining(consumer);
+            }
             bSpliterator.forEachRemaining(consumer);
         }
 
@@ -771,8 +773,9 @@ final class Streams {
 
         @Override
         public Comparator<? super T> getComparator() {
-            if (beforeSplit)
+            if (beforeSplit) {
                 throw new IllegalStateException();
+            }
             return bSpliterator.getComparator();
         }
 
@@ -799,15 +802,17 @@ final class Streams {
                         hasNext = bSpliterator.tryAdvance(action);
                     }
                 }
-                else
+                else {
                     hasNext = bSpliterator.tryAdvance(action);
+                }
                 return hasNext;
             }
 
             @Override
             public void forEachRemaining(T_CONS action) {
-                if (beforeSplit)
+                if (beforeSplit) {
                     aSpliterator.forEachRemaining(action);
+                }
                 bSpliterator.forEachRemaining(action);
             }
         }

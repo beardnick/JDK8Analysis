@@ -162,7 +162,9 @@ public abstract class Graphics {
      */
     public Graphics create(int x, int y, int width, int height) {
         Graphics g = create();
-        if (g == null) return null;
+        if (g == null) {
+            return null;
+        }
         g.translate(x, y);
         g.clipRect(0, 0, width, height);
         return g;

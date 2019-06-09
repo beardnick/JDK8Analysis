@@ -116,10 +116,11 @@ public class CodeSource implements java.io.Serializable {
      */
     @Override
     public int hashCode() {
-        if (location != null)
+        if (location != null) {
             return location.hashCode();
-        else
+        } else {
             return 0;
+        }
     }
 
     /**
@@ -135,22 +136,28 @@ public class CodeSource implements java.io.Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
+        }
 
         // objects types must be equal
-        if (!(obj instanceof CodeSource))
+        if (!(obj instanceof CodeSource)) {
             return false;
+        }
 
         CodeSource cs = (CodeSource) obj;
 
         // URLs must match
         if (location == null) {
             // if location is null, then cs.location must be null as well
-            if (cs.location != null) return false;
+            if (cs.location != null) {
+                return false;
+            }
         } else {
             // if location is not null, then it must equal cs.location
-            if (!location.equals(cs.location)) return false;
+            if (!location.equals(cs.location)) {
+                return false;
+            }
         }
 
         // certs must match
@@ -302,8 +309,9 @@ public class CodeSource implements java.io.Serializable {
 
     public boolean implies(CodeSource codesource)
     {
-        if (codesource == null)
+        if (codesource == null) {
             return false;
+        }
 
         return matchCerts(codesource, false) && matchLocation(codesource);
     }
@@ -340,7 +348,9 @@ public class CodeSource implements java.io.Serializable {
                         break;
                     }
                 }
-                if (!match) return false;
+                if (!match) {
+                    return false;
+                }
             }
             return true;
 
@@ -357,7 +367,9 @@ public class CodeSource implements java.io.Serializable {
                         break;
                     }
                 }
-                if (!match) return false;
+                if (!match) {
+                    return false;
+                }
             }
             return true;
         }
@@ -372,25 +384,30 @@ public class CodeSource implements java.io.Serializable {
      * @param that CodeSource to compare against
      */
     private boolean matchLocation(CodeSource that) {
-        if (location == null)
+        if (location == null) {
             return true;
+        }
 
-        if ((that == null) || (that.location == null))
+        if ((that == null) || (that.location == null)) {
             return false;
+        }
 
-        if (location.equals(that.location))
+        if (location.equals(that.location)) {
             return true;
+        }
 
-        if (!location.getProtocol().equalsIgnoreCase(that.location.getProtocol()))
+        if (!location.getProtocol().equalsIgnoreCase(that.location.getProtocol())) {
             return false;
+        }
 
         int thisPort = location.getPort();
         if (thisPort != -1) {
             int thatPort = that.location.getPort();
             int port = thatPort != -1 ? thatPort
                                       : that.location.getDefaultPort();
-            if (thisPort != port)
+            if (thisPort != port) {
                 return false;
+            }
         }
 
         if (location.getFile().endsWith("/-")) {
@@ -400,21 +417,24 @@ public class CodeSource implements java.io.Serializable {
             // "/a/b/"
             String thisPath = location.getFile().substring(0,
                                             location.getFile().length()-1);
-            if (!that.location.getFile().startsWith(thisPath))
+            if (!that.location.getFile().startsWith(thisPath)) {
                 return false;
+            }
         } else if (location.getFile().endsWith("/*")) {
             // Matches the directory and all the files contained in that
             // directory.
             // For example, "/a/b/*" implies anything that starts with
             // "/a/b/" but has no further slashes
             int last = that.location.getFile().lastIndexOf('/');
-            if (last == -1)
+            if (last == -1) {
                 return false;
+            }
             String thisPath = location.getFile().substring(0,
                                             location.getFile().length()-1);
             String thatPath = that.location.getFile().substring(0, last+1);
-            if (!thatPath.equals(thisPath))
+            if (!thatPath.equals(thisPath)) {
                 return false;
+            }
         } else {
             // Exact matches only.
             // For example, "/a/b" and "/a/b/" both imply "/a/b/"

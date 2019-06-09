@@ -78,19 +78,24 @@ public abstract class X509CRLEntry implements X509Extension {
      * match, false otherwise.
      */
     public boolean equals(Object other) {
-        if (this == other)
+        if (this == other) {
             return true;
-        if (!(other instanceof X509CRLEntry))
+        }
+        if (!(other instanceof X509CRLEntry)) {
             return false;
+        }
         try {
             byte[] thisCRLEntry = this.getEncoded();
             byte[] otherCRLEntry = ((X509CRLEntry)other).getEncoded();
 
-            if (thisCRLEntry.length != otherCRLEntry.length)
+            if (thisCRLEntry.length != otherCRLEntry.length) {
                 return false;
-            for (int i = 0; i < thisCRLEntry.length; i++)
-                 if (thisCRLEntry[i] != otherCRLEntry[i])
-                     return false;
+            }
+            for (int i = 0; i < thisCRLEntry.length; i++) {
+                if (thisCRLEntry[i] != otherCRLEntry[i]) {
+                    return false;
+                }
+            }
         } catch (CRLException ce) {
             return false;
         }
@@ -107,8 +112,9 @@ public abstract class X509CRLEntry implements X509Extension {
         int     retval = 0;
         try {
             byte[] entryData = this.getEncoded();
-            for (int i = 1; i < entryData.length; i++)
-                 retval += entryData[i] * i;
+            for (int i = 1; i < entryData.length; i++) {
+                retval += entryData[i] * i;
+            }
 
         } catch (CRLException ce) {
             return(retval);

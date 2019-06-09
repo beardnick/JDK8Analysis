@@ -79,8 +79,9 @@ public class Observable {
      * @throws NullPointerException   if the parameter o is null.
      */
     public synchronized void addObserver(Observer o) {
-        if (o == null)
+        if (o == null) {
             throw new NullPointerException();
+        }
         if (!obs.contains(o)) {
             obs.addElement(o);
         }
@@ -149,14 +150,16 @@ public class Observable {
              * 2) a recently unregistered Observer will be
              *   wrongly notified when it doesn't care
              */
-            if (!changed)
+            if (!changed) {
                 return;
+            }
             arrLocal = obs.toArray();
             clearChanged();
         }
 
-        for (int i = arrLocal.length-1; i>=0; i--)
+        for (int i = arrLocal.length-1; i>=0; i--) {
             ((Observer)arrLocal[i]).update(this, arg);
+        }
     }
 
     /**

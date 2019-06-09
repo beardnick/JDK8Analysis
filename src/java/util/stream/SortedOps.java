@@ -135,12 +135,13 @@ final class SortedOps {
 
             // If the input is already naturally sorted and this operation
             // also naturally sorted then this is a no-op
-            if (StreamOpFlag.SORTED.isKnown(flags) && isNaturalSort)
+            if (StreamOpFlag.SORTED.isKnown(flags) && isNaturalSort) {
                 return sink;
-            else if (StreamOpFlag.SIZED.isKnown(flags))
+            } else if (StreamOpFlag.SIZED.isKnown(flags)) {
                 return new SizedRefSortingSink<>(sink, comparator);
-            else
+            } else {
                 return new RefSortingSink<>(sink, comparator);
+            }
         }
 
         @Override
@@ -174,12 +175,13 @@ final class SortedOps {
         public Sink<Integer> opWrapSink(int flags, Sink<Integer> sink) {
             Objects.requireNonNull(sink);
 
-            if (StreamOpFlag.SORTED.isKnown(flags))
+            if (StreamOpFlag.SORTED.isKnown(flags)) {
                 return sink;
-            else if (StreamOpFlag.SIZED.isKnown(flags))
+            } else if (StreamOpFlag.SIZED.isKnown(flags)) {
                 return new SizedIntSortingSink(sink);
-            else
+            } else {
                 return new IntSortingSink(sink);
+            }
         }
 
         @Override
@@ -213,12 +215,13 @@ final class SortedOps {
         public Sink<Long> opWrapSink(int flags, Sink<Long> sink) {
             Objects.requireNonNull(sink);
 
-            if (StreamOpFlag.SORTED.isKnown(flags))
+            if (StreamOpFlag.SORTED.isKnown(flags)) {
                 return sink;
-            else if (StreamOpFlag.SIZED.isKnown(flags))
+            } else if (StreamOpFlag.SIZED.isKnown(flags)) {
                 return new SizedLongSortingSink(sink);
-            else
+            } else {
                 return new LongSortingSink(sink);
+            }
         }
 
         @Override
@@ -252,12 +255,13 @@ final class SortedOps {
         public Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
             Objects.requireNonNull(sink);
 
-            if (StreamOpFlag.SORTED.isKnown(flags))
+            if (StreamOpFlag.SORTED.isKnown(flags)) {
                 return sink;
-            else if (StreamOpFlag.SIZED.isKnown(flags))
+            } else if (StreamOpFlag.SIZED.isKnown(flags)) {
                 return new SizedDoubleSortingSink(sink);
-            else
+            } else {
                 return new DoubleSortingSink(sink);
+            }
         }
 
         @Override
@@ -338,8 +342,9 @@ final class SortedOps {
         @Override
         @SuppressWarnings("unchecked")
         public void begin(long size) {
-            if (size >= Nodes.MAX_ARRAY_SIZE)
+            if (size >= Nodes.MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(Nodes.BAD_SIZE);
+            }
             array = (T[]) new Object[(int) size];
         }
 
@@ -348,12 +353,14 @@ final class SortedOps {
             Arrays.sort(array, 0, offset, comparator);
             downstream.begin(offset);
             if (!cancellationWasRequested) {
-                for (int i = 0; i < offset; i++)
+                for (int i = 0; i < offset; i++) {
                     downstream.accept(array[i]);
+                }
             }
             else {
-                for (int i = 0; i < offset && !downstream.cancellationRequested(); i++)
+                for (int i = 0; i < offset && !downstream.cancellationRequested(); i++) {
                     downstream.accept(array[i]);
+                }
             }
             downstream.end();
             array = null;
@@ -377,8 +384,9 @@ final class SortedOps {
 
         @Override
         public void begin(long size) {
-            if (size >= Nodes.MAX_ARRAY_SIZE)
+            if (size >= Nodes.MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(Nodes.BAD_SIZE);
+            }
             list = (size >= 0) ? new ArrayList<T>((int) size) : new ArrayList<T>();
         }
 
@@ -391,7 +399,9 @@ final class SortedOps {
             }
             else {
                 for (T t : list) {
-                    if (downstream.cancellationRequested()) break;
+                    if (downstream.cancellationRequested()) {
+                        break;
+                    }
                     downstream.accept(t);
                 }
             }
@@ -435,8 +445,9 @@ final class SortedOps {
 
         @Override
         public void begin(long size) {
-            if (size >= Nodes.MAX_ARRAY_SIZE)
+            if (size >= Nodes.MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(Nodes.BAD_SIZE);
+            }
             array = new int[(int) size];
         }
 
@@ -445,12 +456,14 @@ final class SortedOps {
             Arrays.sort(array, 0, offset);
             downstream.begin(offset);
             if (!cancellationWasRequested) {
-                for (int i = 0; i < offset; i++)
+                for (int i = 0; i < offset; i++) {
                     downstream.accept(array[i]);
+                }
             }
             else {
-                for (int i = 0; i < offset && !downstream.cancellationRequested(); i++)
+                for (int i = 0; i < offset && !downstream.cancellationRequested(); i++) {
                     downstream.accept(array[i]);
+                }
             }
             downstream.end();
             array = null;
@@ -474,8 +487,9 @@ final class SortedOps {
 
         @Override
         public void begin(long size) {
-            if (size >= Nodes.MAX_ARRAY_SIZE)
+            if (size >= Nodes.MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(Nodes.BAD_SIZE);
+            }
             b = (size > 0) ? new SpinedBuffer.OfInt((int) size) : new SpinedBuffer.OfInt();
         }
 
@@ -485,12 +499,15 @@ final class SortedOps {
             Arrays.sort(ints);
             downstream.begin(ints.length);
             if (!cancellationWasRequested) {
-                for (int anInt : ints)
+                for (int anInt : ints) {
                     downstream.accept(anInt);
+                }
             }
             else {
                 for (int anInt : ints) {
-                    if (downstream.cancellationRequested()) break;
+                    if (downstream.cancellationRequested()) {
+                        break;
+                    }
                     downstream.accept(anInt);
                 }
             }
@@ -533,8 +550,9 @@ final class SortedOps {
 
         @Override
         public void begin(long size) {
-            if (size >= Nodes.MAX_ARRAY_SIZE)
+            if (size >= Nodes.MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(Nodes.BAD_SIZE);
+            }
             array = new long[(int) size];
         }
 
@@ -543,12 +561,14 @@ final class SortedOps {
             Arrays.sort(array, 0, offset);
             downstream.begin(offset);
             if (!cancellationWasRequested) {
-                for (int i = 0; i < offset; i++)
+                for (int i = 0; i < offset; i++) {
                     downstream.accept(array[i]);
+                }
             }
             else {
-                for (int i = 0; i < offset && !downstream.cancellationRequested(); i++)
+                for (int i = 0; i < offset && !downstream.cancellationRequested(); i++) {
                     downstream.accept(array[i]);
+                }
             }
             downstream.end();
             array = null;
@@ -572,8 +592,9 @@ final class SortedOps {
 
         @Override
         public void begin(long size) {
-            if (size >= Nodes.MAX_ARRAY_SIZE)
+            if (size >= Nodes.MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(Nodes.BAD_SIZE);
+            }
             b = (size > 0) ? new SpinedBuffer.OfLong((int) size) : new SpinedBuffer.OfLong();
         }
 
@@ -583,12 +604,15 @@ final class SortedOps {
             Arrays.sort(longs);
             downstream.begin(longs.length);
             if (!cancellationWasRequested) {
-                for (long aLong : longs)
+                for (long aLong : longs) {
                     downstream.accept(aLong);
+                }
             }
             else {
                 for (long aLong : longs) {
-                    if (downstream.cancellationRequested()) break;
+                    if (downstream.cancellationRequested()) {
+                        break;
+                    }
                     downstream.accept(aLong);
                 }
             }
@@ -631,8 +655,9 @@ final class SortedOps {
 
         @Override
         public void begin(long size) {
-            if (size >= Nodes.MAX_ARRAY_SIZE)
+            if (size >= Nodes.MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(Nodes.BAD_SIZE);
+            }
             array = new double[(int) size];
         }
 
@@ -641,12 +666,14 @@ final class SortedOps {
             Arrays.sort(array, 0, offset);
             downstream.begin(offset);
             if (!cancellationWasRequested) {
-                for (int i = 0; i < offset; i++)
+                for (int i = 0; i < offset; i++) {
                     downstream.accept(array[i]);
+                }
             }
             else {
-                for (int i = 0; i < offset && !downstream.cancellationRequested(); i++)
+                for (int i = 0; i < offset && !downstream.cancellationRequested(); i++) {
                     downstream.accept(array[i]);
+                }
             }
             downstream.end();
             array = null;
@@ -670,8 +697,9 @@ final class SortedOps {
 
         @Override
         public void begin(long size) {
-            if (size >= Nodes.MAX_ARRAY_SIZE)
+            if (size >= Nodes.MAX_ARRAY_SIZE) {
                 throw new IllegalArgumentException(Nodes.BAD_SIZE);
+            }
             b = (size > 0) ? new SpinedBuffer.OfDouble((int) size) : new SpinedBuffer.OfDouble();
         }
 
@@ -681,12 +709,15 @@ final class SortedOps {
             Arrays.sort(doubles);
             downstream.begin(doubles.length);
             if (!cancellationWasRequested) {
-                for (double aDouble : doubles)
+                for (double aDouble : doubles) {
                     downstream.accept(aDouble);
+                }
             }
             else {
                 for (double aDouble : doubles) {
-                    if (downstream.cancellationRequested()) break;
+                    if (downstream.cancellationRequested()) {
+                        break;
+                    }
                     downstream.accept(aDouble);
                 }
             }

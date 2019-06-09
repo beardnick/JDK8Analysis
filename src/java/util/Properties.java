@@ -577,10 +577,15 @@ class Properties extends Hashtable<Object,Object> {
                      }
                     out[outLen++] = (char)value;
                 } else {
-                    if (aChar == 't') aChar = '\t';
-                    else if (aChar == 'r') aChar = '\r';
-                    else if (aChar == 'n') aChar = '\n';
-                    else if (aChar == 'f') aChar = '\f';
+                    if (aChar == 't') {
+                        aChar = '\t';
+                    } else if (aChar == 'r') {
+                        aChar = '\r';
+                    } else if (aChar == 'n') {
+                        aChar = '\n';
+                    } else if (aChar == 'f') {
+                        aChar = '\f';
+                    }
                     out[outLen++] = aChar;
                 }
             } else {
@@ -618,8 +623,9 @@ class Properties extends Hashtable<Object,Object> {
             }
             switch(aChar) {
                 case ' ':
-                    if (x == 0 || escapeSpace)
+                    if (x == 0 || escapeSpace) {
                         outBuffer.append('\\');
+                    }
                     outBuffer.append(' ');
                     break;
                 case '\t':outBuffer.append('\\'); outBuffer.append('t');
@@ -664,8 +670,9 @@ class Properties extends Hashtable<Object,Object> {
         while (current < len) {
             char c = comments.charAt(current);
             if (c > '\u00ff' || c == '\n' || c == '\r') {
-                if (last != current)
+                if (last != current) {
                     bw.write(comments.substring(last, current));
+                }
                 if (c > '\u00ff') {
                     uu[2] = toHex((c >> 12) & 0xf);
                     uu[3] = toHex((c >>  8) & 0xf);
@@ -681,15 +688,17 @@ class Properties extends Hashtable<Object,Object> {
                     }
                     if (current == len - 1 ||
                         (comments.charAt(current + 1) != '#' &&
-                        comments.charAt(current + 1) != '!'))
+                        comments.charAt(current + 1) != '!')) {
                         bw.write("#");
+                    }
                 }
                 last = current + 1;
             }
             current++;
         }
-        if (last != current)
+        if (last != current) {
             bw.write(comments.substring(last, current));
+        }
         bw.newLine();
     }
 
@@ -1160,8 +1169,9 @@ class Properties extends Hashtable<Object,Object> {
 
         private static XmlPropertiesProvider loadProviderFromProperty(ClassLoader cl) {
             String cn = System.getProperty("sun.util.spi.XmlPropertiesProvider");
-            if (cn == null)
+            if (cn == null) {
                 return null;
+            }
             try {
                 Class<?> c = Class.forName(cn, true, cl);
                 return (XmlPropertiesProvider)c.newInstance();
@@ -1184,11 +1194,13 @@ class Properties extends Hashtable<Object,Object> {
                     public XmlPropertiesProvider run() {
                         ClassLoader cl = ClassLoader.getSystemClassLoader();
                         XmlPropertiesProvider provider = loadProviderFromProperty(cl);
-                        if (provider != null)
+                        if (provider != null) {
                             return provider;
+                        }
                         provider = loadProviderAsService(cl);
-                        if (provider != null)
+                        if (provider != null) {
                             return provider;
+                        }
                         return new jdk.internal.util.xml.BasicXmlPropertiesProvider();
                 }});
         }

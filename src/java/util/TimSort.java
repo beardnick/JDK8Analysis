@@ -212,8 +212,9 @@ class TimSort<T> {
         assert c != null && a != null && lo >= 0 && lo <= hi && hi <= a.length;
 
         int nRemaining  = hi - lo;
-        if (nRemaining < 2)
+        if (nRemaining < 2) {
             return;  // Arrays of size 0 and 1 are always sorted
+        }
 
         // If array is small, do a "mini-TimSort" with no merges
         if (nRemaining < MIN_MERGE) {
@@ -277,8 +278,9 @@ class TimSort<T> {
     private static <T> void binarySort(T[] a, int lo, int hi, int start,
                                        Comparator<? super T> c) {
         assert lo <= start && start <= hi;
-        if (start == lo)
+        if (start == lo) {
             start++;
+        }
         for ( ; start < hi; start++) {
             T pivot = a[start];
 
@@ -293,10 +295,11 @@ class TimSort<T> {
              */
             while (left < right) {
                 int mid = (left + right) >>> 1;
-                if (c.compare(pivot, a[mid]) < 0)
+                if (c.compare(pivot, a[mid]) < 0) {
                     right = mid;
-                else
+                } else {
                     left = mid + 1;
+                }
             }
             assert left == right;
 
@@ -348,17 +351,20 @@ class TimSort<T> {
                                                     Comparator<? super T> c) {
         assert lo < hi;
         int runHi = lo + 1;
-        if (runHi == hi)
+        if (runHi == hi) {
             return 1;
+        }
 
         // Find end of run, and reverse range if descending
         if (c.compare(a[runHi++], a[lo]) < 0) { // Descending
-            while (runHi < hi && c.compare(a[runHi], a[runHi - 1]) < 0)
+            while (runHi < hi && c.compare(a[runHi], a[runHi - 1]) < 0) {
                 runHi++;
+            }
             reverseRange(a, lo, runHi);
         } else {                              // Ascending
-            while (runHi < hi && c.compare(a[runHi], a[runHi - 1]) >= 0)
+            while (runHi < hi && c.compare(a[runHi], a[runHi - 1]) >= 0) {
                 runHi++;
+            }
         }
 
         return runHi - lo;
@@ -434,8 +440,9 @@ class TimSort<T> {
         while (stackSize > 1) {
             int n = stackSize - 2;
             if (n > 0 && runLen[n-1] <= runLen[n] + runLen[n+1]) {
-                if (runLen[n - 1] < runLen[n + 1])
+                if (runLen[n - 1] < runLen[n + 1]) {
                     n--;
+                }
                 mergeAt(n);
             } else if (runLen[n] <= runLen[n + 1]) {
                 mergeAt(n);
@@ -452,8 +459,9 @@ class TimSort<T> {
     private void mergeForceCollapse() {
         while (stackSize > 1) {
             int n = stackSize - 2;
-            if (n > 0 && runLen[n - 1] < runLen[n + 1])
+            if (n > 0 && runLen[n - 1] < runLen[n + 1]) {
                 n--;
+            }
             mergeAt(n);
         }
     }
@@ -497,8 +505,9 @@ class TimSort<T> {
         assert k >= 0;
         base1 += k;
         len1 -= k;
-        if (len1 == 0)
+        if (len1 == 0) {
             return;
+        }
 
         /*
          * Find where the last element of run1 goes in run2. Subsequent elements
@@ -506,14 +515,16 @@ class TimSort<T> {
          */
         len2 = gallopLeft(a[base1 + len1 - 1], a, base2, len2, len2 - 1, c);
         assert len2 >= 0;
-        if (len2 == 0)
+        if (len2 == 0) {
             return;
+        }
 
         // Merge remaining runs, using tmp array with min(len1, len2) elements
-        if (len1 <= len2)
+        if (len1 <= len2) {
             mergeLo(base1, len1, base2, len2);
-        else
+        } else {
             mergeHi(base1, len1, base2, len2);
+        }
     }
 
     /**
@@ -546,10 +557,13 @@ class TimSort<T> {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 if (ofs <= 0)   // int overflow
+                {
                     ofs = maxOfs;
+                }
             }
-            if (ofs > maxOfs)
+            if (ofs > maxOfs) {
                 ofs = maxOfs;
+            }
 
             // Make offsets relative to base
             lastOfs += hint;
@@ -561,10 +575,13 @@ class TimSort<T> {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 if (ofs <= 0)   // int overflow
+                {
                     ofs = maxOfs;
+                }
             }
-            if (ofs > maxOfs)
+            if (ofs > maxOfs) {
                 ofs = maxOfs;
+            }
 
             // Make offsets relative to base
             int tmp = lastOfs;
@@ -582,10 +599,11 @@ class TimSort<T> {
         while (lastOfs < ofs) {
             int m = lastOfs + ((ofs - lastOfs) >>> 1);
 
-            if (c.compare(key, a[base + m]) > 0)
+            if (c.compare(key, a[base + m]) > 0) {
                 lastOfs = m + 1;  // a[base + m] < key
-            else
+            } else {
                 ofs = m;          // key <= a[base + m]
+            }
         }
         assert lastOfs == ofs;    // so a[base + ofs - 1] < key <= a[base + ofs]
         return ofs;
@@ -617,10 +635,13 @@ class TimSort<T> {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 if (ofs <= 0)   // int overflow
+                {
                     ofs = maxOfs;
+                }
             }
-            if (ofs > maxOfs)
+            if (ofs > maxOfs) {
                 ofs = maxOfs;
+            }
 
             // Make offsets relative to b
             int tmp = lastOfs;
@@ -633,10 +654,13 @@ class TimSort<T> {
                 lastOfs = ofs;
                 ofs = (ofs << 1) + 1;
                 if (ofs <= 0)   // int overflow
+                {
                     ofs = maxOfs;
+                }
             }
-            if (ofs > maxOfs)
+            if (ofs > maxOfs) {
                 ofs = maxOfs;
+            }
 
             // Make offsets relative to b
             lastOfs += hint;
@@ -653,10 +677,11 @@ class TimSort<T> {
         while (lastOfs < ofs) {
             int m = lastOfs + ((ofs - lastOfs) >>> 1);
 
-            if (c.compare(key, a[base + m]) < 0)
+            if (c.compare(key, a[base + m]) < 0) {
                 ofs = m;          // key < a[b + m]
-            else
+            } else {
                 lastOfs = m + 1;  // a[b + m] <= key
+            }
         }
         assert lastOfs == ofs;    // so a[b + ofs - 1] <= key < a[b + ofs]
         return ofs;
@@ -718,14 +743,16 @@ class TimSort<T> {
                     a[dest++] = a[cursor2++];
                     count2++;
                     count1 = 0;
-                    if (--len2 == 0)
+                    if (--len2 == 0) {
                         break outer;
+                    }
                 } else {
                     a[dest++] = tmp[cursor1++];
                     count1++;
                     count2 = 0;
-                    if (--len1 == 1)
+                    if (--len1 == 1) {
                         break outer;
+                    }
                 }
             } while ((count1 | count2) < minGallop);
 
@@ -743,11 +770,14 @@ class TimSort<T> {
                     cursor1 += count1;
                     len1 -= count1;
                     if (len1 <= 1) // len1 == 1 || len1 == 0
+                    {
                         break outer;
+                    }
                 }
                 a[dest++] = a[cursor2++];
-                if (--len2 == 0)
+                if (--len2 == 0) {
                     break outer;
+                }
 
                 count2 = gallopLeft(tmp[cursor1], a, cursor2, len2, 0, c);
                 if (count2 != 0) {
@@ -755,16 +785,19 @@ class TimSort<T> {
                     dest += count2;
                     cursor2 += count2;
                     len2 -= count2;
-                    if (len2 == 0)
+                    if (len2 == 0) {
                         break outer;
+                    }
                 }
                 a[dest++] = tmp[cursor1++];
-                if (--len1 == 1)
+                if (--len1 == 1) {
                     break outer;
+                }
                 minGallop--;
             } while (count1 >= MIN_GALLOP | count2 >= MIN_GALLOP);
-            if (minGallop < 0)
+            if (minGallop < 0) {
                 minGallop = 0;
+            }
             minGallop += 2;  // Penalize for leaving gallop mode
         }  // End of "outer" loop
         this.minGallop = minGallop < 1 ? 1 : minGallop;  // Write back to field
@@ -838,14 +871,16 @@ class TimSort<T> {
                     a[dest--] = a[cursor1--];
                     count1++;
                     count2 = 0;
-                    if (--len1 == 0)
+                    if (--len1 == 0) {
                         break outer;
+                    }
                 } else {
                     a[dest--] = tmp[cursor2--];
                     count2++;
                     count1 = 0;
-                    if (--len2 == 1)
+                    if (--len2 == 1) {
                         break outer;
+                    }
                 }
             } while ((count1 | count2) < minGallop);
 
@@ -862,12 +897,14 @@ class TimSort<T> {
                     cursor1 -= count1;
                     len1 -= count1;
                     System.arraycopy(a, cursor1 + 1, a, dest + 1, count1);
-                    if (len1 == 0)
+                    if (len1 == 0) {
                         break outer;
+                    }
                 }
                 a[dest--] = tmp[cursor2--];
-                if (--len2 == 1)
+                if (--len2 == 1) {
                     break outer;
+                }
 
                 count2 = len2 - gallopLeft(a[cursor1], tmp, tmpBase, len2, len2 - 1, c);
                 if (count2 != 0) {
@@ -876,15 +913,19 @@ class TimSort<T> {
                     len2 -= count2;
                     System.arraycopy(tmp, cursor2 + 1, a, dest + 1, count2);
                     if (len2 <= 1)  // len2 == 1 || len2 == 0
+                    {
                         break outer;
+                    }
                 }
                 a[dest--] = a[cursor1--];
-                if (--len1 == 0)
+                if (--len1 == 0) {
                     break outer;
+                }
                 minGallop--;
             } while (count1 >= MIN_GALLOP | count2 >= MIN_GALLOP);
-            if (minGallop < 0)
+            if (minGallop < 0) {
                 minGallop = 0;
+            }
             minGallop += 2;  // Penalize for leaving gallop mode
         }  // End of "outer" loop
         this.minGallop = minGallop < 1 ? 1 : minGallop;  // Write back to field
@@ -925,9 +966,11 @@ class TimSort<T> {
             newSize++;
 
             if (newSize < 0) // Not bloody likely!
+            {
                 newSize = minCapacity;
-            else
+            } else {
                 newSize = Math.min(newSize, a.length >>> 1);
+            }
 
             @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
             T[] newArray = (T[])java.lang.reflect.Array.newInstance

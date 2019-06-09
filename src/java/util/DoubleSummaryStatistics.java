@@ -156,9 +156,11 @@ public class DoubleSummaryStatistics implements DoubleConsumer {
             // accumulating one or more same-signed infinite values,
             // return the correctly-signed infinity stored in
             // simpleSum.
+        {
             return simpleSum;
-        else
+        } else {
             return tmp;
+        }
     }
 
     /**

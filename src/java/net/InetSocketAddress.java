@@ -76,21 +76,25 @@ public class InetSocketAddress
         }
 
         private String getHostName() {
-            if (hostname != null)
+            if (hostname != null) {
                 return hostname;
-            if (addr != null)
+            }
+            if (addr != null) {
                 return addr.getHostName();
+            }
             return null;
         }
 
         private String getHostString() {
-            if (hostname != null)
+            if (hostname != null) {
                 return hostname;
+            }
             if (addr != null) {
-                if (addr.holder().getHostName() != null)
+                if (addr.holder().getHostName() != null) {
                     return addr.holder().getHostName();
-                else
+                } else {
                     return addr.getHostAddress();
+                }
             }
             return null;
         }
@@ -110,26 +114,30 @@ public class InetSocketAddress
 
         @Override
         public final boolean equals(Object obj) {
-            if (obj == null || !(obj instanceof InetSocketAddressHolder))
+            if (obj == null || !(obj instanceof InetSocketAddressHolder)) {
                 return false;
+            }
             InetSocketAddressHolder that = (InetSocketAddressHolder)obj;
             boolean sameIP;
-            if (addr != null)
+            if (addr != null) {
                 sameIP = addr.equals(that.addr);
-            else if (hostname != null)
+            } else if (hostname != null) {
                 sameIP = (that.addr == null) &&
                     hostname.equalsIgnoreCase(that.hostname);
-            else
+            } else {
                 sameIP = (that.addr == null) && (that.hostname == null);
+            }
             return sameIP && (port == that.port);
         }
 
         @Override
         public final int hashCode() {
-            if (addr != null)
+            if (addr != null) {
                 return addr.hashCode() + port;
-            if (hostname != null)
+            }
+            if (hostname != null) {
                 return hostname.toLowerCase().hashCode() + port;
+            }
             return port;
         }
     }
@@ -139,14 +147,16 @@ public class InetSocketAddress
     private static final long serialVersionUID = 5076001401234631237L;
 
     private static int checkPort(int port) {
-        if (port < 0 || port > 0xFFFF)
+        if (port < 0 || port > 0xFFFF) {
             throw new IllegalArgumentException("port out of range:" + port);
+        }
         return port;
     }
 
     private static String checkHost(String hostname) {
-        if (hostname == null)
+        if (hostname == null) {
             throw new IllegalArgumentException("hostname can't be null");
+        }
         return hostname;
     }
 
@@ -286,9 +296,10 @@ public class InetSocketAddress
 
         // Check that our invariants are satisfied
         checkPort(oisPort);
-        if (oisHostname == null && oisAddr == null)
+        if (oisHostname == null && oisAddr == null) {
             throw new InvalidObjectException("hostname and addr " +
                                              "can't both be null");
+        }
 
         InetSocketAddressHolder h = new InetSocketAddressHolder(oisHostname,
                                                                 oisAddr,
@@ -402,8 +413,9 @@ public class InetSocketAddress
      */
     @Override
     public final boolean equals(Object obj) {
-        if (obj == null || !(obj instanceof InetSocketAddress))
+        if (obj == null || !(obj instanceof InetSocketAddress)) {
             return false;
+        }
         return holder.equals(((InetSocketAddress) obj).holder);
     }
 

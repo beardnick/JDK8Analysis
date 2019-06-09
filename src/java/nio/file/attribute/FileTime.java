@@ -206,8 +206,12 @@ public final class FileTime
      * Scale d by m, checking for overflow.
      */
     private static long scale(long d, long m, long over) {
-        if (d >  over) return Long.MAX_VALUE;
-        if (d < -over) return Long.MIN_VALUE;
+        if (d >  over) {
+            return Long.MAX_VALUE;
+        }
+        if (d < -over) {
+            return Long.MIN_VALUE;
+        }
         return d * m;
     }
 
@@ -263,12 +267,13 @@ public final class FileTime
                     break;
                 default : throw new AssertionError("Unit not handled");
             }
-            if (secs <= MIN_SECOND)
+            if (secs <= MIN_SECOND) {
                 instant = Instant.MIN;
-            else if (secs >= MAX_SECOND)
+            } else if (secs >= MAX_SECOND) {
                 instant = Instant.MAX;
-            else
+            } else {
                 instant = Instant.ofEpochSecond(secs, nanos);
+            }
         }
         return instant;
     }

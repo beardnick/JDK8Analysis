@@ -641,8 +641,12 @@ public class DateFormatSymbols implements Serializable, Cloneable {
      */
     public boolean equals(Object obj)
     {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         DateFormatSymbols that = (DateFormatSymbols) obj;
         return (Arrays.equals(eras, that.eras)
                 && Arrays.equals(months, that.months)

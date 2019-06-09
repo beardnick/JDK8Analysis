@@ -137,8 +137,9 @@ public class LockSupport {
      *        this operation has no effect
      */
     public static void unpark(Thread thread) {
-        if (thread != null)
+        if (thread != null) {
             UNSAFE.unpark(thread);
+        }
     }
 
     /**
@@ -270,8 +271,9 @@ public class LockSupport {
      * @since 1.6
      */
     public static Object getBlocker(Thread t) {
-        if (t == null)
+        if (t == null) {
             throw new NullPointerException();
+        }
         return UNSAFE.getObjectVolatile(t, parkBlockerOffset);
     }
 
@@ -334,8 +336,9 @@ public class LockSupport {
      * @param nanos the maximum number of nanoseconds to wait
      */
     public static void parkNanos(long nanos) {
-        if (nanos > 0)
+        if (nanos > 0) {
             UNSAFE.park(false, nanos);
+        }
     }
 
     /**
@@ -384,8 +387,9 @@ public class LockSupport {
             r ^= r >>> 17;
             r ^= r << 5;
         }
-        else if ((r = java.util.concurrent.ThreadLocalRandom.current().nextInt()) == 0)
+        else if ((r = java.util.concurrent.ThreadLocalRandom.current().nextInt()) == 0) {
             r = 1; // avoid zero
+        }
         UNSAFE.putInt(t, SECONDARY, r);
         return r;
     }

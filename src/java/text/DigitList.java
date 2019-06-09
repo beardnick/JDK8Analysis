@@ -241,20 +241,28 @@ final class DigitList implements Cloneable {
             return false;
         }
 
-        if (decimalAt < MAX_COUNT) return true;
+        if (decimalAt < MAX_COUNT) {
+            return true;
+        }
 
         // At this point we have decimalAt == count, and count == MAX_COUNT.
         // The number will overflow if it is larger than 9223372036854775807
         // or smaller than -9223372036854775808.
         for (int i=0; i<count; ++i) {
             char dig = digits[i], max = LONG_MIN_REP[i];
-            if (dig > max) return false;
-            if (dig < max) return true;
+            if (dig > max) {
+                return false;
+            }
+            if (dig < max) {
+                return true;
+            }
         }
 
         // At this point the first count digits match.  If decimalAt is less
         // than count, then the remaining digits are zero, and we return true.
-        if (count < decimalAt) return true;
+        if (count < decimalAt) {
+            return true;
+        }
 
         // Now we have a representation of Long.MIN_VALUE, without the leading
         // negative sign.  If this represents a positive value, then it does
@@ -333,8 +341,9 @@ final class DigitList implements Cloneable {
             } else {
                 if (!nonZeroDigitSeen) {
                     nonZeroDigitSeen = (c != '0');
-                    if (!nonZeroDigitSeen && decimalAt != -1)
+                    if (!nonZeroDigitSeen && decimalAt != -1) {
                         ++leadingZerosAfterDecimal;
+                    }
                 }
                 if (nonZeroDigitSeen) {
                     digits[count++] = c;
@@ -417,7 +426,9 @@ final class DigitList implements Cloneable {
                     }
 
                     ++digits[maximumDigits];
-                    if (digits[maximumDigits] <= '9') break;
+                    if (digits[maximumDigits] <= '9') {
+                        break;
+                    }
                     // digits[maximumDigits] = '0'; // Unnecessary since we'll truncate this
                 }
                 ++maximumDigits; // Increment for use as count
@@ -561,14 +572,17 @@ final class DigitList implements Cloneable {
                         if (alreadyRounded)
                             // If FloatingDecimal rounded up (value was below tie),
                             // then we should not round up again.
+                        {
                             return false;
+                        }
 
                         if (!valueExactAsDecimal)
                             // Otherwise if the digits don't represent exact value,
                             // value was above tie and FloatingDecimal truncated
                             // digits to tie. We must round up.
+                        {
                             return true;
-                        else {
+                        } else {
                             // This is an exact tie value, and FloatingDecimal
                             // provided all of the exact digits. We thus apply
                             // HALF_EVEN rounding rule.
@@ -578,8 +592,9 @@ final class DigitList implements Cloneable {
                     } else {
                         // Rounds up if it gives a non null digit after '5'
                         for (int i=maximumDigits+1; i<count; ++i) {
-                            if (digits[i] != '0')
+                            if (digits[i] != '0') {
                                 return true;
+                            }
                         }
                     }
                 }
@@ -643,12 +658,15 @@ final class DigitList implements Cloneable {
             decimalAt = MAX_COUNT - left;
             // Don't copy trailing zeros.  We are guaranteed that there is at
             // least one non-zero digit, so we don't have to check lower bounds.
-            for (right = MAX_COUNT - 1; digits[right] == '0'; --right)
+            for (right = MAX_COUNT - 1; digits[right] == '0'; --right) {
                 ;
+            }
             count = right - left + 1;
             System.arraycopy(digits, left, digits, 0, count);
         }
-        if (maximumDigits > 0) round(maximumDigits, false, true);
+        if (maximumDigits > 0) {
+            round(maximumDigits, false, true);
+        }
     }
 
     /**
@@ -687,8 +705,9 @@ final class DigitList implements Cloneable {
 
         decimalAt = len;
         int right;
-        for (right = len - 1; right >= 0 && digits[right] == '0'; --right)
+        for (right = len - 1; right >= 0 && digits[right] == '0'; --right) {
             ;
+        }
         count = right + 1;
 
         if (maximumDigits > 0) {
@@ -701,16 +720,23 @@ final class DigitList implements Cloneable {
      */
     public boolean equals(Object obj) {
         if (this == obj)                      // quick check
+        {
             return true;
+        }
         if (!(obj instanceof DigitList))         // (1) same object?
+        {
             return false;
+        }
         DigitList other = (DigitList) obj;
         if (count != other.count ||
-        decimalAt != other.decimalAt)
+        decimalAt != other.decimalAt) {
             return false;
-        for (int i = 0; i < count; i++)
-            if (digits[i] != other.digits[i])
+        }
+        for (int i = 0; i < count; i++) {
+            if (digits[i] != other.digits[i]) {
                 return false;
+            }
+        }
         return true;
     }
 
@@ -754,7 +780,9 @@ final class DigitList implements Cloneable {
         }
 
         for (int i = 0; i < count; ++i) {
-            if (digits[i] != LONG_MIN_REP[i]) return false;
+            if (digits[i] != LONG_MIN_REP[i]) {
+                return false;
+            }
         }
 
         return true;

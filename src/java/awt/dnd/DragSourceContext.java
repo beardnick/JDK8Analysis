@@ -310,14 +310,19 @@ public class DragSourceContext
      */
 
     public synchronized void addDragSourceListener(DragSourceListener dsl) throws TooManyListenersException {
-        if (dsl == null) return;
+        if (dsl == null) {
+            return;
+        }
 
-        if (equals(dsl)) throw new IllegalArgumentException("DragSourceContext may not be its own listener");
+        if (equals(dsl)) {
+            throw new IllegalArgumentException("DragSourceContext may not be its own listener");
+        }
 
-        if (listener != null)
+        if (listener != null) {
             throw new TooManyListenersException();
-        else
+        } else {
             listener = dsl;
+        }
     }
 
     /**
@@ -332,8 +337,9 @@ public class DragSourceContext
     public synchronized void removeDragSourceListener(DragSourceListener dsl) {
         if (listener != null && listener.equals(dsl)) {
             listener = null;
-        } else
+        } else {
             throw new IllegalArgumentException();
+        }
     }
 
     /**
@@ -342,7 +348,9 @@ public class DragSourceContext
      */
 
     public void transferablesFlavorsChanged() {
-        if (peer != null) peer.transferablesFlavorsChanged();
+        if (peer != null) {
+            peer.transferablesFlavorsChanged();
+        }
     }
 
     /**
@@ -495,19 +503,21 @@ public class DragSourceContext
                 int    ra = sourceAct & targetAct;
 
                 if (ra == DnDConstants.ACTION_NONE) { // no drop possible
-                    if ((sourceAct & DnDConstants.ACTION_LINK) == DnDConstants.ACTION_LINK)
+                    if ((sourceAct & DnDConstants.ACTION_LINK) == DnDConstants.ACTION_LINK) {
                         c = DragSource.DefaultLinkNoDrop;
-                    else if ((sourceAct & DnDConstants.ACTION_MOVE) == DnDConstants.ACTION_MOVE)
+                    } else if ((sourceAct & DnDConstants.ACTION_MOVE) == DnDConstants.ACTION_MOVE) {
                         c = DragSource.DefaultMoveNoDrop;
-                    else
+                    } else {
                         c = DragSource.DefaultCopyNoDrop;
+                    }
                 } else { // drop possible
-                    if ((ra & DnDConstants.ACTION_LINK) == DnDConstants.ACTION_LINK)
+                    if ((ra & DnDConstants.ACTION_LINK) == DnDConstants.ACTION_LINK) {
                         c = DragSource.DefaultLinkDrop;
-                    else if ((ra & DnDConstants.ACTION_MOVE) == DnDConstants.ACTION_MOVE)
+                    } else if ((ra & DnDConstants.ACTION_MOVE) == DnDConstants.ACTION_MOVE) {
                         c = DragSource.DefaultMoveDrop;
-                    else
+                    } else {
                         c = DragSource.DefaultCopyDrop;
+                    }
                 }
         }
 
@@ -517,7 +527,9 @@ public class DragSourceContext
     private void setCursorImpl(Cursor c) {
         if (cursor == null || !cursor.equals(c)) {
             cursor = c;
-            if (peer != null) peer.setCursor(cursor);
+            if (peer != null) {
+                peer.setCursor(cursor);
+            }
         }
     }
 

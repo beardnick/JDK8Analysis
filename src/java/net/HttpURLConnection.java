@@ -489,10 +489,11 @@ abstract public class HttpURLConnection extends URLConnection {
         String statusLine = getHeaderField(0);
         if (statusLine == null) {
             if (exc != null) {
-                if (exc instanceof RuntimeException)
+                if (exc instanceof RuntimeException) {
                     throw (RuntimeException)exc;
-                else
+                } else {
                     throw (IOException)exc;
+                }
             }
             return -1;
         }
@@ -516,8 +517,9 @@ abstract public class HttpURLConnection extends URLConnection {
 
                 // deviation from RFC 2616 - don't reject status line
                 // if SP Reason-Phrase is not included.
-                if (phrasePos < 0)
+                if (phrasePos < 0) {
                     phrasePos = statusLine.length();
+                }
 
                 try {
                     responseCode = Integer.parseInt

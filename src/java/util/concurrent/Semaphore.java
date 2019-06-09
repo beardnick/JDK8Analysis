@@ -179,8 +179,9 @@ public class Semaphore implements java.io.Serializable {
                 int available = getState();
                 int remaining = available - acquires;
                 if (remaining < 0 ||
-                    compareAndSetState(available, remaining))
+                    compareAndSetState(available, remaining)) {
                     return remaining;
+                }
             }
         }
 
@@ -189,9 +190,12 @@ public class Semaphore implements java.io.Serializable {
                 int current = getState();
                 int next = current + releases;
                 if (next < current) // overflow
+                {
                     throw new Error("Maximum permit count exceeded");
-                if (compareAndSetState(current, next))
+                }
+                if (compareAndSetState(current, next)) {
                     return true;
+                }
             }
         }
 
@@ -200,17 +204,21 @@ public class Semaphore implements java.io.Serializable {
                 int current = getState();
                 int next = current - reductions;
                 if (next > current) // underflow
+                {
                     throw new Error("Permit count underflow");
-                if (compareAndSetState(current, next))
+                }
+                if (compareAndSetState(current, next)) {
                     return;
+                }
             }
         }
 
         final int drainPermits() {
             for (;;) {
                 int current = getState();
-                if (current == 0 || compareAndSetState(current, 0))
+                if (current == 0 || compareAndSetState(current, 0)) {
                     return current;
+                }
             }
         }
     }
@@ -242,13 +250,15 @@ public class Semaphore implements java.io.Serializable {
 
         protected int tryAcquireShared(int acquires) {
             for (;;) {
-                if (hasQueuedPredecessors())
+                if (hasQueuedPredecessors()) {
                     return -1;
+                }
                 int available = getState();
                 int remaining = available - acquires;
                 if (remaining < 0 ||
-                    compareAndSetState(available, remaining))
+                    compareAndSetState(available, remaining)) {
                     return remaining;
+                }
             }
         }
     }
@@ -463,7 +473,9 @@ public class Semaphore implements java.io.Serializable {
      * @throws IllegalArgumentException if {@code permits} is negative
      */
     public void acquire(int permits) throws InterruptedException {
-        if (permits < 0) throw new IllegalArgumentException();
+        if (permits < 0) {
+            throw new IllegalArgumentException();
+        }
         sync.acquireSharedInterruptibly(permits);
     }
 
@@ -490,7 +502,9 @@ public class Semaphore implements java.io.Serializable {
      * @throws IllegalArgumentException if {@code permits} is negative
      */
     public void acquireUninterruptibly(int permits) {
-        if (permits < 0) throw new IllegalArgumentException();
+        if (permits < 0) {
+            throw new IllegalArgumentException();
+        }
         sync.acquireShared(permits);
     }
 
@@ -522,7 +536,9 @@ public class Semaphore implements java.io.Serializable {
      * @throws IllegalArgumentException if {@code permits} is negative
      */
     public boolean tryAcquire(int permits) {
-        if (permits < 0) throw new IllegalArgumentException();
+        if (permits < 0) {
+            throw new IllegalArgumentException();
+        }
         return sync.nonfairTryAcquireShared(permits) >= 0;
     }
 
@@ -578,7 +594,9 @@ public class Semaphore implements java.io.Serializable {
      */
     public boolean tryAcquire(int permits, long timeout, TimeUnit unit)
         throws InterruptedException {
-        if (permits < 0) throw new IllegalArgumentException();
+        if (permits < 0) {
+            throw new IllegalArgumentException();
+        }
         return sync.tryAcquireSharedNanos(permits, unit.toNanos(timeout));
     }
 
@@ -605,7 +623,9 @@ public class Semaphore implements java.io.Serializable {
      * @throws IllegalArgumentException if {@code permits} is negative
      */
     public void release(int permits) {
-        if (permits < 0) throw new IllegalArgumentException();
+        if (permits < 0) {
+            throw new IllegalArgumentException();
+        }
         sync.releaseShared(permits);
     }
 
@@ -640,7 +660,9 @@ public class Semaphore implements java.io.Serializable {
      * @throws IllegalArgumentException if {@code reduction} is negative
      */
     protected void reducePermits(int reduction) {
-        if (reduction < 0) throw new IllegalArgumentException();
+        if (reduction < 0) {
+            throw new IllegalArgumentException();
+        }
         sync.reducePermits(reduction);
     }
 

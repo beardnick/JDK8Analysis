@@ -53,8 +53,9 @@ import java.security.PrivilegedAction;
 public abstract class AsynchronousChannelProvider {
     private static Void checkPermission() {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
+        if (sm != null) {
             sm.checkPermission(new RuntimePermission("asynchronousChannelProvider"));
+        }
         return null;
     }
     private AsynchronousChannelProvider(Void ignore) { }
@@ -80,19 +81,22 @@ public abstract class AsynchronousChannelProvider {
                     public AsynchronousChannelProvider run() {
                         AsynchronousChannelProvider p;
                         p = loadProviderFromProperty();
-                        if (p != null)
+                        if (p != null) {
                             return p;
+                        }
                         p = loadProviderAsService();
-                        if (p != null)
+                        if (p != null) {
                             return p;
+                        }
                         return sun.nio.ch.DefaultAsynchronousChannelProvider.create();
                     }});
         }
 
         private static AsynchronousChannelProvider loadProviderFromProperty() {
             String cn = System.getProperty("java.nio.channels.spi.AsynchronousChannelProvider");
-            if (cn == null)
+            if (cn == null) {
                 return null;
+            }
             try {
                 Class<?> c = Class.forName(cn, true,
                                            ClassLoader.getSystemClassLoader());

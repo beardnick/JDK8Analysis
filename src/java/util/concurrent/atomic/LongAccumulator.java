@@ -109,8 +109,9 @@ public class LongAccumulator extends Striped64 implements Serializable {
                 (a = as[getProbe() & m]) == null ||
                 !(uncontended =
                   (r = function.applyAsLong(v = a.value, x)) == v ||
-                  a.cas(v, r)))
+                  a.cas(v, r))) {
                 longAccumulate(x, function, uncontended);
+            }
         }
     }
 
@@ -128,8 +129,9 @@ public class LongAccumulator extends Striped64 implements Serializable {
         long result = base;
         if (as != null) {
             for (int i = 0; i < as.length; ++i) {
-                if ((a = as[i]) != null)
+                if ((a = as[i]) != null) {
                     result = function.applyAsLong(result, a.value);
+                }
             }
         }
         return result;
@@ -148,8 +150,9 @@ public class LongAccumulator extends Striped64 implements Serializable {
         base = identity;
         if (as != null) {
             for (int i = 0; i < as.length; ++i) {
-                if ((a = as[i]) != null)
+                if ((a = as[i]) != null) {
                     a.value = identity;
+                }
             }
         }
     }

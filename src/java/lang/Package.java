@@ -235,26 +235,30 @@ public class Package implements java.lang.reflect.AnnotatedElement {
         int [] si = new int[sa.length];
         for (int i = 0; i < sa.length; i++) {
             si[i] = Integer.parseInt(sa[i]);
-            if (si[i] < 0)
+            if (si[i] < 0) {
                 throw NumberFormatException.forInputString("" + si[i]);
+            }
         }
 
         String [] da = desired.split("\\.", -1);
         int [] di = new int[da.length];
         for (int i = 0; i < da.length; i++) {
             di[i] = Integer.parseInt(da[i]);
-            if (di[i] < 0)
+            if (di[i] < 0) {
                 throw NumberFormatException.forInputString("" + di[i]);
+            }
         }
 
         int len = Math.max(di.length, si.length);
         for (int i = 0; i < len; i++) {
             int d = (i < di.length ? di[i] : 0);
             int s = (i < si.length ? si[i] : 0);
-            if (s < d)
+            if (s < d) {
                 return false;
-            if (s > d)
+            }
+            if (s > d) {
                 return true;
+            }
         }
         return true;
     }
@@ -358,14 +362,16 @@ public class Package implements java.lang.reflect.AnnotatedElement {
     public String toString() {
         String spec = specTitle;
         String ver =  specVersion;
-        if (spec != null && spec.length() > 0)
+        if (spec != null && spec.length() > 0) {
             spec = ", " + spec;
-        else
+        } else {
             spec = "";
-        if (ver != null && ver.length() > 0)
+        }
+        if (ver != null && ver.length() > 0) {
             ver = ", version " + ver;
-        else
+        } else {
             ver = "";
+        }
         return "package " + pkgName + spec + ver;
     }
 

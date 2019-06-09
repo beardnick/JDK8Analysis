@@ -302,7 +302,9 @@ public class ComponentSampleModel extends SampleModel
         int map[] = new int[orig.length];
         int ret[] = new int[orig.length];
 
-        for (int i=0; i<map.length; i++) map[i] = i;
+        for (int i=0; i<map.length; i++) {
+            map[i] = i;
+        }
 
         for (int i = 0; i < ret.length; i++) {
             int index = i;
@@ -349,8 +351,9 @@ public class ComponentSampleModel extends SampleModel
             if (pStride > bStride) {
                 if (lStride > bStride) { // pix > line > band
                     bandOff = new int[bandOffsets.length];
-                    for (int i=0; i<bands; i++)
+                    for (int i=0; i<bands; i++) {
                         bandOff[i] = bandOffsets[i]-minBandOff;
+                    }
                     lStride = bStride+1;
                     pStride = lStride*h;
                 } else { // pix > band > line
@@ -364,8 +367,9 @@ public class ComponentSampleModel extends SampleModel
         } else {
             if (pStride > bStride) { // line > pix > band
                 bandOff = new int[bandOffsets.length];
-                for (int i=0; i<bands; i++)
+                for (int i=0; i<bands; i++) {
                     bandOff[i] = bandOffsets[i]-minBandOff;
+                }
                 pStride = bStride+1;
                 lStride = pStride*w;
             } else {
@@ -390,8 +394,9 @@ public class ComponentSampleModel extends SampleModel
             pStride *= -1;
         }
 
-        for (int i=0; i<bands; i++)
+        for (int i=0; i<bands; i++) {
             bandOff[i] += base;
+        }
         return new ComponentSampleModel(dataType, w, h, pStride,
                                         lStride, bankIndices, bandOff);
     }
@@ -409,10 +414,11 @@ public class ComponentSampleModel extends SampleModel
      *          of bands from this <code>ComponentSampleModel</code>.
      */
     public SampleModel createSubsetSampleModel(int bands[]) {
-       if (bands.length > bankIndices.length)
-            throw new RasterFormatException("There are only " +
-                                            bankIndices.length +
-                                            " bands");
+       if (bands.length > bankIndices.length) {
+           throw new RasterFormatException("There are only " +
+                                           bankIndices.length +
+                                           " bands");
+       }
         int newBankIndices[] = new int[bands.length];
         int newBandOffsets[] = new int[bands.length];
 
@@ -508,8 +514,9 @@ public class ComponentSampleModel extends SampleModel
         int sampleSize[] = new int [numBands];
         int sizeInBits = getSampleSize(0);
 
-        for (int i=0; i<numBands; i++)
+        for (int i=0; i<numBands; i++) {
             sampleSize[i] = sizeInBits;
+        }
 
         return sampleSize;
     }
@@ -632,10 +639,11 @@ public class ComponentSampleModel extends SampleModel
 
             byte[] bdata;
 
-            if (obj == null)
+            if (obj == null) {
                 bdata = new byte[numDataElems];
-            else
+            } else {
                 bdata = (byte[])obj;
+            }
 
             for (int i=0; i<numDataElems; i++) {
                 bdata[i] = (byte)data.getElem(bankIndices[i],
@@ -650,10 +658,11 @@ public class ComponentSampleModel extends SampleModel
 
             short[] sdata;
 
-            if (obj == null)
+            if (obj == null) {
                 sdata = new short[numDataElems];
-            else
+            } else {
                 sdata = (short[])obj;
+            }
 
             for (int i=0; i<numDataElems; i++) {
                 sdata[i] = (short)data.getElem(bankIndices[i],
@@ -667,10 +676,11 @@ public class ComponentSampleModel extends SampleModel
 
             int[] idata;
 
-            if (obj == null)
+            if (obj == null) {
                 idata = new int[numDataElems];
-            else
+            } else {
                 idata = (int[])obj;
+            }
 
             for (int i=0; i<numDataElems; i++) {
                 idata[i] = data.getElem(bankIndices[i],
@@ -684,10 +694,11 @@ public class ComponentSampleModel extends SampleModel
 
             float[] fdata;
 
-            if (obj == null)
+            if (obj == null) {
                 fdata = new float[numDataElems];
-            else
+            } else {
                 fdata = (float[])obj;
+            }
 
             for (int i=0; i<numDataElems; i++) {
                 fdata[i] = data.getElemFloat(bankIndices[i],
@@ -701,10 +712,11 @@ public class ComponentSampleModel extends SampleModel
 
             double[] ddata;
 
-            if (obj == null)
+            if (obj == null) {
                 ddata = new double[numDataElems];
-            else
+            } else {
                 ddata = (double[])obj;
+            }
 
             for (int i=0; i<numDataElems; i++) {
                 ddata[i] = data.getElemDouble(bankIndices[i],

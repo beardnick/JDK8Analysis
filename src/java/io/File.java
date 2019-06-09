@@ -412,27 +412,35 @@ public class File
     public File(URI uri) {
 
         // Check our many preconditions
-        if (!uri.isAbsolute())
+        if (!uri.isAbsolute()) {
             throw new IllegalArgumentException("URI is not absolute");
-        if (uri.isOpaque())
+        }
+        if (uri.isOpaque()) {
             throw new IllegalArgumentException("URI is not hierarchical");
+        }
         String scheme = uri.getScheme();
-        if ((scheme == null) || !scheme.equalsIgnoreCase("file"))
+        if ((scheme == null) || !scheme.equalsIgnoreCase("file")) {
             throw new IllegalArgumentException("URI scheme is not \"file\"");
-        if (uri.getAuthority() != null)
+        }
+        if (uri.getAuthority() != null) {
             throw new IllegalArgumentException("URI has an authority component");
-        if (uri.getFragment() != null)
+        }
+        if (uri.getFragment() != null) {
             throw new IllegalArgumentException("URI has a fragment component");
-        if (uri.getQuery() != null)
+        }
+        if (uri.getQuery() != null) {
             throw new IllegalArgumentException("URI has a query component");
+        }
         String p = uri.getPath();
-        if (p.equals(""))
+        if (p.equals("")) {
             throw new IllegalArgumentException("URI path component is empty");
+        }
 
         // Okay, now initialize
         p = fs.fromURIPath(p);
-        if (File.separatorChar != '/')
+        if (File.separatorChar != '/') {
             p = p.replace('/', File.separatorChar);
+        }
         this.path = fs.normalize(p);
         this.prefixLength = fs.prefixLength(this.path);
     }
@@ -452,7 +460,9 @@ public class File
      */
     public String getName() {
         int index = path.lastIndexOf(separatorChar);
-        if (index < prefixLength) return path.substring(prefixLength);
+        if (index < prefixLength) {
+            return path.substring(prefixLength);
+        }
         return path.substring(index + 1);
     }
 
@@ -472,8 +482,9 @@ public class File
     public String getParent() {
         int index = path.lastIndexOf(separatorChar);
         if (index < prefixLength) {
-            if ((prefixLength > 0) && (path.length() > prefixLength))
+            if ((prefixLength > 0) && (path.length() > prefixLength)) {
                 return path.substring(0, prefixLength);
+            }
             return null;
         }
         return path.substring(0, index);
@@ -497,7 +508,9 @@ public class File
      */
     public File getParentFile() {
         String p = this.getParent();
-        if (p == null) return null;
+        if (p == null) {
+            return null;
+        }
         return new File(p, this.prefixLength);
     }
 
@@ -646,12 +659,15 @@ public class File
 
     private static String slashify(String path, boolean isDirectory) {
         String p = path;
-        if (File.separatorChar != '/')
+        if (File.separatorChar != '/') {
             p = p.replace(File.separatorChar, '/');
-        if (!p.startsWith("/"))
+        }
+        if (!p.startsWith("/")) {
             p = "/" + p;
-        if (!p.endsWith("/") && isDirectory)
+        }
+        if (!p.endsWith("/") && isDirectory) {
             p = p + "/";
+        }
         return p;
     }
 
@@ -730,8 +746,9 @@ public class File
         try {
             File f = getAbsoluteFile();
             String sp = slashify(f.getPath(), f.isDirectory());
-            if (sp.startsWith("//"))
+            if (sp.startsWith("//")) {
                 sp = "//" + sp;
+            }
             return new URI("file", null, sp, null);
         } catch (URISyntaxException x) {
             throw new Error(x);         // Can't happen
@@ -1005,7 +1022,9 @@ public class File
      */
     public boolean createNewFile() throws IOException {
         SecurityManager security = System.getSecurityManager();
-        if (security != null) security.checkWrite(path);
+        if (security != null) {
+            security.checkWrite(path);
+        }
         if (isInvalid()) {
             throw new IOException("Invalid file path");
         }
@@ -1205,7 +1224,9 @@ public class File
      */
     public File[] listFiles() {
         String[] ss = list();
-        if (ss == null) return null;
+        if (ss == null) {
+            return null;
+        }
         int n = ss.length;
         File[] fs = new File[n];
         for (int i = 0; i < n; i++) {
@@ -1246,11 +1267,15 @@ public class File
      */
     public File[] listFiles(FilenameFilter filter) {
         String ss[] = list();
-        if (ss == null) return null;
+        if (ss == null) {
+            return null;
+        }
         ArrayList<File> files = new ArrayList<>();
-        for (String s : ss)
-            if ((filter == null) || filter.accept(this, s))
+        for (String s : ss) {
+            if ((filter == null) || filter.accept(this, s)) {
                 files.add(new File(s, this));
+            }
+        }
         return files.toArray(new File[files.size()]);
     }
 
@@ -1284,12 +1309,15 @@ public class File
      */
     public File[] listFiles(FileFilter filter) {
         String ss[] = list();
-        if (ss == null) return null;
+        if (ss == null) {
+            return null;
+        }
         ArrayList<File> files = new ArrayList<>();
         for (String s : ss) {
             File f = new File(s, this);
-            if ((filter == null) || filter.accept(f))
+            if ((filter == null) || filter.accept(f)) {
                 files.add(f);
+            }
         }
         return files.toArray(new File[files.size()]);
     }
@@ -1424,7 +1452,9 @@ public class File
      * @since 1.2
      */
     public boolean setLastModified(long time) {
-        if (time < 0) throw new IllegalArgumentException("Negative time");
+        if (time < 0) {
+            throw new IllegalArgumentException("Negative time");
+        }
         SecurityManager security = System.getSecurityManager();
         if (security != null) {
             security.checkWrite(path);
@@ -1915,10 +1945,11 @@ public class File
             String name = prefix + Long.toString(n) + suffix;
             File f = new File(dir, name);
             if (!name.equals(f.getName()) || f.isInvalid()) {
-                if (System.getSecurityManager() != null)
+                if (System.getSecurityManager() != null) {
                     throw new IOException("Unable to create temporary file");
-                else
+                } else {
                     throw new IOException("Unable to create temporary file, " + f);
+                }
             }
             return f;
         }
@@ -1997,10 +2028,12 @@ public class File
                                       File directory)
         throws IOException
     {
-        if (prefix.length() < 3)
+        if (prefix.length() < 3) {
             throw new IllegalArgumentException("Prefix string too short");
-        if (suffix == null)
+        }
+        if (suffix == null) {
             suffix = ".tmp";
+        }
 
         File tmpdir = (directory != null) ? directory
                                           : TempDirectory.location();
@@ -2014,15 +2047,17 @@ public class File
                     sm.checkWrite(f.getPath());
                 } catch (SecurityException se) {
                     // don't reveal temporary directory location
-                    if (directory == null)
+                    if (directory == null) {
                         throw new SecurityException("Unable to create temporary file");
+                    }
                     throw se;
                 }
             }
         } while ((fs.getBooleanAttributes(f) & FileSystem.BA_EXISTS) != 0);
 
-        if (!fs.createFileExclusively(f.getPath()))
+        if (!fs.createFileExclusively(f.getPath())) {
             throw new IOException("Unable to create temporary file");
+        }
 
         return f;
     }
@@ -2168,8 +2203,9 @@ public class File
         ObjectInputStream.GetField fields = s.readFields();
         String pathField = (String)fields.get("path", null);
         char sep = s.readChar(); // read the previous separator char
-        if (sep != separatorChar)
+        if (sep != separatorChar) {
             pathField = pathField.replace(sep, separatorChar);
+        }
         String path = fs.normalize(pathField);
         UNSAFE.putObject(this, PATH_OFFSET, path);
         UNSAFE.putIntVolatile(this, PREFIX_LENGTH_OFFSET, fs.prefixLength(path));

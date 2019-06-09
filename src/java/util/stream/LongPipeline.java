@@ -99,9 +99,10 @@ abstract class LongPipeline<E_IN>
         if (sink instanceof LongConsumer) {
             return (LongConsumer) sink;
         } else {
-            if (Tripwire.ENABLED)
+            if (Tripwire.ENABLED) {
                 Tripwire.trip(AbstractPipeline.class,
                               "using LongStream.adapt(Sink<Long> s)");
+            }
             return sink::accept;
         }
     }
@@ -117,9 +118,10 @@ abstract class LongPipeline<E_IN>
         if (s instanceof Spliterator.OfLong) {
             return (Spliterator.OfLong) s;
         } else {
-            if (Tripwire.ENABLED)
+            if (Tripwire.ENABLED) {
                 Tripwire.trip(AbstractPipeline.class,
                               "using LongStream.adapt(Spliterator<Long> s)");
+            }
             throw new UnsupportedOperationException("LongStream.adapt(Spliterator<Long> s)");
         }
     }
@@ -285,8 +287,9 @@ abstract class LongPipeline<E_IN>
                     public void accept(long t) {
                         try (LongStream result = mapper.apply(t)) {
                             // We can do better that this too; optimize for depth=0 case and just grab spliterator and forEach it
-                            if (result != null)
+                            if (result != null) {
                                 result.sequential().forEach(i -> downstream.accept(i));
+                            }
                         }
                     }
                 };
@@ -296,8 +299,9 @@ abstract class LongPipeline<E_IN>
 
     @Override
     public LongStream unordered() {
-        if (!isOrdered())
+        if (!isOrdered()) {
             return this;
+        }
         return new StatelessOp<Long>(this, StreamShape.LONG_VALUE, StreamOpFlag.NOT_ORDERED) {
             @Override
             Sink<Long> opWrapSink(int flags, Sink<Long> sink) {
@@ -321,8 +325,9 @@ abstract class LongPipeline<E_IN>
 
                     @Override
                     public void accept(long t) {
-                        if (predicate.test(t))
+                        if (predicate.test(t)) {
                             downstream.accept(t);
+                        }
                     }
                 };
             }
@@ -351,19 +356,22 @@ abstract class LongPipeline<E_IN>
 
     @Override
     public final LongStream limit(long maxSize) {
-        if (maxSize < 0)
+        if (maxSize < 0) {
             throw new IllegalArgumentException(Long.toString(maxSize));
+        }
         return SliceOps.makeLong(this, 0, maxSize);
     }
 
     @Override
     public final LongStream skip(long n) {
-        if (n < 0)
+        if (n < 0) {
             throw new IllegalArgumentException(Long.toString(n));
-        if (n == 0)
+        }
+        if (n == 0) {
             return this;
-        else
+        } else {
             return SliceOps.makeLong(this, n, -1);
+        }
     }
 
     @Override

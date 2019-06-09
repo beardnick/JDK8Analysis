@@ -207,8 +207,9 @@ public class AlgorithmParameterGenerator {
                                                           String provider)
         throws NoSuchAlgorithmException, NoSuchProviderException
     {
-        if (provider == null || provider.length() == 0)
+        if (provider == null || provider.length() == 0) {
             throw new IllegalArgumentException("missing provider");
+        }
         Object[] objs = Security.getImpl(algorithm,
                                          "AlgorithmParameterGenerator",
                                          provider);
@@ -251,8 +252,9 @@ public class AlgorithmParameterGenerator {
                                                           Provider provider)
         throws NoSuchAlgorithmException
     {
-        if (provider == null)
+        if (provider == null) {
             throw new IllegalArgumentException("missing provider");
+        }
         Object[] objs = Security.getImpl(algorithm,
                                          "AlgorithmParameterGenerator",
                                          provider);

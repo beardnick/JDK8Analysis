@@ -559,8 +559,9 @@ public abstract class CountedCompleter<T> extends ForkJoinTask<T> {
      */
     public final CountedCompleter<?> getRoot() {
         CountedCompleter<?> a = this, p;
-        while ((p = a.completer) != null)
+        while ((p = a.completer) != null) {
             a = p;
+        }
         return a;
     }
 
@@ -580,8 +581,9 @@ public abstract class CountedCompleter<T> extends ForkJoinTask<T> {
                     return;
                 }
             }
-            else if (U.compareAndSwapInt(a, PENDING, c, c - 1))
+            else if (U.compareAndSwapInt(a, PENDING, c, c - 1)) {
                 return;
+            }
         }
     }
 
@@ -603,8 +605,9 @@ public abstract class CountedCompleter<T> extends ForkJoinTask<T> {
                     return;
                 }
             }
-            else if (U.compareAndSwapInt(a, PENDING, c, c - 1))
+            else if (U.compareAndSwapInt(a, PENDING, c, c - 1)) {
                 return;
+            }
         }
     }
 
@@ -632,8 +635,9 @@ public abstract class CountedCompleter<T> extends ForkJoinTask<T> {
         setRawResult(rawResult);
         onCompletion(this);
         quietlyComplete();
-        if ((p = completer) != null)
+        if ((p = completer) != null) {
             p.tryComplete();
+        }
     }
 
     /**
@@ -646,10 +650,11 @@ public abstract class CountedCompleter<T> extends ForkJoinTask<T> {
      */
     public final CountedCompleter<?> firstComplete() {
         for (int c;;) {
-            if ((c = pending) == 0)
+            if ((c = pending) == 0) {
                 return this;
-            else if (U.compareAndSwapInt(this, PENDING, c, c - 1))
+            } else if (U.compareAndSwapInt(this, PENDING, c, c - 1)) {
                 return null;
+            }
         }
     }
 
@@ -672,9 +677,9 @@ public abstract class CountedCompleter<T> extends ForkJoinTask<T> {
      */
     public final CountedCompleter<?> nextComplete() {
         CountedCompleter<?> p;
-        if ((p = completer) != null)
+        if ((p = completer) != null) {
             return p.firstComplete();
-        else {
+        } else {
             quietlyComplete();
             return null;
         }
@@ -705,11 +710,12 @@ public abstract class CountedCompleter<T> extends ForkJoinTask<T> {
     public final void helpComplete(int maxTasks) {
         Thread t; ForkJoinWorkerThread wt;
         if (maxTasks > 0 && status >= 0) {
-            if ((t = Thread.currentThread()) instanceof ForkJoinWorkerThread)
+            if ((t = Thread.currentThread()) instanceof ForkJoinWorkerThread) {
                 (wt = (ForkJoinWorkerThread)t).pool.
                     helpComplete(wt.workQueue, this, maxTasks);
-            else
+            } else {
                 ForkJoinPool.common.externalHelpComplete(this, maxTasks);
+            }
         }
     }
 
@@ -720,8 +726,9 @@ public abstract class CountedCompleter<T> extends ForkJoinTask<T> {
         CountedCompleter<?> a = this, s = a;
         while (a.onExceptionalCompletion(ex, s) &&
                (a = (s = a).completer) != null && a.status >= 0 &&
-               a.recordExceptionalCompletion(ex) == EXCEPTIONAL)
+               a.recordExceptionalCompletion(ex) == EXCEPTIONAL) {
             ;
+        }
     }
 
     /**

@@ -350,15 +350,18 @@ public class DataFlavor implements Externalizable, Cloneable {
             throw new NullPointerException("representationClass");
         }
 
-        if (params == null) params = new MimeTypeParameterList();
+        if (params == null) {
+            params = new MimeTypeParameterList();
+        }
 
         params.set("class", representationClass.getName());
 
         if (humanPresentableName == null) {
             humanPresentableName = params.get("humanPresentableName");
 
-            if (humanPresentableName == null)
+            if (humanPresentableName == null) {
                 humanPresentableName = primaryType + "/" + subType;
+            }
         }
 
         try {
@@ -528,11 +531,11 @@ public class DataFlavor implements Externalizable, Cloneable {
         String rcn = getParameter("class");
 
         if (rcn == null) {
-            if ("application/x-java-serialized-object".equals(this.mimeType.getBaseType()))
-
+            if ("application/x-java-serialized-object".equals(this.mimeType.getBaseType())) {
                 throw new IllegalArgumentException("no representation class specified for:" + mimeType);
-            else
-                representationClass = java.io.InputStream.class; // default
+            } else {
+                representationClass = InputStream.class; // default
+            }
         } else { // got a class name
             representationClass = DataFlavor.tryToLoadClass(rcn, classLoader);
         }
@@ -541,8 +544,9 @@ public class DataFlavor implements Externalizable, Cloneable {
 
         if (humanPresentableName == null) {
             humanPresentableName = this.mimeType.getParameter("humanPresentableName");
-            if (humanPresentableName == null)
+            if (humanPresentableName == null) {
                 humanPresentableName = this.mimeType.getPrimaryType() + "/" + this.mimeType.getSubType();
+            }
         }
 
         this.humanPresentableName = humanPresentableName; // set it.
@@ -1059,8 +1063,9 @@ public class DataFlavor implements Externalizable, Cloneable {
      */
     @Deprecated
     public boolean equals(String s) {
-        if (s == null || mimeType == null)
+        if (s == null || mimeType == null) {
             return false;
+        }
         return isMimeTypeEqual(s);
     }
 
@@ -1304,8 +1309,9 @@ public class DataFlavor implements Externalizable, Cloneable {
     */
 
    public boolean isFlavorJavaFileListType() {
-        if (mimeType == null || representationClass == null)
+        if (mimeType == null || representationClass == null) {
             return false;
+        }
         return java.util.List.class.isAssignableFrom(representationClass) &&
                mimeType.match(javaFileListFlavor.mimeType);
 

@@ -48,8 +48,9 @@ public class MissingFormatWidthException extends IllegalFormatException {
      *         The format specifier which does not have a width
      */
     public MissingFormatWidthException(String s) {
-        if (s == null)
+        if (s == null) {
             throw new NullPointerException();
+        }
         this.s = s;
     }
 

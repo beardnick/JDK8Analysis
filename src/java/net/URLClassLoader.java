@@ -598,13 +598,15 @@ public class URLClassLoader extends SecureClassLoader implements Closeable {
                     URL u = AccessController.doPrivileged(
                         new PrivilegedAction<URL>() {
                             public URL run() {
-                                if (!e.hasMoreElements())
+                                if (!e.hasMoreElements()) {
                                     return null;
+                                }
                                 return e.nextElement();
                             }
                         }, acc);
-                    if (u == null)
+                    if (u == null) {
                         break;
+                    }
                     url = ucp.checkURL(u);
                 } while (url == null);
                 return url != null;
@@ -678,8 +680,9 @@ public class URLClassLoader extends SecureClassLoader implements Closeable {
         } else if ((p == null) && (url.getProtocol().equals("file"))) {
             String path = url.getFile().replace('/', File.separatorChar);
             path = ParseUtil.decode(path);
-            if (path.endsWith(File.separator))
+            if (path.endsWith(File.separator)) {
                 path += "-";
+            }
             p =  new FilePermission(path, SecurityConstants.FILE_READ_ACTION);
         } else {
             /**
@@ -692,9 +695,10 @@ public class URLClassLoader extends SecureClassLoader implements Closeable {
                 locUrl = ((JarURLConnection)urlConnection).getJarFileURL();
             }
             String host = locUrl.getHost();
-            if (host != null && (host.length() > 0))
+            if (host != null && (host.length() > 0)) {
                 p = new SocketPermission(host,
                                          SecurityConstants.SOCKET_CONNECT_ACCEPT_ACTION);
+            }
         }
 
         // make sure the person that created this class loader

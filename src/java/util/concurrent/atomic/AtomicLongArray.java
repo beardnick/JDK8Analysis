@@ -55,14 +55,16 @@ public class AtomicLongArray implements java.io.Serializable {
 
     static {
         int scale = unsafe.arrayIndexScale(long[].class);
-        if ((scale & (scale - 1)) != 0)
+        if ((scale & (scale - 1)) != 0) {
             throw new Error("data type scale not a power of two");
+        }
         shift = 31 - Integer.numberOfLeadingZeros(scale);
     }
 
     private long checkedByteOffset(int i) {
-        if (i < 0 || i >= array.length)
+        if (i < 0 || i >= array.length) {
             throw new IndexOutOfBoundsException("index " + i);
+        }
 
         return byteOffset(i);
     }
@@ -346,15 +348,17 @@ public class AtomicLongArray implements java.io.Serializable {
      */
     public String toString() {
         int iMax = array.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
+        }
 
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(getRaw(byteOffset(i)));
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(',').append(' ');
         }
     }

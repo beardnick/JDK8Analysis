@@ -266,7 +266,9 @@ public class Level implements java.io.Serializable {
         final String localizedName = rb.getString(name);
 
         final boolean isDefaultBundle = defaultBundle.equals(resourceBundleName);
-        if (!isDefaultBundle) return localizedName;
+        if (!isDefaultBundle) {
+            return localizedName;
+        }
 
         // This is a trick to determine whether the name has been translated
         // or not. If it has not been translated, we need to use Locale.ROOT

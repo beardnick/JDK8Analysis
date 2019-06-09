@@ -690,8 +690,9 @@ public final class CollationElementIterator
         maxLength = 1;
         for (int i = list.size() - 1; i > 0; i--) {
             pair = list.elementAt(i);
-            if (!pair.fwd)
+            if (!pair.fwd) {
                 continue;
+            }
 
             if (fragment.startsWith(pair.entryName) && pair.entryName.length()
                     > maxLength) {
@@ -753,8 +754,9 @@ public final class CollationElementIterator
         maxLength = 1;
         for (int i = list.size() - 1; i > 0; i--) {
             pair = list.elementAt(i);
-            if (pair.fwd)
+            if (pair.fwd) {
                 continue;
+            }
 
             if (fragment.startsWith(pair.entryName) && pair.entryName.length()
                     > maxLength) {

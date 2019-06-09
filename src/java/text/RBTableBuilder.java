@@ -81,8 +81,9 @@ final class RBTableBuilder {
         int i = 0;
         String expChars;
         String groupChars;
-        if (pattern.length() == 0)
+        if (pattern.length() == 0) {
             throw new ParseException("Build rules empty.", 0);
+        }
 
         // This array maps Unicode characters to their collation ordering
         mapping = new UCompactIntArray(RBCollationTables.UNMAPPED);
@@ -303,15 +304,17 @@ final class RBTableBuilder {
             lastValue += SECONDARYORDERINCREMENT;
             lastValue &= RBCollationTables.SECONDARYDIFFERENCEONLY;
             // record max # of ignorable chars with secondary difference
-            if (!isOverIgnore)
+            if (!isOverIgnore) {
                 maxSecOrder++;
+            }
             break;
         case Collator.TERTIARY:
             // increment tertiary order
             lastValue += TERTIARYORDERINCREMENT;
             // record max # of ignorable chars with tertiary difference
-            if (!isOverIgnore)
+            if (!isOverIgnore) {
                 maxTerOrder++;
+            }
             break;
         }
         return lastValue;

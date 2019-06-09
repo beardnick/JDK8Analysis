@@ -194,8 +194,9 @@ public class AlgorithmParameters {
                                                   String provider)
         throws NoSuchAlgorithmException, NoSuchProviderException
     {
-        if (provider == null || provider.length() == 0)
+        if (provider == null || provider.length() == 0) {
             throw new IllegalArgumentException("missing provider");
+        }
         Object[] objs = Security.getImpl(algorithm, "AlgorithmParameters",
                                          provider);
         return new AlgorithmParameters((AlgorithmParametersSpi)objs[0],
@@ -239,8 +240,9 @@ public class AlgorithmParameters {
                                                   Provider provider)
         throws NoSuchAlgorithmException
     {
-        if (provider == null)
+        if (provider == null) {
             throw new IllegalArgumentException("missing provider");
+        }
         Object[] objs = Security.getImpl(algorithm, "AlgorithmParameters",
                                          provider);
         return new AlgorithmParameters((AlgorithmParametersSpi)objs[0],
@@ -270,8 +272,9 @@ public class AlgorithmParameters {
     public final void init(AlgorithmParameterSpec paramSpec)
         throws InvalidParameterSpecException
     {
-        if (this.initialized)
+        if (this.initialized) {
             throw new InvalidParameterSpecException("already initialized");
+        }
         paramSpi.engineInit(paramSpec);
         this.initialized = true;
     }
@@ -288,8 +291,9 @@ public class AlgorithmParameters {
      * has already been initialized.
      */
     public final void init(byte[] params) throws IOException {
-        if (this.initialized)
+        if (this.initialized) {
             throw new IOException("already initialized");
+        }
         paramSpi.engineInit(params);
         this.initialized = true;
     }
@@ -310,8 +314,9 @@ public class AlgorithmParameters {
      * has already been initialized.
      */
     public final void init(byte[] params, String format) throws IOException {
-        if (this.initialized)
+        if (this.initialized) {
             throw new IOException("already initialized");
+        }
         paramSpi.engineInit(params, format);
         this.initialized = true;
     }

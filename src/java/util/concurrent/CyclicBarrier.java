@@ -203,8 +203,9 @@ public class CyclicBarrier {
         try {
             final Generation g = generation;
 
-            if (g.broken)
+            if (g.broken) {
                 throw new BrokenBarrierException();
+            }
 
             if (Thread.interrupted()) {
                 breakBarrier();
@@ -216,24 +217,27 @@ public class CyclicBarrier {
                 boolean ranAction = false;
                 try {
                     final Runnable command = barrierCommand;
-                    if (command != null)
+                    if (command != null) {
                         command.run();
+                    }
                     ranAction = true;
                     nextGeneration();
                     return 0;
                 } finally {
-                    if (!ranAction)
+                    if (!ranAction) {
                         breakBarrier();
+                    }
                 }
             }
 
             // loop until tripped, broken, interrupted, or timed out
             for (;;) {
                 try {
-                    if (!timed)
+                    if (!timed) {
                         trip.await();
-                    else if (nanos > 0L)
+                    } else if (nanos > 0L) {
                         nanos = trip.awaitNanos(nanos);
+                    }
                 } catch (InterruptedException ie) {
                     if (g == generation && ! g.broken) {
                         breakBarrier();
@@ -246,11 +250,13 @@ public class CyclicBarrier {
                     }
                 }
 
-                if (g.broken)
+                if (g.broken) {
                     throw new BrokenBarrierException();
+                }
 
-                if (g != generation)
+                if (g != generation) {
                     return index;
+                }
 
                 if (timed && nanos <= 0L) {
                     breakBarrier();
@@ -275,7 +281,9 @@ public class CyclicBarrier {
      * @throws IllegalArgumentException if {@code parties} is less than 1
      */
     public CyclicBarrier(int parties, Runnable barrierAction) {
-        if (parties <= 0) throw new IllegalArgumentException();
+        if (parties <= 0) {
+            throw new IllegalArgumentException();
+        }
         this.parties = parties;
         this.count = parties;
         this.barrierCommand = barrierAction;

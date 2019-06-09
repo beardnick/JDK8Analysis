@@ -99,10 +99,12 @@ public class DropTarget implements DropTargetListener, Serializable {
 
         setDefaultActions(ops);
 
-        if (dtl != null) try {
-            addDropTargetListener(dtl);
-        } catch (TooManyListenersException tmle) {
-            // do nothing!
+        if (dtl != null) {
+            try {
+                addDropTargetListener(dtl);
+            } catch (TooManyListenersException tmle) {
+                // do nothing!
+            }
         }
 
         if (c != null) {
@@ -201,8 +203,9 @@ public class DropTarget implements DropTargetListener, Serializable {
      */
 
     public synchronized void setComponent(Component c) {
-        if (component == c || component != null && component.equals(c))
+        if (component == c || component != null && component.equals(c)) {
             return;
+        }
 
         Component     old;
         ComponentPeer oldPeer = null;
@@ -221,12 +224,14 @@ public class DropTarget implements DropTargetListener, Serializable {
 
         }
 
-        if ((component = c) != null) try {
-            c.setDropTarget(this);
-        } catch (Exception e) { // undo the change
-            if (old != null) {
-                old.setDropTarget(this);
-                addNotify(oldPeer);
+        if ((component = c) != null) {
+            try {
+                c.setDropTarget(this);
+            } catch (Exception e) { // undo the change
+                if (old != null) {
+                    old.setDropTarget(this);
+                    addNotify(oldPeer);
+                }
             }
         }
     }
@@ -284,7 +289,9 @@ public class DropTarget implements DropTargetListener, Serializable {
             active = isActive;
         }
 
-        if (!active) clearAutoscroll();
+        if (!active) {
+            clearAutoscroll();
+        }
     }
 
     /**
@@ -310,14 +317,19 @@ public class DropTarget implements DropTargetListener, Serializable {
      */
 
     public synchronized void addDropTargetListener(DropTargetListener dtl) throws TooManyListenersException {
-        if (dtl == null) return;
+        if (dtl == null) {
+            return;
+        }
 
-        if (equals(dtl)) throw new IllegalArgumentException("DropTarget may not be its own Listener");
+        if (equals(dtl)) {
+            throw new IllegalArgumentException("DropTarget may not be its own Listener");
+        }
 
-        if (dtListener == null)
+        if (dtListener == null) {
             dtListener = dtl;
-        else
+        } else {
             throw new TooManyListenersException();
+        }
     }
 
     /**
@@ -328,10 +340,11 @@ public class DropTarget implements DropTargetListener, Serializable {
 
     public synchronized void removeDropTargetListener(DropTargetListener dtl) {
         if (dtl != null && dtListener != null) {
-            if(dtListener.equals(dtl))
+            if(dtListener.equals(dtl)) {
                 dtListener = null;
-            else
+            } else {
                 throw new IllegalArgumentException("listener mismatch");
+            }
         }
     }
 
@@ -352,12 +365,15 @@ public class DropTarget implements DropTargetListener, Serializable {
     public synchronized void dragEnter(DropTargetDragEvent dtde) {
         isDraggingInside = true;
 
-        if (!active) return;
+        if (!active) {
+            return;
+        }
 
         if (dtListener != null) {
             dtListener.dragEnter(dtde);
-        } else
+        } else {
             dtde.getDropTargetContext().setTargetActions(DnDConstants.ACTION_NONE);
+        }
 
         initializeAutoscrolling(dtde.getLocation());
     }
@@ -377,9 +393,13 @@ public class DropTarget implements DropTargetListener, Serializable {
      * @see #isActive
      */
     public synchronized void dragOver(DropTargetDragEvent dtde) {
-        if (!active) return;
+        if (!active) {
+            return;
+        }
 
-        if (dtListener != null && active) dtListener.dragOver(dtde);
+        if (dtListener != null && active) {
+            dtListener.dragOver(dtde);
+        }
 
         updateAutoscroll(dtde.getLocation());
     }
@@ -399,9 +419,13 @@ public class DropTarget implements DropTargetListener, Serializable {
      * @see #isActive
      */
     public synchronized void dropActionChanged(DropTargetDragEvent dtde) {
-        if (!active) return;
+        if (!active) {
+            return;
+        }
 
-        if (dtListener != null) dtListener.dropActionChanged(dtde);
+        if (dtListener != null) {
+            dtListener.dropActionChanged(dtde);
+        }
 
         updateAutoscroll(dtde.getLocation());
     }
@@ -424,9 +448,13 @@ public class DropTarget implements DropTargetListener, Serializable {
     public synchronized void dragExit(DropTargetEvent dte) {
         isDraggingInside = false;
 
-        if (!active) return;
+        if (!active) {
+            return;
+        }
 
-        if (dtListener != null && active) dtListener.dragExit(dte);
+        if (dtListener != null && active) {
+            dtListener.dragExit(dte);
+        }
 
         clearAutoscroll();
     }
@@ -451,9 +479,9 @@ public class DropTarget implements DropTargetListener, Serializable {
 
         clearAutoscroll();
 
-        if (dtListener != null && active)
+        if (dtListener != null && active) {
             dtListener.drop(dtde);
-        else { // we should'nt get here ...
+        } else { // we should'nt get here ...
             dtde.rejectDrop();
         }
     }
@@ -500,7 +528,9 @@ public class DropTarget implements DropTargetListener, Serializable {
      */
 
     public void addNotify(ComponentPeer peer) {
-        if (peer == componentPeer) return;
+        if (peer == componentPeer) {
+            return;
+        }
 
         componentPeer = peer;
 
@@ -534,8 +564,9 @@ public class DropTarget implements DropTargetListener, Serializable {
      */
 
     public void removeNotify(ComponentPeer peer) {
-        if (nativePeer != null)
+        if (nativePeer != null) {
             ((DropTargetPeer)nativePeer).removeDropTarget(this);
+        }
 
         componentPeer = nativePeer = null;
 
@@ -693,17 +724,20 @@ public class DropTarget implements DropTargetListener, Serializable {
            Insets    i    = autoScroll.getAutoscrollInsets();
            Dimension size = component.getSize();
 
-           if (size.width != outer.width || size.height != outer.height)
-                outer.reshape(0, 0, size.width, size.height);
+           if (size.width != outer.width || size.height != outer.height) {
+               outer.reshape(0, 0, size.width, size.height);
+           }
 
-           if (inner.x != i.left || inner.y != i.top)
-                inner.setLocation(i.left, i.top);
+           if (inner.x != i.left || inner.y != i.top) {
+               inner.setLocation(i.left, i.top);
+           }
 
            int newWidth  = size.width -  (i.left + i.right);
            int newHeight = size.height - (i.top  + i.bottom);
 
-           if (newWidth != inner.width || newHeight != inner.height)
-                inner.setSize(newWidth, newHeight);
+           if (newWidth != inner.width || newHeight != inner.height) {
+               inner.setSize(newWidth, newHeight);
+           }
 
         }
 
@@ -719,9 +753,13 @@ public class DropTarget implements DropTargetListener, Serializable {
 
             if (Math.abs(locn.x - prev.x) > hysteresis ||
                 Math.abs(locn.y - prev.y) > hysteresis) {
-                if (timer.isRunning()) timer.stop();
+                if (timer.isRunning()) {
+                    timer.stop();
+                }
             } else {
-                if (!timer.isRunning()) timer.start();
+                if (!timer.isRunning()) {
+                    timer.start();
+                }
             }
         }
 
@@ -740,8 +778,9 @@ public class DropTarget implements DropTargetListener, Serializable {
         public synchronized void actionPerformed(ActionEvent e) {
             updateRegion();
 
-            if (outer.contains(locn) && !inner.contains(locn))
+            if (outer.contains(locn) && !inner.contains(locn)) {
                 autoScroll.autoscroll(locn);
+            }
         }
 
         /*
@@ -782,7 +821,9 @@ public class DropTarget implements DropTargetListener, Serializable {
      */
 
     protected void initializeAutoscrolling(Point p) {
-        if (component == null || !(component instanceof Autoscroll)) return;
+        if (component == null || !(component instanceof Autoscroll)) {
+            return;
+        }
 
         autoScroller = createDropTargetAutoScroller(component, p);
     }
@@ -794,7 +835,9 @@ public class DropTarget implements DropTargetListener, Serializable {
      */
 
     protected void updateAutoscroll(Point dragCursorLocn) {
-        if (autoScroller != null) autoScroller.updateLocation(dragCursorLocn);
+        if (autoScroller != null) {
+            autoScroller.updateLocation(dragCursorLocn);
+        }
     }
 
     /**

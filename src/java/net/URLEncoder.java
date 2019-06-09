@@ -205,8 +205,9 @@ public class URLEncoder {
         Charset charset;
         CharArrayWriter charArrayWriter = new CharArrayWriter();
 
-        if (enc == null)
+        if (enc == null) {
             throw new NullPointerException("charsetName");
+        }
 
         try {
             charset = Charset.forName(enc);

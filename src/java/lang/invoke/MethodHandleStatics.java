@@ -93,13 +93,16 @@ import sun.misc.Unsafe;
     }
 
     /*non-public*/ static String getNameString(MethodHandle target, MethodType type) {
-        if (type == null)
+        if (type == null) {
             type = target.type();
+        }
         MemberName name = null;
-        if (target != null)
+        if (target != null) {
             name = target.internalMemberName();
-        if (name == null)
+        }
+        if (name == null) {
             return "invoke" + type;
+        }
         return name.getName() + type;
     }
 
@@ -113,9 +116,13 @@ import sun.misc.Unsafe;
 
     /*non-public*/ static String addTypeString(Object obj, MethodHandle target) {
         String str = String.valueOf(obj);
-        if (target == null)  return str;
+        if (target == null) {
+            return str;
+        }
         int paren = str.indexOf('(');
-        if (paren >= 0) str = str.substring(0, paren);
+        if (paren >= 0) {
+            str = str.substring(0, paren);
+        }
         return str + target.type();
     }
 
@@ -146,19 +153,27 @@ import sun.misc.Unsafe;
     }
     /** Propagate unchecked exceptions and errors, but wrap anything checked and throw that instead. */
     /*non-public*/ static Error uncaughtException(Throwable ex) {
-        if (ex instanceof Error)  throw (Error) ex;
-        if (ex instanceof RuntimeException)  throw (RuntimeException) ex;
+        if (ex instanceof Error) {
+            throw (Error) ex;
+        }
+        if (ex instanceof RuntimeException) {
+            throw (RuntimeException) ex;
+        }
         throw newInternalError("uncaught exception", ex);
     }
     static Error NYI() {
         throw new AssertionError("NYI");
     }
     private static String message(String message, Object obj) {
-        if (obj != null)  message = message + ": " + obj;
+        if (obj != null) {
+            message = message + ": " + obj;
+        }
         return message;
     }
     private static String message(String message, Object obj, Object obj2) {
-        if (obj != null || obj2 != null)  message = message + ": " + obj + ", " + obj2;
+        if (obj != null || obj2 != null) {
+            message = message + ": " + obj + ", " + obj2;
+        }
         return message;
     }
 }

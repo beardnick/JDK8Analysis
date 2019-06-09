@@ -105,8 +105,9 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
         throws IOException
     {
         Objects.requireNonNull(dir);
-        if (exc != null)
+        if (exc != null) {
             throw exc;
+        }
         return FileVisitResult.CONTINUE;
     }
 }

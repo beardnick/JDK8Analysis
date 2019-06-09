@@ -274,18 +274,20 @@ final class FindOps {
         }
 
         private void foundResult(O answer) {
-            if (isLeftmostNode())
+            if (isLeftmostNode()) {
                 shortCircuit(answer);
-            else
+            } else {
                 cancelLaterNodes();
+            }
         }
 
         @Override
         protected O doLeaf() {
             O result = helper.wrapAndCopyInto(op.sinkSupplier.get(), spliterator).get();
             if (!op.mustFindFirst) {
-                if (result != null)
+                if (result != null) {
                     shortCircuit(result);
+                }
                 return null;
             }
             else {
@@ -293,8 +295,9 @@ final class FindOps {
                     foundResult(result);
                     return result;
                 }
-                else
+                else {
                     return null;
+                }
             }
         }
 

@@ -176,15 +176,18 @@ public abstract class CertPath implements Serializable {
      * false otherwise
      */
     public boolean equals(Object other) {
-        if (this == other)
+        if (this == other) {
             return true;
+        }
 
-        if (! (other instanceof CertPath))
+        if (! (other instanceof CertPath)) {
             return false;
+        }
 
         CertPath otherCP = (CertPath) other;
-        if (! otherCP.getType().equals(type))
+        if (! otherCP.getType().equals(type)) {
             return false;
+        }
 
         List<? extends Certificate> thisCertList = this.getCertificates();
         List<? extends Certificate> otherCertList = otherCP.getCertificates();

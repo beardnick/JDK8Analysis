@@ -84,7 +84,8 @@ public class UncheckedIOException extends RuntimeException {
     {
         s.defaultReadObject();
         Throwable cause = super.getCause();
-        if (!(cause instanceof IOException))
+        if (!(cause instanceof IOException)) {
             throw new InvalidObjectException("Cause must be an IOException");
+        }
     }
 }

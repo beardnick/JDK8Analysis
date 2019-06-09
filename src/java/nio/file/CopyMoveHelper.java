@@ -62,8 +62,9 @@ class CopyMoveHelper {
                     result.copyAttributes = true;
                     continue;
                 }
-                if (option == null)
+                if (option == null) {
                     throw new NullPointerException();
+                }
                 throw new UnsupportedOperationException("'" + option +
                     "' is not a recognized copy option");
             }
@@ -109,14 +110,16 @@ class CopyMoveHelper {
         BasicFileAttributes attrs = Files.readAttributes(source,
                                                          BasicFileAttributes.class,
                                                          linkOptions);
-        if (attrs.isSymbolicLink())
+        if (attrs.isSymbolicLink()) {
             throw new IOException("Copying of symbolic links not supported");
+        }
 
         // delete target if it exists and REPLACE_EXISTING is specified
         if (opts.replaceExisting) {
             Files.deleteIfExists(target);
-        } else if (Files.exists(target))
+        } else if (Files.exists(target)) {
             throw new FileAlreadyExistsException(target.toString());
+        }
 
         // create directory or copy file
         if (attrs.isDirectory()) {

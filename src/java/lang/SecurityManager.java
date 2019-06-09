@@ -355,8 +355,9 @@ class SecurityManager {
     protected ClassLoader currentClassLoader()
     {
         ClassLoader cl = currentClassLoader0();
-        if ((cl != null) && hasAllPermission())
+        if ((cl != null) && hasAllPermission()) {
             cl = null;
+        }
         return cl;
     }
 
@@ -401,8 +402,9 @@ class SecurityManager {
     @Deprecated
     protected Class<?> currentLoadedClass() {
         Class<?> c = currentLoadedClass0();
-        if ((c != null) && hasAllPermission())
+        if ((c != null) && hasAllPermission()) {
             c = null;
+        }
         return c;
     }
 
@@ -461,10 +463,11 @@ class SecurityManager {
     {
         int depth = classLoaderDepth0();
         if (depth != -1) {
-            if (hasAllPermission())
+            if (hasAllPermission()) {
                 depth = -1;
-            else
+            } else {
                 depth--; // make sure we don't include ourself
+            }
         }
         return depth;
     }
@@ -1099,14 +1102,15 @@ class SecurityManager {
         if (!host.startsWith("[") && host.indexOf(':') != -1) {
             host = "[" + host + "]";
         }
-        if (port == -1)
+        if (port == -1) {
             checkPermission(new SocketPermission(host,
                 SecurityConstants.SOCKET_RESOLVE_ACTION),
                 context);
-        else
+        } else {
             checkPermission(new SocketPermission(host+":"+port,
                 SecurityConstants.SOCKET_CONNECT_ACTION),
                 context);
+        }
     }
 
     /**
@@ -1490,8 +1494,9 @@ class SecurityManager {
             }
         }
 
-        if (packages == null)
+        if (packages == null) {
             packages = new String[0];
+        }
         return packages;
     }
 

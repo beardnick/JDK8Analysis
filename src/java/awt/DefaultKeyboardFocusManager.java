@@ -614,16 +614,18 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
                 FocusEvent fe = (FocusEvent)e;
                 Component currentFocusOwner = getGlobalFocusOwner();
                 if (currentFocusOwner == null) {
-                    if (focusLog.isLoggable(PlatformLogger.Level.FINE))
+                    if (focusLog.isLoggable(PlatformLogger.Level.FINE)) {
                         focusLog.fine("Skipping {0} because focus owner is null", e);
+                    }
                     break;
                 }
                 // Ignore cases where a Component loses focus to itself.
                 // If we make a mistake because of retargeting, then the
                 // FOCUS_GAINED handler will correct it.
                 if (currentFocusOwner == fe.getOppositeComponent()) {
-                    if (focusLog.isLoggable(PlatformLogger.Level.FINE))
+                    if (focusLog.isLoggable(PlatformLogger.Level.FINE)) {
                         focusLog.fine("Skipping {0} because current focus owner is equal to opposite", e);
+                    }
                     break;
                 }
 
@@ -695,10 +697,11 @@ public class DefaultKeyboardFocusManager extends KeyboardFocusManager {
                 Window losingFocusWindow = we.getWindow();
                 Window activeWindow = getGlobalActiveWindow();
                 Window oppositeWindow = we.getOppositeWindow();
-                if (focusLog.isLoggable(PlatformLogger.Level.FINE))
+                if (focusLog.isLoggable(PlatformLogger.Level.FINE)) {
                     focusLog.fine("Active {0}, Current focused {1}, losing focus {2} opposite {3}",
                                   activeWindow, currentFocusedWindow,
                                   losingFocusWindow, oppositeWindow);
+                }
                 if (currentFocusedWindow == null) {
                     break;
                 }

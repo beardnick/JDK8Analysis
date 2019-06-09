@@ -155,8 +155,9 @@ public final class Optional<T> {
      * null
      */
     public void ifPresent(Consumer<? super T> consumer) {
-        if (value != null)
+        if (value != null) {
             consumer.accept(value);
+        }
     }
 
     /**
@@ -172,10 +173,11 @@ public final class Optional<T> {
      */
     public Optional<T> filter(Predicate<? super T> predicate) {
         Objects.requireNonNull(predicate);
-        if (!isPresent())
+        if (!isPresent()) {
             return this;
-        else
+        } else {
             return predicate.test(value) ? this : empty();
+        }
     }
 
     /**
@@ -209,9 +211,9 @@ public final class Optional<T> {
      */
     public<U> Optional<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent())
+        if (!isPresent()) {
             return empty();
-        else {
+        } else {
             return Optional.ofNullable(mapper.apply(value));
         }
     }
@@ -235,9 +237,9 @@ public final class Optional<T> {
      */
     public<U> Optional<U> flatMap(Function<? super T, Optional<U>> mapper) {
         Objects.requireNonNull(mapper);
-        if (!isPresent())
+        if (!isPresent()) {
             return empty();
-        else {
+        } else {
             return Objects.requireNonNull(mapper.apply(value));
         }
     }

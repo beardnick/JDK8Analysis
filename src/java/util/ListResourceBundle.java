@@ -189,8 +189,9 @@ public abstract class ListResourceBundle extends ResourceBundle {
      * loading.
      */
     private synchronized void loadLookup() {
-        if (lookup != null)
+        if (lookup != null) {
             return;
+        }
 
         Object[][] contents = getContents();
         HashMap<String,Object> temp = new HashMap<>(contents.length);

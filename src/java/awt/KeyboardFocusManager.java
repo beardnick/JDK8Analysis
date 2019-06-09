@@ -2432,9 +2432,10 @@ public abstract class KeyboardFocusManager
             {
                 if (descendant == currentFocusOwner) {
                     // Redundant request.
-                    if (focusLog.isLoggable(PlatformLogger.Level.FINEST))
+                    if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
                         focusLog.finest("1. SNFH_FAILURE for {0}",
                                         String.valueOf(descendant));
+                    }
                     return SNFH_FAILURE;
                 }
 
@@ -2466,8 +2467,9 @@ public abstract class KeyboardFocusManager
                 // SunToolkit.postPriorityEvent(newFocusOwnerEvent);
                 SunToolkit.postEvent(descendant.appContext, newFocusOwnerEvent);
 
-                if (focusLog.isLoggable(PlatformLogger.Level.FINEST))
+                if (focusLog.isLoggable(PlatformLogger.Level.FINEST)) {
                     focusLog.finest("2. SNFH_HANDLED for {0}", String.valueOf(descendant));
+                }
                 return SNFH_SUCCESS_HANDLED;
             } else if (hwFocusRequest != null &&
                        hwFocusRequest.heavyweight == heavyweight) {

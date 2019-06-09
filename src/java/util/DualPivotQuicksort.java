@@ -122,9 +122,13 @@ final class DualPivotQuicksort {
         // Check if the array is nearly sorted
         for (int k = left; k < right; run[count] = k) {
             if (a[k] < a[k + 1]) { // ascending
-                while (++k <= right && a[k - 1] <= a[k]);
+                while (++k <= right && a[k - 1] <= a[k]) {
+                    ;
+                }
             } else if (a[k] > a[k + 1]) { // descending
-                while (++k <= right && a[k - 1] >= a[k]);
+                while (++k <= right && a[k - 1] >= a[k]) {
+                    ;
+                }
                 for (int lo = run[count] - 1, hi = k; ++lo < --hi; ) {
                     int t = a[lo]; a[lo] = a[hi]; a[hi] = t;
                 }
@@ -157,7 +161,9 @@ final class DualPivotQuicksort {
 
         // Determine alternation base for merge
         byte odd = 0;
-        for (int n = 1; (n <<= 1) < count; odd ^= 1);
+        for (int n = 1; (n <<= 1) < count; odd ^= 1) {
+            ;
+        }
 
         // Use or create temporary array b for merging
         int[] b;                 // temp array; alternates with a
@@ -195,7 +201,9 @@ final class DualPivotQuicksort {
             if ((count & 1) != 0) {
                 for (int i = right, lo = run[count - 1]; --i >= lo;
                     b[i + bo] = a[i + ao]
-                );
+                ) {
+                    ;
+                }
                 run[++last] = right;
             }
             int[] t = a; a = b; b = t;
@@ -336,8 +344,12 @@ final class DualPivotQuicksort {
             /*
              * Skip elements, which are less or greater than pivot values.
              */
-            while (a[++less] < pivot1);
-            while (a[--great] > pivot2);
+            while (a[++less] < pivot1) {
+                ;
+            }
+            while (a[--great] > pivot2) {
+                ;
+            }
 
             /*
              * Partitioning:
@@ -570,9 +582,13 @@ final class DualPivotQuicksort {
         // Check if the array is nearly sorted
         for (int k = left; k < right; run[count] = k) {
             if (a[k] < a[k + 1]) { // ascending
-                while (++k <= right && a[k - 1] <= a[k]);
+                while (++k <= right && a[k - 1] <= a[k]) {
+                    ;
+                }
             } else if (a[k] > a[k + 1]) { // descending
-                while (++k <= right && a[k - 1] >= a[k]);
+                while (++k <= right && a[k - 1] >= a[k]) {
+                    ;
+                }
                 for (int lo = run[count] - 1, hi = k; ++lo < --hi; ) {
                     long t = a[lo]; a[lo] = a[hi]; a[hi] = t;
                 }
@@ -605,7 +621,9 @@ final class DualPivotQuicksort {
 
         // Determine alternation base for merge
         byte odd = 0;
-        for (int n = 1; (n <<= 1) < count; odd ^= 1);
+        for (int n = 1; (n <<= 1) < count; odd ^= 1) {
+            ;
+        }
 
         // Use or create temporary array b for merging
         long[] b;                 // temp array; alternates with a
@@ -643,7 +661,9 @@ final class DualPivotQuicksort {
             if ((count & 1) != 0) {
                 for (int i = right, lo = run[count - 1]; --i >= lo;
                     b[i + bo] = a[i + ao]
-                );
+                ) {
+                    ;
+                }
                 run[++last] = right;
             }
             long[] t = a; a = b; b = t;
@@ -784,8 +804,12 @@ final class DualPivotQuicksort {
             /*
              * Skip elements, which are less or greater than pivot values.
              */
-            while (a[++less] < pivot1);
-            while (a[--great] > pivot2);
+            while (a[++less] < pivot1) {
+                ;
+            }
+            while (a[--great] > pivot2) {
+                ;
+            }
 
             /*
              * Partitioning:
@@ -1008,9 +1032,13 @@ final class DualPivotQuicksort {
 
             for (int i = left - 1; ++i <= right;
                 count[a[i] - Short.MIN_VALUE]++
-            );
+            ) {
+                ;
+            }
             for (int i = NUM_SHORT_VALUES, k = right + 1; k > left; ) {
-                while (count[--i] == 0);
+                while (count[--i] == 0) {
+                    ;
+                }
                 short value = (short) (i + Short.MIN_VALUE);
                 int s = count[i];
 
@@ -1054,9 +1082,13 @@ final class DualPivotQuicksort {
         // Check if the array is nearly sorted
         for (int k = left; k < right; run[count] = k) {
             if (a[k] < a[k + 1]) { // ascending
-                while (++k <= right && a[k - 1] <= a[k]);
+                while (++k <= right && a[k - 1] <= a[k]) {
+                    ;
+                }
             } else if (a[k] > a[k + 1]) { // descending
-                while (++k <= right && a[k - 1] >= a[k]);
+                while (++k <= right && a[k - 1] >= a[k]) {
+                    ;
+                }
                 for (int lo = run[count] - 1, hi = k; ++lo < --hi; ) {
                     short t = a[lo]; a[lo] = a[hi]; a[hi] = t;
                 }
@@ -1089,7 +1121,9 @@ final class DualPivotQuicksort {
 
         // Determine alternation base for merge
         byte odd = 0;
-        for (int n = 1; (n <<= 1) < count; odd ^= 1);
+        for (int n = 1; (n <<= 1) < count; odd ^= 1) {
+            ;
+        }
 
         // Use or create temporary array b for merging
         short[] b;                 // temp array; alternates with a
@@ -1127,7 +1161,9 @@ final class DualPivotQuicksort {
             if ((count & 1) != 0) {
                 for (int i = right, lo = run[count - 1]; --i >= lo;
                     b[i + bo] = a[i + ao]
-                );
+                ) {
+                    ;
+                }
                 run[++last] = right;
             }
             short[] t = a; a = b; b = t;
@@ -1268,8 +1304,12 @@ final class DualPivotQuicksort {
             /*
              * Skip elements, which are less or greater than pivot values.
              */
-            while (a[++less] < pivot1);
-            while (a[--great] > pivot2);
+            while (a[++less] < pivot1) {
+                ;
+            }
+            while (a[--great] > pivot2) {
+                ;
+            }
 
             /*
              * Partitioning:
@@ -1492,9 +1532,13 @@ final class DualPivotQuicksort {
 
             for (int i = left - 1; ++i <= right;
                 count[a[i]]++
-            );
+            ) {
+                ;
+            }
             for (int i = NUM_CHAR_VALUES, k = right + 1; k > left; ) {
-                while (count[--i] == 0);
+                while (count[--i] == 0) {
+                    ;
+                }
                 char value = (char) i;
                 int s = count[i];
 
@@ -1538,9 +1582,13 @@ final class DualPivotQuicksort {
         // Check if the array is nearly sorted
         for (int k = left; k < right; run[count] = k) {
             if (a[k] < a[k + 1]) { // ascending
-                while (++k <= right && a[k - 1] <= a[k]);
+                while (++k <= right && a[k - 1] <= a[k]) {
+                    ;
+                }
             } else if (a[k] > a[k + 1]) { // descending
-                while (++k <= right && a[k - 1] >= a[k]);
+                while (++k <= right && a[k - 1] >= a[k]) {
+                    ;
+                }
                 for (int lo = run[count] - 1, hi = k; ++lo < --hi; ) {
                     char t = a[lo]; a[lo] = a[hi]; a[hi] = t;
                 }
@@ -1573,7 +1621,9 @@ final class DualPivotQuicksort {
 
         // Determine alternation base for merge
         byte odd = 0;
-        for (int n = 1; (n <<= 1) < count; odd ^= 1);
+        for (int n = 1; (n <<= 1) < count; odd ^= 1) {
+            ;
+        }
 
         // Use or create temporary array b for merging
         char[] b;                 // temp array; alternates with a
@@ -1611,7 +1661,9 @@ final class DualPivotQuicksort {
             if ((count & 1) != 0) {
                 for (int i = right, lo = run[count - 1]; --i >= lo;
                     b[i + bo] = a[i + ao]
-                );
+                ) {
+                    ;
+                }
                 run[++last] = right;
             }
             char[] t = a; a = b; b = t;
@@ -1752,8 +1804,12 @@ final class DualPivotQuicksort {
             /*
              * Skip elements, which are less or greater than pivot values.
              */
-            while (a[++less] < pivot1);
-            while (a[--great] > pivot2);
+            while (a[++less] < pivot1) {
+                ;
+            }
+            while (a[--great] > pivot2) {
+                ;
+            }
 
             /*
              * Partitioning:
@@ -1974,9 +2030,13 @@ final class DualPivotQuicksort {
 
             for (int i = left - 1; ++i <= right;
                 count[a[i] - Byte.MIN_VALUE]++
-            );
+            ) {
+                ;
+            }
             for (int i = NUM_BYTE_VALUES, k = right + 1; k > left; ) {
-                while (count[--i] == 0);
+                while (count[--i] == 0) {
+                    ;
+                }
                 byte value = (byte) (i + Byte.MIN_VALUE);
                 int s = count[i];
 
@@ -2118,9 +2178,13 @@ final class DualPivotQuicksort {
         // Check if the array is nearly sorted
         for (int k = left; k < right; run[count] = k) {
             if (a[k] < a[k + 1]) { // ascending
-                while (++k <= right && a[k - 1] <= a[k]);
+                while (++k <= right && a[k - 1] <= a[k]) {
+                    ;
+                }
             } else if (a[k] > a[k + 1]) { // descending
-                while (++k <= right && a[k - 1] >= a[k]);
+                while (++k <= right && a[k - 1] >= a[k]) {
+                    ;
+                }
                 for (int lo = run[count] - 1, hi = k; ++lo < --hi; ) {
                     float t = a[lo]; a[lo] = a[hi]; a[hi] = t;
                 }
@@ -2153,7 +2217,9 @@ final class DualPivotQuicksort {
 
         // Determine alternation base for merge
         byte odd = 0;
-        for (int n = 1; (n <<= 1) < count; odd ^= 1);
+        for (int n = 1; (n <<= 1) < count; odd ^= 1) {
+            ;
+        }
 
         // Use or create temporary array b for merging
         float[] b;                 // temp array; alternates with a
@@ -2191,7 +2257,9 @@ final class DualPivotQuicksort {
             if ((count & 1) != 0) {
                 for (int i = right, lo = run[count - 1]; --i >= lo;
                     b[i + bo] = a[i + ao]
-                );
+                ) {
+                    ;
+                }
                 run[++last] = right;
             }
             float[] t = a; a = b; b = t;
@@ -2332,8 +2400,12 @@ final class DualPivotQuicksort {
             /*
              * Skip elements, which are less or greater than pivot values.
              */
-            while (a[++less] < pivot1);
-            while (a[--great] > pivot2);
+            while (a[++less] < pivot1) {
+                ;
+            }
+            while (a[--great] > pivot2) {
+                ;
+            }
 
             /*
              * Partitioning:
@@ -2657,9 +2729,13 @@ final class DualPivotQuicksort {
         // Check if the array is nearly sorted
         for (int k = left; k < right; run[count] = k) {
             if (a[k] < a[k + 1]) { // ascending
-                while (++k <= right && a[k - 1] <= a[k]);
+                while (++k <= right && a[k - 1] <= a[k]) {
+                    ;
+                }
             } else if (a[k] > a[k + 1]) { // descending
-                while (++k <= right && a[k - 1] >= a[k]);
+                while (++k <= right && a[k - 1] >= a[k]) {
+                    ;
+                }
                 for (int lo = run[count] - 1, hi = k; ++lo < --hi; ) {
                     double t = a[lo]; a[lo] = a[hi]; a[hi] = t;
                 }
@@ -2692,7 +2768,9 @@ final class DualPivotQuicksort {
 
         // Determine alternation base for merge
         byte odd = 0;
-        for (int n = 1; (n <<= 1) < count; odd ^= 1);
+        for (int n = 1; (n <<= 1) < count; odd ^= 1) {
+            ;
+        }
 
         // Use or create temporary array b for merging
         double[] b;                 // temp array; alternates with a
@@ -2730,7 +2808,9 @@ final class DualPivotQuicksort {
             if ((count & 1) != 0) {
                 for (int i = right, lo = run[count - 1]; --i >= lo;
                     b[i + bo] = a[i + ao]
-                );
+                ) {
+                    ;
+                }
                 run[++last] = right;
             }
             double[] t = a; a = b; b = t;
@@ -2871,8 +2951,12 @@ final class DualPivotQuicksort {
             /*
              * Skip elements, which are less or greater than pivot values.
              */
-            while (a[++less] < pivot1);
-            while (a[--great] > pivot2);
+            while (a[++less] < pivot1) {
+                ;
+            }
+            while (a[--great] > pivot2) {
+                ;
+            }
 
             /*
              * Partitioning:

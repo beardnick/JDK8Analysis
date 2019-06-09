@@ -3023,18 +3023,21 @@ public class Window extends Container implements Accessible {
             } else if (windowStateListenerK == key) {
                 addWindowStateListener((WindowStateListener)(s.readObject()));
             } else // skip value for unrecognized key
+            {
                 s.readObject();
+            }
         }
 
         try {
             while (null != (keyOrNull = s.readObject())) {
                 String key = ((String)keyOrNull).intern();
 
-                if (ownedWindowK == key)
+                if (ownedWindowK == key) {
                     connectOwnedWindow((Window) s.readObject());
-
-                else // skip value for unrecognized key
+                } else // skip value for unrecognized key
+                {
                     s.readObject();
+                }
             }
 
             //read icons

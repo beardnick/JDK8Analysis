@@ -283,8 +283,9 @@ public class HashSet<E>
         s.writeInt(map.size());
 
         // Write out all elements in the proper order.
-        for (E e : map.keySet())
+        for (E e : map.keySet()) {
             s.writeObject(e);
+        }
     }
 
     /**

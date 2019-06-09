@@ -53,8 +53,9 @@ public class IllegalFormatConversionException extends IllegalFormatException {
      *         Class of the mismatched argument
      */
     public IllegalFormatConversionException(char c, Class<?> arg) {
-        if (arg == null)
+        if (arg == null) {
             throw new NullPointerException();
+        }
         this.c = c;
         this.arg = arg;
     }

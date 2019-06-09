@@ -126,10 +126,11 @@ public class LinkedList<E>
         final Node<E> f = first;
         final Node<E> newNode = new Node<>(null, e, f);
         first = newNode;
-        if (f == null)
+        if (f == null) {
             last = newNode;
-        else
+        } else {
             f.prev = newNode;
+        }
         size++;
         modCount++;
     }
@@ -141,10 +142,11 @@ public class LinkedList<E>
         final Node<E> l = last;
         final Node<E> newNode = new Node<>(l, e, null);
         last = newNode;
-        if (l == null)
+        if (l == null) {
             first = newNode;
-        else
+        } else {
             l.next = newNode;
+        }
         size++;
         modCount++;
     }
@@ -157,10 +159,11 @@ public class LinkedList<E>
         final Node<E> pred = succ.prev;
         final Node<E> newNode = new Node<>(pred, e, succ);
         succ.prev = newNode;
-        if (pred == null)
+        if (pred == null) {
             first = newNode;
-        else
+        } else {
             pred.next = newNode;
+        }
         size++;
         modCount++;
     }
@@ -175,10 +178,11 @@ public class LinkedList<E>
         f.item = null;
         f.next = null; // help GC
         first = next;
-        if (next == null)
+        if (next == null) {
             last = null;
-        else
+        } else {
             next.prev = null;
+        }
         size--;
         modCount++;
         return element;
@@ -194,10 +198,11 @@ public class LinkedList<E>
         l.item = null;
         l.prev = null; // help GC
         last = prev;
-        if (prev == null)
+        if (prev == null) {
             first = null;
-        else
+        } else {
             prev.next = null;
+        }
         size--;
         modCount++;
         return element;
@@ -240,8 +245,9 @@ public class LinkedList<E>
      */
     public E getFirst() {
         final Node<E> f = first;
-        if (f == null)
+        if (f == null) {
             throw new NoSuchElementException();
+        }
         return f.item;
     }
 
@@ -253,8 +259,9 @@ public class LinkedList<E>
      */
     public E getLast() {
         final Node<E> l = last;
-        if (l == null)
+        if (l == null) {
             throw new NoSuchElementException();
+        }
         return l.item;
     }
 
@@ -266,8 +273,9 @@ public class LinkedList<E>
      */
     public E removeFirst() {
         final Node<E> f = first;
-        if (f == null)
+        if (f == null) {
             throw new NoSuchElementException();
+        }
         return unlinkFirst(f);
     }
 
@@ -279,8 +287,9 @@ public class LinkedList<E>
      */
     public E removeLast() {
         final Node<E> l = last;
-        if (l == null)
+        if (l == null) {
             throw new NoSuchElementException();
+        }
         return unlinkLast(l);
     }
 
@@ -407,8 +416,9 @@ public class LinkedList<E>
 
         Object[] a = c.toArray();
         int numNew = a.length;
-        if (numNew == 0)
+        if (numNew == 0) {
             return false;
+        }
 
         Node<E> pred, succ;
         if (index == size) {
@@ -422,10 +432,11 @@ public class LinkedList<E>
         for (Object o : a) {
             @SuppressWarnings("unchecked") E e = (E) o;
             Node<E> newNode = new Node<>(pred, e, null);
-            if (pred == null)
+            if (pred == null) {
                 first = newNode;
-            else
+            } else {
                 pred.next = newNode;
+            }
             pred = newNode;
         }
 
@@ -506,10 +517,11 @@ public class LinkedList<E>
     public void add(int index, E element) {
         checkPositionIndex(index);
 
-        if (index == size)
+        if (index == size) {
             linkLast(element);
-        else
+        } else {
             linkBefore(element, node(index));
+        }
     }
 
     /**
@@ -551,13 +563,15 @@ public class LinkedList<E>
     }
 
     private void checkElementIndex(int index) {
-        if (!isElementIndex(index))
+        if (!isElementIndex(index)) {
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        }
     }
 
     private void checkPositionIndex(int index) {
-        if (!isPositionIndex(index))
+        if (!isPositionIndex(index)) {
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        }
     }
 
     /**
@@ -568,13 +582,15 @@ public class LinkedList<E>
 
         if (index < (size >> 1)) {
             Node<E> x = first;
-            for (int i = 0; i < index; i++)
+            for (int i = 0; i < index; i++) {
                 x = x.next;
+            }
             return x;
         } else {
             Node<E> x = last;
-            for (int i = size - 1; i > index; i--)
+            for (int i = size - 1; i > index; i--) {
                 x = x.prev;
+            }
             return x;
         }
     }
@@ -596,14 +612,16 @@ public class LinkedList<E>
         int index = 0;
         if (o == null) {
             for (Node<E> x = first; x != null; x = x.next) {
-                if (x.item == null)
+                if (x.item == null) {
                     return index;
+                }
                 index++;
             }
         } else {
             for (Node<E> x = first; x != null; x = x.next) {
-                if (o.equals(x.item))
+                if (o.equals(x.item)) {
                     return index;
+                }
                 index++;
             }
         }
@@ -626,14 +644,16 @@ public class LinkedList<E>
         if (o == null) {
             for (Node<E> x = last; x != null; x = x.prev) {
                 index--;
-                if (x.item == null)
+                if (x.item == null) {
                     return index;
+                }
             }
         } else {
             for (Node<E> x = last; x != null; x = x.prev) {
                 index--;
-                if (o.equals(x.item))
+                if (o.equals(x.item)) {
                     return index;
+                }
             }
         }
         return -1;
@@ -886,8 +906,9 @@ public class LinkedList<E>
 
         public E next() {
             checkForComodification();
-            if (!hasNext())
+            if (!hasNext()) {
                 throw new NoSuchElementException();
+            }
 
             lastReturned = next;
             next = next.next;
@@ -901,8 +922,9 @@ public class LinkedList<E>
 
         public E previous() {
             checkForComodification();
-            if (!hasPrevious())
+            if (!hasPrevious()) {
                 throw new NoSuchElementException();
+            }
 
             lastReturned = next = (next == null) ? last : next.prev;
             nextIndex--;
@@ -919,22 +941,25 @@ public class LinkedList<E>
 
         public void remove() {
             checkForComodification();
-            if (lastReturned == null)
+            if (lastReturned == null) {
                 throw new IllegalStateException();
+            }
 
             Node<E> lastNext = lastReturned.next;
             unlink(lastReturned);
-            if (next == lastReturned)
+            if (next == lastReturned) {
                 next = lastNext;
-            else
+            } else {
                 nextIndex--;
+            }
             lastReturned = null;
             expectedModCount++;
         }
 
         public void set(E e) {
-            if (lastReturned == null)
+            if (lastReturned == null) {
                 throw new IllegalStateException();
+            }
             checkForComodification();
             lastReturned.item = e;
         }
@@ -942,10 +967,11 @@ public class LinkedList<E>
         public void add(E e) {
             checkForComodification();
             lastReturned = null;
-            if (next == null)
+            if (next == null) {
                 linkLast(e);
-            else
+            } else {
                 linkBefore(e, next);
+            }
             nextIndex++;
             expectedModCount++;
         }
@@ -962,8 +988,9 @@ public class LinkedList<E>
         }
 
         final void checkForComodification() {
-            if (modCount != expectedModCount)
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
+            }
         }
     }
 
@@ -1026,8 +1053,9 @@ public class LinkedList<E>
         clone.modCount = 0;
 
         // Initialize clone with our elements
-        for (Node<E> x = first; x != null; x = x.next)
+        for (Node<E> x = first; x != null; x = x.next) {
             clone.add(x.item);
+        }
 
         return clone;
     }
@@ -1049,8 +1077,9 @@ public class LinkedList<E>
     public Object[] toArray() {
         Object[] result = new Object[size];
         int i = 0;
-        for (Node<E> x = first; x != null; x = x.next)
+        for (Node<E> x = first; x != null; x = x.next) {
             result[i++] = x.item;
+        }
         return result;
     }
 
@@ -1094,16 +1123,19 @@ public class LinkedList<E>
      */
     @SuppressWarnings("unchecked")
     public <T> T[] toArray(T[] a) {
-        if (a.length < size)
+        if (a.length < size) {
             a = (T[])java.lang.reflect.Array.newInstance(
                                 a.getClass().getComponentType(), size);
+        }
         int i = 0;
         Object[] result = a;
-        for (Node<E> x = first; x != null; x = x.next)
+        for (Node<E> x = first; x != null; x = x.next) {
             result[i++] = x.item;
+        }
 
-        if (a.length > size)
+        if (a.length > size) {
             a[size] = null;
+        }
 
         return a;
     }
@@ -1127,8 +1159,9 @@ public class LinkedList<E>
         s.writeInt(size);
 
         // Write out all elements in the proper order.
-        for (Node<E> x = first; x != null; x = x.next)
+        for (Node<E> x = first; x != null; x = x.next) {
             s.writeObject(x.item);
+        }
     }
 
     /**
@@ -1145,8 +1178,9 @@ public class LinkedList<E>
         int size = s.readInt();
 
         // Read in all elements in the proper order.
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++) {
             linkLast((E)s.readObject());
+        }
     }
 
     /**
@@ -1190,9 +1224,9 @@ public class LinkedList<E>
             int s; // force initialization
             final LinkedList<E> lst;
             if ((s = est) < 0) {
-                if ((lst = list) == null)
+                if ((lst = list) == null) {
                     s = est = 0;
-                else {
+                } else {
                     expectedModCount = lst.modCount;
                     current = lst.first;
                     s = est = lst.size;
@@ -1208,10 +1242,12 @@ public class LinkedList<E>
             int s = getEst();
             if (s > 1 && (p = current) != null) {
                 int n = batch + BATCH_UNIT;
-                if (n > s)
+                if (n > s) {
                     n = s;
-                if (n > MAX_BATCH)
+                }
+                if (n > MAX_BATCH) {
                     n = MAX_BATCH;
+                }
                 Object[] a = new Object[n];
                 int j = 0;
                 do { a[j++] = p.item; } while ((p = p.next) != null && j < n);
@@ -1225,7 +1261,9 @@ public class LinkedList<E>
 
         public void forEachRemaining(Consumer<? super E> action) {
             Node<E> p; int n;
-            if (action == null) throw new NullPointerException();
+            if (action == null) {
+                throw new NullPointerException();
+            }
             if ((n = getEst()) > 0 && (p = current) != null) {
                 current = null;
                 est = 0;
@@ -1235,20 +1273,24 @@ public class LinkedList<E>
                     action.accept(e);
                 } while (p != null && --n > 0);
             }
-            if (list.modCount != expectedModCount)
+            if (list.modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
+            }
         }
 
         public boolean tryAdvance(Consumer<? super E> action) {
             Node<E> p;
-            if (action == null) throw new NullPointerException();
+            if (action == null) {
+                throw new NullPointerException();
+            }
             if (getEst() > 0 && (p = current) != null) {
                 --est;
                 E e = p.item;
                 current = p.next;
                 action.accept(e);
-                if (list.modCount != expectedModCount)
+                if (list.modCount != expectedModCount) {
                     throw new ConcurrentModificationException();
+                }
                 return true;
             }
             return false;

@@ -72,8 +72,9 @@ public class AssertionError extends Error {
      */
     public AssertionError(Object detailMessage) {
         this(String.valueOf(detailMessage));
-        if (detailMessage instanceof Throwable)
+        if (detailMessage instanceof Throwable) {
             initCause((Throwable) detailMessage);
+        }
     }
 
     /**

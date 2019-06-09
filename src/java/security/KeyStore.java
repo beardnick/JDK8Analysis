@@ -890,8 +890,9 @@ public class KeyStore {
     public static KeyStore getInstance(String type, String provider)
         throws KeyStoreException, NoSuchProviderException
     {
-        if (provider == null || provider.length() == 0)
+        if (provider == null || provider.length() == 0) {
             throw new IllegalArgumentException("missing provider");
+        }
         try {
             Object[] objs = Security.getImpl(type, "KeyStore", provider);
             return new KeyStore((KeyStoreSpi)objs[0], (Provider)objs[1], type);
@@ -931,8 +932,9 @@ public class KeyStore {
     public static KeyStore getInstance(String type, Provider provider)
         throws KeyStoreException
     {
-        if (provider == null)
+        if (provider == null) {
             throw new IllegalArgumentException("missing provider");
+        }
         try {
             Object[] objs = Security.getImpl(type, "KeyStore", provider);
             return new KeyStore((KeyStoreSpi)objs[0], (Provider)objs[1], type);

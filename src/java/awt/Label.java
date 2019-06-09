@@ -184,8 +184,9 @@ public class Label extends Component implements Accessible {
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = getToolkit().createLabel(this);
+            }
             super.addNotify();
         }
     }

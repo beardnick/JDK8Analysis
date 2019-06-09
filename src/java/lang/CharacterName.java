@@ -40,8 +40,9 @@ class CharacterName {
 
     private static synchronized byte[] initNamePool() {
         byte[] strPool = null;
-        if (refStrPool != null && (strPool = refStrPool.get()) != null)
+        if (refStrPool != null && (strPool = refStrPool.get()) != null) {
             return strPool;
+        }
         DataInputStream dis = null;
         try {
             dis = new DataInputStream(new InflaterInputStream(
@@ -86,8 +87,9 @@ class CharacterName {
             throw new InternalError(x.getMessage(), x);
         } finally {
             try {
-                if (dis != null)
+                if (dis != null) {
                     dis.close();
+                }
             } catch (Exception xx) {}
         }
         return strPool;
@@ -95,12 +97,14 @@ class CharacterName {
 
     public static String get(int cp) {
         byte[] strPool = null;
-        if (refStrPool == null || (strPool = refStrPool.get()) == null)
+        if (refStrPool == null || (strPool = refStrPool.get()) == null) {
             strPool = initNamePool();
+        }
         int off = 0;
         if (lookup[cp>>8] == null ||
-            (off = lookup[cp>>8][cp&0xff]) == 0)
+            (off = lookup[cp>>8][cp&0xff]) == 0) {
             return null;
+        }
         @SuppressWarnings("deprecation")
         String result = new String(strPool, 0, off >>> 8, off & 0xff);  // ASCII
         return result;

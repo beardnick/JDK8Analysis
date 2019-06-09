@@ -177,13 +177,17 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
     public int indexOf(Object o) {
         ListIterator<E> it = listIterator();
         if (o==null) {
-            while (it.hasNext())
-                if (it.next()==null)
+            while (it.hasNext()) {
+                if (it.next()==null) {
                     return it.previousIndex();
+                }
+            }
         } else {
-            while (it.hasNext())
-                if (o.equals(it.next()))
+            while (it.hasNext()) {
+                if (o.equals(it.next())) {
                     return it.previousIndex();
+                }
+            }
         }
         return -1;
     }
@@ -202,13 +206,17 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
     public int lastIndexOf(Object o) {
         ListIterator<E> it = listIterator(size());
         if (o==null) {
-            while (it.hasPrevious())
-                if (it.previous()==null)
+            while (it.hasPrevious()) {
+                if (it.previous()==null) {
                     return it.nextIndex();
+                }
+            }
         } else {
-            while (it.hasPrevious())
-                if (o.equals(it.previous()))
+            while (it.hasPrevious()) {
+                if (o.equals(it.previous())) {
                     return it.nextIndex();
+                }
+            }
         }
         return -1;
     }
@@ -366,14 +374,16 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
         }
 
         public void remove() {
-            if (lastRet < 0)
+            if (lastRet < 0) {
                 throw new IllegalStateException();
+            }
             checkForComodification();
 
             try {
                 AbstractList.this.remove(lastRet);
-                if (lastRet < cursor)
+                if (lastRet < cursor) {
                     cursor--;
+                }
                 lastRet = -1;
                 expectedModCount = modCount;
             } catch (IndexOutOfBoundsException e) {
@@ -382,8 +392,9 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
         }
 
         final void checkForComodification() {
-            if (modCount != expectedModCount)
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
+            }
         }
     }
 
@@ -418,8 +429,9 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
         }
 
         public void set(E e) {
-            if (lastRet < 0)
+            if (lastRet < 0) {
                 throw new IllegalStateException();
+            }
             checkForComodification();
 
             try {
@@ -510,18 +522,21 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
      * @return {@code true} if the specified object is equal to this list
      */
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
-        if (!(o instanceof List))
+        }
+        if (!(o instanceof List)) {
             return false;
+        }
 
         ListIterator<E> e1 = listIterator();
         ListIterator<?> e2 = ((List<?>) o).listIterator();
         while (e1.hasNext() && e2.hasNext()) {
             E o1 = e1.next();
             Object o2 = e2.next();
-            if (!(o1==null ? o2==null : o1.equals(o2)))
+            if (!(o1==null ? o2==null : o1.equals(o2))) {
                 return false;
+            }
         }
         return !(e1.hasNext() || e2.hasNext());
     }
@@ -537,8 +552,9 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
      */
     public int hashCode() {
         int hashCode = 1;
-        for (E e : this)
+        for (E e : this) {
             hashCode = 31*hashCode + (e==null ? 0 : e.hashCode());
+        }
         return hashCode;
     }
 
@@ -601,8 +617,9 @@ public abstract class AbstractList<E> extends AbstractCollection<E> implements L
     protected transient int modCount = 0;
 
     private void rangeCheckForAdd(int index) {
-        if (index < 0 || index > size())
+        if (index < 0 || index > size()) {
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        }
     }
 
     private String outOfBoundsMsg(int index) {
@@ -616,13 +633,16 @@ class SubList<E> extends AbstractList<E> {
     private int size;
 
     SubList(AbstractList<E> list, int fromIndex, int toIndex) {
-        if (fromIndex < 0)
+        if (fromIndex < 0) {
             throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
-        if (toIndex > list.size())
+        }
+        if (toIndex > list.size()) {
             throw new IndexOutOfBoundsException("toIndex = " + toIndex);
-        if (fromIndex > toIndex)
+        }
+        if (fromIndex > toIndex) {
             throw new IllegalArgumentException("fromIndex(" + fromIndex +
                                                ") > toIndex(" + toIndex + ")");
+        }
         l = list;
         offset = fromIndex;
         size = toIndex - fromIndex;
@@ -677,8 +697,9 @@ class SubList<E> extends AbstractList<E> {
     public boolean addAll(int index, Collection<? extends E> c) {
         rangeCheckForAdd(index);
         int cSize = c.size();
-        if (cSize==0)
+        if (cSize==0) {
             return false;
+        }
 
         checkForComodification();
         l.addAll(offset+index, c);
@@ -703,10 +724,11 @@ class SubList<E> extends AbstractList<E> {
             }
 
             public E next() {
-                if (hasNext())
+                if (hasNext()) {
                     return i.next();
-                else
+                } else {
                     throw new NoSuchElementException();
+                }
             }
 
             public boolean hasPrevious() {
@@ -714,10 +736,11 @@ class SubList<E> extends AbstractList<E> {
             }
 
             public E previous() {
-                if (hasPrevious())
+                if (hasPrevious()) {
                     return i.previous();
-                else
+                } else {
                     throw new NoSuchElementException();
+                }
             }
 
             public int nextIndex() {
@@ -751,13 +774,15 @@ class SubList<E> extends AbstractList<E> {
     }
 
     private void rangeCheck(int index) {
-        if (index < 0 || index >= size)
+        if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        }
     }
 
     private void rangeCheckForAdd(int index) {
-        if (index < 0 || index > size)
+        if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+        }
     }
 
     private String outOfBoundsMsg(int index) {
@@ -765,8 +790,9 @@ class SubList<E> extends AbstractList<E> {
     }
 
     private void checkForComodification() {
-        if (this.modCount != l.modCount)
+        if (this.modCount != l.modCount) {
             throw new ConcurrentModificationException();
+        }
     }
 }
 

@@ -59,8 +59,9 @@ class TempFileHelper {
         n = (n == Long.MIN_VALUE) ? 0 : Math.abs(n);
         Path name = dir.getFileSystem().getPath(prefix + Long.toString(n) + suffix);
         // the generated name should be a simple file name
-        if (name.getParent() != null)
+        if (name.getParent() != null) {
             throw new IllegalArgumentException("Invalid prefix or suffix");
+        }
         return dir.resolve(name);
     }
 
@@ -84,12 +85,15 @@ class TempFileHelper {
                                FileAttribute<?>[] attrs)
         throws IOException
     {
-        if (prefix == null)
+        if (prefix == null) {
             prefix = "";
-        if (suffix == null)
+        }
+        if (suffix == null) {
             suffix = (createDirectory) ? "" : ".tmp";
-        if (dir == null)
+        }
+        if (dir == null) {
             dir = tmpdir;
+        }
 
         // in POSIX environments use default file and directory permissions
         // if initial permissions not given by caller.
@@ -127,8 +131,9 @@ class TempFileHelper {
                 f = generatePath(prefix, suffix, dir);
             } catch (InvalidPathException e) {
                 // don't reveal temporary directory location
-                if (sm != null)
+                if (sm != null) {
                     throw new IllegalArgumentException("Invalid prefix or suffix");
+                }
                 throw e;
             }
             try {
@@ -139,8 +144,9 @@ class TempFileHelper {
                 }
             } catch (SecurityException e) {
                 // don't reveal temporary directory location
-                if (dir == tmpdir && sm != null)
+                if (dir == tmpdir && sm != null) {
                     throw new SecurityException("Unable to create temporary file or directory");
+                }
                 throw e;
             } catch (FileAlreadyExistsException e) {
                 // ignore

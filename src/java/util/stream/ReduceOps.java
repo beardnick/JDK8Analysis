@@ -131,8 +131,9 @@ final class ReduceOps {
 
             @Override
             public void combine(ReducingSink other) {
-                if (!other.empty)
+                if (!other.empty) {
                     accept(other.state);
+                }
             }
         }
         return new ReduceOp<T, Optional<T>, ReducingSink>(StreamShape.REFERENCE) {
@@ -314,8 +315,9 @@ final class ReduceOps {
 
             @Override
             public void combine(ReducingSink other) {
-                if (!other.empty)
+                if (!other.empty) {
                     accept(other.state);
+                }
             }
         }
         return new ReduceOp<Integer, OptionalInt, ReducingSink>(StreamShape.INT_VALUE) {
@@ -450,8 +452,9 @@ final class ReduceOps {
 
             @Override
             public void combine(ReducingSink other) {
-                if (!other.empty)
+                if (!other.empty) {
                     accept(other.state);
+                }
             }
         }
         return new ReduceOp<Long, OptionalLong, ReducingSink>(StreamShape.LONG_VALUE) {
@@ -586,8 +589,9 @@ final class ReduceOps {
 
             @Override
             public void combine(ReducingSink other) {
-                if (!other.empty)
+                if (!other.empty) {
                     accept(other.state);
+                }
             }
         }
         return new ReduceOp<Double, OptionalDouble, ReducingSink>(StreamShape.DOUBLE_VALUE) {

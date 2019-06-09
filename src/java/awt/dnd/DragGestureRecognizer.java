@@ -123,14 +123,18 @@ public abstract class DragGestureRecognizer implements Serializable {
     protected DragGestureRecognizer(DragSource ds, Component c, int sa, DragGestureListener dgl) {
         super();
 
-        if (ds == null) throw new IllegalArgumentException("null DragSource");
+        if (ds == null) {
+            throw new IllegalArgumentException("null DragSource");
+        }
 
         dragSource    = ds;
         component     = c;
         sourceActions = sa & (DnDConstants.ACTION_COPY_OR_MOVE | DnDConstants.ACTION_LINK);
 
         try {
-            if (dgl != null) addDragGestureListener(dgl);
+            if (dgl != null) {
+                addDragGestureListener(dgl);
+            }
         } catch (TooManyListenersException tmle) {
             // cant happen ...
         }
@@ -261,13 +265,15 @@ public abstract class DragGestureRecognizer implements Serializable {
      */
 
     public synchronized void setComponent(Component c) {
-        if (component != null && dragGestureListener != null)
+        if (component != null && dragGestureListener != null) {
             unregisterListeners();
+        }
 
         component = c;
 
-        if (component != null && dragGestureListener != null)
+        if (component != null && dragGestureListener != null) {
             registerListeners();
+        }
     }
 
     /**
@@ -319,12 +325,14 @@ public abstract class DragGestureRecognizer implements Serializable {
      */
 
     public synchronized void addDragGestureListener(DragGestureListener dgl) throws TooManyListenersException {
-        if (dragGestureListener != null)
+        if (dragGestureListener != null) {
             throw new TooManyListenersException();
-        else {
+        } else {
             dragGestureListener = dgl;
 
-            if (component != null) registerListeners();
+            if (component != null) {
+                registerListeners();
+            }
         }
     }
 
@@ -339,12 +347,14 @@ public abstract class DragGestureRecognizer implements Serializable {
      */
 
     public synchronized void removeDragGestureListener(DragGestureListener dgl) {
-        if (dragGestureListener == null || !dragGestureListener.equals(dgl))
+        if (dragGestureListener == null || !dragGestureListener.equals(dgl)) {
             throw new IllegalArgumentException();
-        else {
+        } else {
             dragGestureListener = null;
 
-            if (component != null) unregisterListeners();
+            if (component != null) {
+                unregisterListeners();
+            }
         }
     }
 

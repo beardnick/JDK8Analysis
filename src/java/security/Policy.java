@@ -149,8 +149,9 @@ public abstract class Policy {
     public static Policy getPolicy()
     {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
+        if (sm != null) {
             sm.checkPermission(SecurityConstants.GET_POLICY_PERMISSION);
+        }
         return getPolicyNoCheck();
     }
 
@@ -264,8 +265,10 @@ public abstract class Policy {
     public static void setPolicy(Policy p)
     {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null) sm.checkPermission(
-                                 new SecurityPermission("setPolicy"));
+        if (sm != null) {
+            sm.checkPermission(
+                                     new SecurityPermission("setPolicy"));
+        }
         if (p != null) {
             initPolicy(p);
         }
@@ -644,8 +647,9 @@ public abstract class Policy {
     public PermissionCollection getPermissions(ProtectionDomain domain) {
         PermissionCollection pc = null;
 
-        if (domain == null)
+        if (domain == null) {
             return new Permissions();
+        }
 
         if (pdMapping == null) {
             initPolicy(this);

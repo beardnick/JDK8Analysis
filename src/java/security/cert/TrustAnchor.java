@@ -122,9 +122,10 @@ public class TrustAnchor {
      */
     public TrustAnchor(X509Certificate trustedCert, byte[] nameConstraints)
     {
-        if (trustedCert == null)
+        if (trustedCert == null) {
             throw new NullPointerException("the trustedCert parameter must " +
                 "be non-null");
+        }
         this.trustedCert = trustedCert;
         this.pubKey = null;
         this.caName = null;
@@ -204,15 +205,18 @@ public class TrustAnchor {
      */
     public TrustAnchor(String caName, PublicKey pubKey, byte[] nameConstraints)
     {
-        if (pubKey == null)
+        if (pubKey == null) {
             throw new NullPointerException("the pubKey parameter must be " +
                 "non-null");
-        if (caName == null)
+        }
+        if (caName == null) {
             throw new NullPointerException("the caName parameter must be " +
                 "non-null");
-        if (caName.length() == 0)
+        }
+        if (caName.length() == 0) {
             throw new IllegalArgumentException("the caName " +
                 "parameter must be a non-empty String");
+        }
         // check if caName is formatted correctly
         this.caPrincipal = new X500Principal(caName);
         this.pubKey = pubKey;
@@ -326,8 +330,9 @@ public class TrustAnchor {
         } else {
             sb.append("  Trusted CA cert: " + trustedCert.toString() + "\n");
         }
-        if (nc != null)
+        if (nc != null) {
             sb.append("  Name Constraints: " + nc.toString() + "\n");
+        }
         return sb.toString();
     }
 }

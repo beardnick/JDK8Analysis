@@ -93,7 +93,9 @@ public abstract class MappedByteBuffer
     private void checkMapped() {
         if (fd == null)
             // Can only happen if a luser explicitly casts a direct byte buffer
+        {
             throw new UnsupportedOperationException();
+        }
     }
 
     // Returns the distance (in bytes) of the buffer from the page aligned address
@@ -132,8 +134,9 @@ public abstract class MappedByteBuffer
      */
     public final boolean isLoaded() {
         checkMapped();
-        if ((address == 0) || (capacity() == 0))
+        if ((address == 0) || (capacity() == 0)) {
             return true;
+        }
         long offset = mappingOffset();
         long length = mappingLength(offset);
         return isLoaded0(mappingAddress(offset), length, Bits.pageCount(length));
@@ -154,8 +157,9 @@ public abstract class MappedByteBuffer
      */
     public final MappedByteBuffer load() {
         checkMapped();
-        if ((address == 0) || (capacity() == 0))
+        if ((address == 0) || (capacity() == 0)) {
             return this;
+        }
         long offset = mappingOffset();
         long length = mappingLength(offset);
         load0(mappingAddress(offset), length);
@@ -172,8 +176,9 @@ public abstract class MappedByteBuffer
             x ^= unsafe.getByte(a);
             a += ps;
         }
-        if (unused != 0)
+        if (unused != 0) {
             unused = x;
+        }
 
         return this;
     }

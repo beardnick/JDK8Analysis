@@ -176,10 +176,11 @@ public class Beans {
 
         // Try to find a serialized object with this name
         final String serName = beanName.replace('.','/').concat(".ser");
-        if (cls == null)
+        if (cls == null) {
             ins =  ClassLoader.getSystemResourceAsStream(serName);
-        else
+        } else {
             ins =  cls.getResourceAsStream(serName);
+        }
         if (ins != null) {
             try {
                 if (cls == null) {
@@ -272,8 +273,9 @@ public class Beans {
                     // Now get the URL correponding to the resource name.
                     if (cls == null) {
                         objectUrl = ClassLoader.getSystemResource(resourceName);
-                    } else
+                    } else {
                         objectUrl = cls.getResource(resourceName);
+                    }
 
                     // If we found a URL, we try to locate the docbase by taking
                     // of the final path name component, and the code base by taking
@@ -327,9 +329,13 @@ public class Beans {
 
                 if (needDummies) {
                   ((BeansAppletStub)stub).active = true;
-                } else initializer.activate(applet);
+                } else {
+                    initializer.activate(applet);
+                }
 
-            } else if (beanContext != null) unsafeBeanContextAdd(beanContext, result);
+            } else if (beanContext != null) {
+                unsafeBeanContextAdd(beanContext, result);
+            }
         }
 
         return result;

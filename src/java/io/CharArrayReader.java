@@ -88,8 +88,9 @@ public class CharArrayReader extends Reader {
 
     /** Checks to make sure that the stream has not been closed */
     private void ensureOpen() throws IOException {
-        if (buf == null)
+        if (buf == null) {
             throw new IOException("Stream closed");
+        }
     }
 
     /**
@@ -100,10 +101,11 @@ public class CharArrayReader extends Reader {
     public int read() throws IOException {
         synchronized (lock) {
             ensureOpen();
-            if (pos >= count)
+            if (pos >= count) {
                 return -1;
-            else
+            } else {
                 return buf[pos++];
+            }
         }
     }
 

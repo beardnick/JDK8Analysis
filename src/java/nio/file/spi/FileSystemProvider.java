@@ -86,8 +86,9 @@ public abstract class FileSystemProvider {
 
     private static Void checkPermission() {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
+        if (sm != null) {
             sm.checkPermission(new RuntimePermission("fileSystemProvider"));
+        }
         return null;
     }
     private FileSystemProvider(Void ignore) { }
@@ -377,8 +378,9 @@ public abstract class FileSystemProvider {
             for (OpenOption opt: options) {
                 // All OpenOption values except for APPEND and WRITE are allowed
                 if (opt == StandardOpenOption.APPEND ||
-                    opt == StandardOpenOption.WRITE)
+                    opt == StandardOpenOption.WRITE) {
                     throw new UnsupportedOperationException("'" + opt + "' not allowed");
+                }
             }
         }
         return Channels.newInputStream(Files.newByteChannel(path, options));
@@ -425,8 +427,9 @@ public abstract class FileSystemProvider {
             opts.add(StandardOpenOption.TRUNCATE_EXISTING);
         } else {
             for (OpenOption opt: options) {
-                if (opt == StandardOpenOption.READ)
+                if (opt == StandardOpenOption.READ) {
                     throw new IllegalArgumentException("READ not allowed");
+                }
                 opts.add(opt);
             }
         }

@@ -82,10 +82,12 @@ public final class PosixFilePermissions {
     }
 
     private static boolean isSet(char c, char setValue) {
-        if (c == setValue)
+        if (c == setValue) {
             return true;
-        if (c == '-')
+        }
+        if (c == '-') {
             return false;
+        }
         throw new IllegalArgumentException("Invalid mode");
     }
     private static boolean isR(char c) { return isSet(c, 'r'); }
@@ -124,18 +126,37 @@ public final class PosixFilePermissions {
      * @see #toString(Set)
      */
     public static Set<PosixFilePermission> fromString(String perms) {
-        if (perms.length() != 9)
+        if (perms.length() != 9) {
             throw new IllegalArgumentException("Invalid mode");
+        }
         Set<PosixFilePermission> result = EnumSet.noneOf(PosixFilePermission.class);
-        if (isR(perms.charAt(0))) result.add(OWNER_READ);
-        if (isW(perms.charAt(1))) result.add(OWNER_WRITE);
-        if (isX(perms.charAt(2))) result.add(OWNER_EXECUTE);
-        if (isR(perms.charAt(3))) result.add(GROUP_READ);
-        if (isW(perms.charAt(4))) result.add(GROUP_WRITE);
-        if (isX(perms.charAt(5))) result.add(GROUP_EXECUTE);
-        if (isR(perms.charAt(6))) result.add(OTHERS_READ);
-        if (isW(perms.charAt(7))) result.add(OTHERS_WRITE);
-        if (isX(perms.charAt(8))) result.add(OTHERS_EXECUTE);
+        if (isR(perms.charAt(0))) {
+            result.add(OWNER_READ);
+        }
+        if (isW(perms.charAt(1))) {
+            result.add(OWNER_WRITE);
+        }
+        if (isX(perms.charAt(2))) {
+            result.add(OWNER_EXECUTE);
+        }
+        if (isR(perms.charAt(3))) {
+            result.add(GROUP_READ);
+        }
+        if (isW(perms.charAt(4))) {
+            result.add(GROUP_WRITE);
+        }
+        if (isX(perms.charAt(5))) {
+            result.add(GROUP_EXECUTE);
+        }
+        if (isR(perms.charAt(6))) {
+            result.add(OTHERS_READ);
+        }
+        if (isW(perms.charAt(7))) {
+            result.add(OTHERS_WRITE);
+        }
+        if (isX(perms.charAt(8))) {
+            result.add(OTHERS_EXECUTE);
+        }
         return result;
     }
 
@@ -162,8 +183,9 @@ public final class PosixFilePermissions {
         // a PosixFilePermission)
         perms = new HashSet<PosixFilePermission>(perms);
         for (PosixFilePermission p: perms) {
-            if (p == null)
+            if (p == null) {
                 throw new NullPointerException();
+            }
         }
         final Set<PosixFilePermission> value = perms;
         return new FileAttribute<Set<PosixFilePermission>>() {

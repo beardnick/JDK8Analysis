@@ -467,23 +467,28 @@ public class Date
         int prevc = 0;
     syntax:
         {
-            if (s == null)
+            if (s == null) {
                 break syntax;
+            }
             int limit = s.length();
             while (i < limit) {
                 c = s.charAt(i);
                 i++;
-                if (c <= ' ' || c == ',')
+                if (c <= ' ' || c == ',') {
                     continue;
+                }
                 if (c == '(') { // skip comments
                     int depth = 1;
                     while (i < limit) {
                         c = s.charAt(i);
                         i++;
-                        if (c == '(') depth++;
-                        else if (c == ')')
-                            if (--depth <= 0)
+                        if (c == '(') {
+                            depth++;
+                        } else if (c == ')') {
+                            if (--depth <= 0) {
                                 break;
+                            }
+                        }
                     }
                     continue;
                 }
@@ -495,96 +500,114 @@ public class Date
                     }
                     if (prevc == '+' || prevc == '-' && year != Integer.MIN_VALUE) {
                         // timezone offset
-                        if (n < 24)
+                        if (n < 24) {
                             n = n * 60; // EG. "GMT-3"
-                        else
+                        } else {
                             n = n % 100 + n / 100 * 60; // eg "GMT-0430"
+                        }
                         if (prevc == '+')   // plus means east of GMT
+                        {
                             n = -n;
-                        if (tzoffset != 0 && tzoffset != -1)
+                        }
+                        if (tzoffset != 0 && tzoffset != -1) {
                             break syntax;
+                        }
                         tzoffset = n;
-                    } else if (n >= 70)
-                        if (year != Integer.MIN_VALUE)
+                    } else if (n >= 70) {
+                        if (year != Integer.MIN_VALUE) {
                             break syntax;
-                        else if (c <= ' ' || c == ',' || c == '/' || i >= limit)
+                        } else if (c <= ' ' || c == ',' || c == '/' || i >= limit)
                             // year = n < 1900 ? n : n - 1900;
+                        {
                             year = n;
-                        else
+                        } else {
                             break syntax;
-                    else if (c == ':')
-                        if (hour < 0)
+                        }
+                    } else if (c == ':') {
+                        if (hour < 0) {
                             hour = (byte) n;
-                        else if (min < 0)
+                        } else if (min < 0) {
                             min = (byte) n;
-                        else
+                        } else {
                             break syntax;
-                    else if (c == '/')
-                        if (mon < 0)
+                        }
+                    } else if (c == '/') {
+                        if (mon < 0) {
                             mon = (byte) (n - 1);
-                        else if (mday < 0)
+                        } else if (mday < 0) {
                             mday = (byte) n;
-                        else
+                        } else {
                             break syntax;
-                    else if (i < limit && c != ',' && c > ' ' && c != '-')
+                        }
+                    } else if (i < limit && c != ',' && c > ' ' && c != '-') {
                         break syntax;
-                    else if (hour >= 0 && min < 0)
+                    } else if (hour >= 0 && min < 0) {
                         min = (byte) n;
-                    else if (min >= 0 && sec < 0)
+                    } else if (min >= 0 && sec < 0) {
                         sec = (byte) n;
-                    else if (mday < 0)
+                    } else if (mday < 0) {
                         mday = (byte) n;
+                    }
                     // Handle two-digit years < 70 (70-99 handled above).
-                    else if (year == Integer.MIN_VALUE && mon >= 0 && mday >= 0)
+                    else if (year == Integer.MIN_VALUE && mon >= 0 && mday >= 0) {
                         year = n;
-                    else
+                    } else {
                         break syntax;
+                    }
                     prevc = 0;
-                } else if (c == '/' || c == ':' || c == '+' || c == '-')
+                } else if (c == '/' || c == ':' || c == '+' || c == '-') {
                     prevc = c;
-                else {
+                } else {
                     int st = i - 1;
                     while (i < limit) {
                         c = s.charAt(i);
-                        if (!('A' <= c && c <= 'Z' || 'a' <= c && c <= 'z'))
+                        if (!('A' <= c && c <= 'Z' || 'a' <= c && c <= 'z')) {
                             break;
+                        }
                         i++;
                     }
-                    if (i <= st + 1)
+                    if (i <= st + 1) {
                         break syntax;
+                    }
                     int k;
-                    for (k = wtb.length; --k >= 0;)
+                    for (k = wtb.length; --k >= 0;) {
                         if (wtb[k].regionMatches(true, 0, s, st, i - st)) {
                             int action = ttb[k];
                             if (action != 0) {
                                 if (action == 1) {  // pm
-                                    if (hour > 12 || hour < 1)
+                                    if (hour > 12 || hour < 1) {
                                         break syntax;
-                                    else if (hour < 12)
+                                    } else if (hour < 12) {
                                         hour += 12;
+                                    }
                                 } else if (action == 14) {  // am
-                                    if (hour > 12 || hour < 1)
+                                    if (hour > 12 || hour < 1) {
                                         break syntax;
-                                    else if (hour == 12)
+                                    } else if (hour == 12) {
                                         hour = 0;
+                                    }
                                 } else if (action <= 13) {  // month!
-                                    if (mon < 0)
+                                    if (mon < 0) {
                                         mon = (byte) (action - 2);
-                                    else
+                                    } else {
                                         break syntax;
+                                    }
                                 } else {
                                     tzoffset = action - 10000;
                                 }
                             }
                             break;
                         }
-                    if (k < 0)
+                    }
+                    if (k < 0) {
                         break syntax;
+                    }
                     prevc = 0;
                 }
             }
-            if (year == Integer.MIN_VALUE || mon < 0 || mday < 0)
+            if (year == Integer.MIN_VALUE || mon < 0 || mday < 0) {
                 break syntax;
+            }
             // Parse 2-digit years within the correct default century.
             if (year < 100) {
                 synchronized (Date.class) {
@@ -593,14 +616,19 @@ public class Date
                     }
                 }
                 year += (defaultCenturyStart / 100) * 100;
-                if (year < defaultCenturyStart) year += 100;
+                if (year < defaultCenturyStart) {
+                    year += 100;
+                }
             }
-            if (sec < 0)
+            if (sec < 0) {
                 sec = 0;
-            if (min < 0)
+            }
+            if (min < 0) {
                 min = 0;
-            if (hour < 0)
+            }
+            if (hour < 0) {
                 hour = 0;
+            }
             BaseCalendar cal = getCalendarSystem(year);
             if (tzoffset == -1)  { // no time zone specified, have to use local
                 BaseCalendar.Date ldate = (BaseCalendar.Date) cal.newCalendarDate(TimeZone.getDefaultRef());

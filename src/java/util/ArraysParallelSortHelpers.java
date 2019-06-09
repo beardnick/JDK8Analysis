@@ -170,33 +170,38 @@ import java.util.concurrent.CountedCompleter;
                 int lb = this.lbase, ln = this.lsize, rb = this.rbase,
                     rn = this.rsize, k = this.wbase, g = this.gran;
                 if (a == null || w == null || lb < 0 || rb < 0 || k < 0 ||
-                    c == null)
+                    c == null) {
                     throw new IllegalStateException(); // hoist checks
+                }
                 for (int lh, rh;;) {  // split larger, find point in smaller
                     if (ln >= rn) {
-                        if (ln <= g)
+                        if (ln <= g) {
                             break;
+                        }
                         rh = rn;
                         T split = a[(lh = ln >>> 1) + lb];
                         for (int lo = 0; lo < rh; ) {
                             int rm = (lo + rh) >>> 1;
-                            if (c.compare(split, a[rm + rb]) <= 0)
+                            if (c.compare(split, a[rm + rb]) <= 0) {
                                 rh = rm;
-                            else
+                            } else {
                                 lo = rm + 1;
+                            }
                         }
                     }
                     else {
-                        if (rn <= g)
+                        if (rn <= g) {
                             break;
+                        }
                         lh = ln;
                         T split = a[(rh = rn >>> 1) + rb];
                         for (int lo = 0; lo < lh; ) {
                             int lm = (lo + lh) >>> 1;
-                            if (c.compare(split, a[lm + lb]) <= 0)
+                            if (c.compare(split, a[lm + lb]) <= 0) {
                                 lh = lm;
-                            else
+                            } else {
                                 lo = lm + 1;
+                            }
                         }
                     }
                     Merger<T> m = new Merger<T>(this, a, w, lb + lh, ln - lh,
@@ -219,10 +224,11 @@ import java.util.concurrent.CountedCompleter;
                     }
                     w[k++] = t;
                 }
-                if (rb < rf)
+                if (rb < rf) {
                     System.arraycopy(a, rb, w, k, rf - rb);
-                else if (lb < lf)
+                } else if (lb < lf) {
                     System.arraycopy(a, lb, w, k, lf - lb);
+                }
 
                 tryComplete();
             }
@@ -283,33 +289,38 @@ import java.util.concurrent.CountedCompleter;
                 byte[] a = this.a, w = this.w; // localize all params
                 int lb = this.lbase, ln = this.lsize, rb = this.rbase,
                     rn = this.rsize, k = this.wbase, g = this.gran;
-                if (a == null || w == null || lb < 0 || rb < 0 || k < 0)
+                if (a == null || w == null || lb < 0 || rb < 0 || k < 0) {
                     throw new IllegalStateException(); // hoist checks
+                }
                 for (int lh, rh;;) {  // split larger, find point in smaller
                     if (ln >= rn) {
-                        if (ln <= g)
+                        if (ln <= g) {
                             break;
+                        }
                         rh = rn;
                         byte split = a[(lh = ln >>> 1) + lb];
                         for (int lo = 0; lo < rh; ) {
                             int rm = (lo + rh) >>> 1;
-                            if (split <= a[rm + rb])
+                            if (split <= a[rm + rb]) {
                                 rh = rm;
-                            else
+                            } else {
                                 lo = rm + 1;
+                            }
                         }
                     }
                     else {
-                        if (rn <= g)
+                        if (rn <= g) {
                             break;
+                        }
                         lh = ln;
                         byte split = a[(rh = rn >>> 1) + rb];
                         for (int lo = 0; lo < lh; ) {
                             int lm = (lo + lh) >>> 1;
-                            if (split <= a[lm + lb])
+                            if (split <= a[lm + lb]) {
                                 lh = lm;
-                            else
+                            } else {
                                 lo = lm + 1;
+                            }
                         }
                     }
                     Merger m = new Merger(this, a, w, lb + lh, ln - lh,
@@ -332,10 +343,11 @@ import java.util.concurrent.CountedCompleter;
                     }
                     w[k++] = t;
                 }
-                if (rb < rf)
+                if (rb < rf) {
                     System.arraycopy(a, rb, w, k, rf - rb);
-                else if (lb < lf)
+                } else if (lb < lf) {
                     System.arraycopy(a, lb, w, k, lf - lb);
+                }
                 tryComplete();
             }
         }
@@ -394,33 +406,38 @@ import java.util.concurrent.CountedCompleter;
                 char[] a = this.a, w = this.w; // localize all params
                 int lb = this.lbase, ln = this.lsize, rb = this.rbase,
                     rn = this.rsize, k = this.wbase, g = this.gran;
-                if (a == null || w == null || lb < 0 || rb < 0 || k < 0)
+                if (a == null || w == null || lb < 0 || rb < 0 || k < 0) {
                     throw new IllegalStateException(); // hoist checks
+                }
                 for (int lh, rh;;) {  // split larger, find point in smaller
                     if (ln >= rn) {
-                        if (ln <= g)
+                        if (ln <= g) {
                             break;
+                        }
                         rh = rn;
                         char split = a[(lh = ln >>> 1) + lb];
                         for (int lo = 0; lo < rh; ) {
                             int rm = (lo + rh) >>> 1;
-                            if (split <= a[rm + rb])
+                            if (split <= a[rm + rb]) {
                                 rh = rm;
-                            else
+                            } else {
                                 lo = rm + 1;
+                            }
                         }
                     }
                     else {
-                        if (rn <= g)
+                        if (rn <= g) {
                             break;
+                        }
                         lh = ln;
                         char split = a[(rh = rn >>> 1) + rb];
                         for (int lo = 0; lo < lh; ) {
                             int lm = (lo + lh) >>> 1;
-                            if (split <= a[lm + lb])
+                            if (split <= a[lm + lb]) {
                                 lh = lm;
-                            else
+                            } else {
                                 lo = lm + 1;
+                            }
                         }
                     }
                     Merger m = new Merger(this, a, w, lb + lh, ln - lh,
@@ -443,10 +460,11 @@ import java.util.concurrent.CountedCompleter;
                     }
                     w[k++] = t;
                 }
-                if (rb < rf)
+                if (rb < rf) {
                     System.arraycopy(a, rb, w, k, rf - rb);
-                else if (lb < lf)
+                } else if (lb < lf) {
                     System.arraycopy(a, lb, w, k, lf - lb);
+                }
                 tryComplete();
             }
         }
@@ -505,33 +523,38 @@ import java.util.concurrent.CountedCompleter;
                 short[] a = this.a, w = this.w; // localize all params
                 int lb = this.lbase, ln = this.lsize, rb = this.rbase,
                     rn = this.rsize, k = this.wbase, g = this.gran;
-                if (a == null || w == null || lb < 0 || rb < 0 || k < 0)
+                if (a == null || w == null || lb < 0 || rb < 0 || k < 0) {
                     throw new IllegalStateException(); // hoist checks
+                }
                 for (int lh, rh;;) {  // split larger, find point in smaller
                     if (ln >= rn) {
-                        if (ln <= g)
+                        if (ln <= g) {
                             break;
+                        }
                         rh = rn;
                         short split = a[(lh = ln >>> 1) + lb];
                         for (int lo = 0; lo < rh; ) {
                             int rm = (lo + rh) >>> 1;
-                            if (split <= a[rm + rb])
+                            if (split <= a[rm + rb]) {
                                 rh = rm;
-                            else
+                            } else {
                                 lo = rm + 1;
+                            }
                         }
                     }
                     else {
-                        if (rn <= g)
+                        if (rn <= g) {
                             break;
+                        }
                         lh = ln;
                         short split = a[(rh = rn >>> 1) + rb];
                         for (int lo = 0; lo < lh; ) {
                             int lm = (lo + lh) >>> 1;
-                            if (split <= a[lm + lb])
+                            if (split <= a[lm + lb]) {
                                 lh = lm;
-                            else
+                            } else {
                                 lo = lm + 1;
+                            }
                         }
                     }
                     Merger m = new Merger(this, a, w, lb + lh, ln - lh,
@@ -554,10 +577,11 @@ import java.util.concurrent.CountedCompleter;
                     }
                     w[k++] = t;
                 }
-                if (rb < rf)
+                if (rb < rf) {
                     System.arraycopy(a, rb, w, k, rf - rb);
-                else if (lb < lf)
+                } else if (lb < lf) {
                     System.arraycopy(a, lb, w, k, lf - lb);
+                }
                 tryComplete();
             }
         }
@@ -616,33 +640,38 @@ import java.util.concurrent.CountedCompleter;
                 int[] a = this.a, w = this.w; // localize all params
                 int lb = this.lbase, ln = this.lsize, rb = this.rbase,
                     rn = this.rsize, k = this.wbase, g = this.gran;
-                if (a == null || w == null || lb < 0 || rb < 0 || k < 0)
+                if (a == null || w == null || lb < 0 || rb < 0 || k < 0) {
                     throw new IllegalStateException(); // hoist checks
+                }
                 for (int lh, rh;;) {  // split larger, find point in smaller
                     if (ln >= rn) {
-                        if (ln <= g)
+                        if (ln <= g) {
                             break;
+                        }
                         rh = rn;
                         int split = a[(lh = ln >>> 1) + lb];
                         for (int lo = 0; lo < rh; ) {
                             int rm = (lo + rh) >>> 1;
-                            if (split <= a[rm + rb])
+                            if (split <= a[rm + rb]) {
                                 rh = rm;
-                            else
+                            } else {
                                 lo = rm + 1;
+                            }
                         }
                     }
                     else {
-                        if (rn <= g)
+                        if (rn <= g) {
                             break;
+                        }
                         lh = ln;
                         int split = a[(rh = rn >>> 1) + rb];
                         for (int lo = 0; lo < lh; ) {
                             int lm = (lo + lh) >>> 1;
-                            if (split <= a[lm + lb])
+                            if (split <= a[lm + lb]) {
                                 lh = lm;
-                            else
+                            } else {
                                 lo = lm + 1;
+                            }
                         }
                     }
                     Merger m = new Merger(this, a, w, lb + lh, ln - lh,
@@ -665,10 +694,11 @@ import java.util.concurrent.CountedCompleter;
                     }
                     w[k++] = t;
                 }
-                if (rb < rf)
+                if (rb < rf) {
                     System.arraycopy(a, rb, w, k, rf - rb);
-                else if (lb < lf)
+                } else if (lb < lf) {
                     System.arraycopy(a, lb, w, k, lf - lb);
+                }
                 tryComplete();
             }
         }
@@ -727,33 +757,38 @@ import java.util.concurrent.CountedCompleter;
                 long[] a = this.a, w = this.w; // localize all params
                 int lb = this.lbase, ln = this.lsize, rb = this.rbase,
                     rn = this.rsize, k = this.wbase, g = this.gran;
-                if (a == null || w == null || lb < 0 || rb < 0 || k < 0)
+                if (a == null || w == null || lb < 0 || rb < 0 || k < 0) {
                     throw new IllegalStateException(); // hoist checks
+                }
                 for (int lh, rh;;) {  // split larger, find point in smaller
                     if (ln >= rn) {
-                        if (ln <= g)
+                        if (ln <= g) {
                             break;
+                        }
                         rh = rn;
                         long split = a[(lh = ln >>> 1) + lb];
                         for (int lo = 0; lo < rh; ) {
                             int rm = (lo + rh) >>> 1;
-                            if (split <= a[rm + rb])
+                            if (split <= a[rm + rb]) {
                                 rh = rm;
-                            else
+                            } else {
                                 lo = rm + 1;
+                            }
                         }
                     }
                     else {
-                        if (rn <= g)
+                        if (rn <= g) {
                             break;
+                        }
                         lh = ln;
                         long split = a[(rh = rn >>> 1) + rb];
                         for (int lo = 0; lo < lh; ) {
                             int lm = (lo + lh) >>> 1;
-                            if (split <= a[lm + lb])
+                            if (split <= a[lm + lb]) {
                                 lh = lm;
-                            else
+                            } else {
                                 lo = lm + 1;
+                            }
                         }
                     }
                     Merger m = new Merger(this, a, w, lb + lh, ln - lh,
@@ -776,10 +811,11 @@ import java.util.concurrent.CountedCompleter;
                     }
                     w[k++] = t;
                 }
-                if (rb < rf)
+                if (rb < rf) {
                     System.arraycopy(a, rb, w, k, rf - rb);
-                else if (lb < lf)
+                } else if (lb < lf) {
                     System.arraycopy(a, lb, w, k, lf - lb);
+                }
                 tryComplete();
             }
         }
@@ -838,33 +874,38 @@ import java.util.concurrent.CountedCompleter;
                 float[] a = this.a, w = this.w; // localize all params
                 int lb = this.lbase, ln = this.lsize, rb = this.rbase,
                     rn = this.rsize, k = this.wbase, g = this.gran;
-                if (a == null || w == null || lb < 0 || rb < 0 || k < 0)
+                if (a == null || w == null || lb < 0 || rb < 0 || k < 0) {
                     throw new IllegalStateException(); // hoist checks
+                }
                 for (int lh, rh;;) {  // split larger, find point in smaller
                     if (ln >= rn) {
-                        if (ln <= g)
+                        if (ln <= g) {
                             break;
+                        }
                         rh = rn;
                         float split = a[(lh = ln >>> 1) + lb];
                         for (int lo = 0; lo < rh; ) {
                             int rm = (lo + rh) >>> 1;
-                            if (split <= a[rm + rb])
+                            if (split <= a[rm + rb]) {
                                 rh = rm;
-                            else
+                            } else {
                                 lo = rm + 1;
+                            }
                         }
                     }
                     else {
-                        if (rn <= g)
+                        if (rn <= g) {
                             break;
+                        }
                         lh = ln;
                         float split = a[(rh = rn >>> 1) + rb];
                         for (int lo = 0; lo < lh; ) {
                             int lm = (lo + lh) >>> 1;
-                            if (split <= a[lm + lb])
+                            if (split <= a[lm + lb]) {
                                 lh = lm;
-                            else
+                            } else {
                                 lo = lm + 1;
+                            }
                         }
                     }
                     Merger m = new Merger(this, a, w, lb + lh, ln - lh,
@@ -887,10 +928,11 @@ import java.util.concurrent.CountedCompleter;
                     }
                     w[k++] = t;
                 }
-                if (rb < rf)
+                if (rb < rf) {
                     System.arraycopy(a, rb, w, k, rf - rb);
-                else if (lb < lf)
+                } else if (lb < lf) {
                     System.arraycopy(a, lb, w, k, lf - lb);
+                }
                 tryComplete();
             }
         }
@@ -949,33 +991,38 @@ import java.util.concurrent.CountedCompleter;
                 double[] a = this.a, w = this.w; // localize all params
                 int lb = this.lbase, ln = this.lsize, rb = this.rbase,
                     rn = this.rsize, k = this.wbase, g = this.gran;
-                if (a == null || w == null || lb < 0 || rb < 0 || k < 0)
+                if (a == null || w == null || lb < 0 || rb < 0 || k < 0) {
                     throw new IllegalStateException(); // hoist checks
+                }
                 for (int lh, rh;;) {  // split larger, find point in smaller
                     if (ln >= rn) {
-                        if (ln <= g)
+                        if (ln <= g) {
                             break;
+                        }
                         rh = rn;
                         double split = a[(lh = ln >>> 1) + lb];
                         for (int lo = 0; lo < rh; ) {
                             int rm = (lo + rh) >>> 1;
-                            if (split <= a[rm + rb])
+                            if (split <= a[rm + rb]) {
                                 rh = rm;
-                            else
+                            } else {
                                 lo = rm + 1;
+                            }
                         }
                     }
                     else {
-                        if (rn <= g)
+                        if (rn <= g) {
                             break;
+                        }
                         lh = ln;
                         double split = a[(rh = rn >>> 1) + rb];
                         for (int lo = 0; lo < lh; ) {
                             int lm = (lo + lh) >>> 1;
-                            if (split <= a[lm + lb])
+                            if (split <= a[lm + lb]) {
                                 lh = lm;
-                            else
+                            } else {
                                 lo = lm + 1;
+                            }
                         }
                     }
                     Merger m = new Merger(this, a, w, lb + lh, ln - lh,
@@ -998,10 +1045,11 @@ import java.util.concurrent.CountedCompleter;
                     }
                     w[k++] = t;
                 }
-                if (rb < rf)
+                if (rb < rf) {
                     System.arraycopy(a, rb, w, k, rf - rb);
-                else if (lb < lf)
+                } else if (lb < lf) {
                     System.arraycopy(a, lb, w, k, lf - lb);
+                }
                 tryComplete();
             }
         }

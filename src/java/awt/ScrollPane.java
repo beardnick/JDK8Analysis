@@ -556,8 +556,9 @@ public class ScrollPane extends Container implements Accessible {
                 hAdjustable.setValue(0);
             }
 
-            if (peer == null)
+            if (peer == null) {
                 peer = getToolkit().createScrollPane(this);
+            }
             super.addNotify();
 
             // Bug 4124460. Restore the adjustable values.

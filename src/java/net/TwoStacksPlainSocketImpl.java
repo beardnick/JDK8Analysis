@@ -128,8 +128,9 @@ class TwoStacksPlainSocketImpl extends AbstractPlainSocketImpl
         } else if (opt == SO_REUSEADDR && exclusiveBind) {
             // SO_REUSEADDR emulated when using exclusive bind
             return isReuseAddress;
-        } else
+        } else {
             return super.getOption(opt);
+        }
     }
 
     @Override
@@ -142,10 +143,11 @@ class TwoStacksPlainSocketImpl extends AbstractPlainSocketImpl
         throws SocketException
     {
         // SO_REUSEADDR emulated when using exclusive bind
-        if (opt == SO_REUSEADDR && exclusiveBind)
+        if (opt == SO_REUSEADDR && exclusiveBind) {
             isReuseAddress = on;
-        else
+        } else {
             socketNativeSetOption(opt, on, value);
+        }
     }
 
     /**

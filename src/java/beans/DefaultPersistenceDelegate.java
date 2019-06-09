@@ -410,8 +410,9 @@ public class DefaultPersistenceDelegate extends PersistenceDelegate {
     private static PropertyDescriptor getPropertyDescriptor(Class<?> type, String property) {
         try {
             for (PropertyDescriptor pd : Introspector.getBeanInfo(type).getPropertyDescriptors()) {
-                if (property.equals(pd.getName()))
+                if (property.equals(pd.getName())) {
                     return pd;
+                }
             }
         } catch (IntrospectionException exception) {
         }

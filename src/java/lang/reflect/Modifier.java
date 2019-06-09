@@ -235,23 +235,48 @@ public class Modifier {
         StringBuilder sb = new StringBuilder();
         int len;
 
-        if ((mod & PUBLIC) != 0)        sb.append("public ");
-        if ((mod & PROTECTED) != 0)     sb.append("protected ");
-        if ((mod & PRIVATE) != 0)       sb.append("private ");
+        if ((mod & PUBLIC) != 0) {
+            sb.append("public ");
+        }
+        if ((mod & PROTECTED) != 0) {
+            sb.append("protected ");
+        }
+        if ((mod & PRIVATE) != 0) {
+            sb.append("private ");
+        }
 
         /* Canonical order */
-        if ((mod & ABSTRACT) != 0)      sb.append("abstract ");
-        if ((mod & STATIC) != 0)        sb.append("static ");
-        if ((mod & FINAL) != 0)         sb.append("final ");
-        if ((mod & TRANSIENT) != 0)     sb.append("transient ");
-        if ((mod & VOLATILE) != 0)      sb.append("volatile ");
-        if ((mod & SYNCHRONIZED) != 0)  sb.append("synchronized ");
-        if ((mod & NATIVE) != 0)        sb.append("native ");
-        if ((mod & STRICT) != 0)        sb.append("strictfp ");
-        if ((mod & INTERFACE) != 0)     sb.append("interface ");
+        if ((mod & ABSTRACT) != 0) {
+            sb.append("abstract ");
+        }
+        if ((mod & STATIC) != 0) {
+            sb.append("static ");
+        }
+        if ((mod & FINAL) != 0) {
+            sb.append("final ");
+        }
+        if ((mod & TRANSIENT) != 0) {
+            sb.append("transient ");
+        }
+        if ((mod & VOLATILE) != 0) {
+            sb.append("volatile ");
+        }
+        if ((mod & SYNCHRONIZED) != 0) {
+            sb.append("synchronized ");
+        }
+        if ((mod & NATIVE) != 0) {
+            sb.append("native ");
+        }
+        if ((mod & STRICT) != 0) {
+            sb.append("strictfp ");
+        }
+        if ((mod & INTERFACE) != 0) {
+            sb.append("interface ");
+        }
 
-        if ((len = sb.length()) > 0)    /* trim trailing space */
+        if ((len = sb.length()) > 0)    /* trim trailing space */ {
             return sb.toString().substring(0, len-1);
+        }
         return "";
     }
 

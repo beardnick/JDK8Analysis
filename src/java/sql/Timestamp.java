@@ -192,7 +192,9 @@ public class Timestamp extends java.util.Date {
         String delimiterDate = "-";
         String delimiterTime = ":";
 
-        if (s == null) throw new java.lang.IllegalArgumentException("null string");
+        if (s == null) {
+            throw new IllegalArgumentException("null string");
+        }
 
         // Split the string into date and time components
         s = s.trim();
@@ -209,8 +211,9 @@ public class Timestamp extends java.util.Date {
         secondDash = date_s.indexOf('-', firstDash+1);
 
         // Parse the time
-        if (time_s == null)
-            throw new java.lang.IllegalArgumentException(formatError);
+        if (time_s == null) {
+            throw new IllegalArgumentException(formatError);
+        }
         firstColon = time_s.indexOf(':');
         secondColon = time_s.indexOf(':', firstColon+1);
         period = time_s.indexOf('.', secondColon+1);
@@ -247,10 +250,12 @@ public class Timestamp extends java.util.Date {
                 second =
                     Integer.parseInt(time_s.substring(secondColon+1, period));
                 nanos_s = time_s.substring(period+1);
-                if (nanos_s.length() > 9)
-                    throw new java.lang.IllegalArgumentException(formatError);
-                if (!Character.isDigit(nanos_s.charAt(0)))
-                    throw new java.lang.IllegalArgumentException(formatError);
+                if (nanos_s.length() > 9) {
+                    throw new IllegalArgumentException(formatError);
+                }
+                if (!Character.isDigit(nanos_s.charAt(0))) {
+                    throw new IllegalArgumentException(formatError);
+                }
                 nanos_s = nanos_s + zeros.substring(0,9-nanos_s.length());
                 a_nanos = Integer.parseInt(nanos_s);
             } else if (period > 0) {

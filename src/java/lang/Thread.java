@@ -404,17 +404,19 @@ class Thread implements Runnable {
         this.group = g;
         this.daemon = parent.isDaemon();
         this.priority = parent.getPriority();
-        if (security == null || isCCLOverridden(parent.getClass()))
+        if (security == null || isCCLOverridden(parent.getClass())) {
             this.contextClassLoader = parent.getContextClassLoader();
-        else
+        } else {
             this.contextClassLoader = parent.contextClassLoader;
+        }
         this.inheritedAccessControlContext =
                 acc != null ? acc : AccessController.getContext();
         this.target = target;
         setPriority(priority);
-        if (parent.inheritableThreadLocals != null)
+        if (parent.inheritableThreadLocals != null) {
             this.inheritableThreadLocals =
                 ThreadLocal.createInheritedMap(parent.inheritableThreadLocals);
+        }
         /* Stash the specified stack size in case the VM cares */
         this.stackSize = stackSize;
 
@@ -701,8 +703,9 @@ class Thread implements Runnable {
          *
          * A zero status value corresponds to state "NEW".
          */
-        if (threadStatus != 0)
+        if (threadStatus != 0) {
             throw new IllegalThreadStateException();
+        }
 
         /* Notify the group that this thread is about to be started
          * so that it can be added to the group's list of threads
@@ -909,8 +912,9 @@ class Thread implements Runnable {
      * @spec JSR-51
      */
     public void interrupt() {
-        if (this != Thread.currentThread())
+        if (this != Thread.currentThread()) {
             checkAccess();
+        }
 
         synchronized (blockerLock) {
             Interruptible b = blocker;
@@ -1429,8 +1433,9 @@ class Thread implements Runnable {
      */
     @CallerSensitive
     public ClassLoader getContextClassLoader() {
-        if (contextClassLoader == null)
+        if (contextClassLoader == null) {
             return null;
+        }
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             ClassLoader.checkClassLoaderPermission(contextClassLoader,
@@ -1636,8 +1641,9 @@ class Thread implements Runnable {
      * "enableContextClassLoaderOverride" RuntimePermission is checked.
      */
     private static boolean isCCLOverridden(Class<?> cl) {
-        if (cl == Thread.class)
+        if (cl == Thread.class) {
             return false;
+        }
 
         processQueue(Caches.subclassAuditsQueue, Caches.subclassAudits);
         WeakClassKey key = new WeakClassKey(cl, Caches.subclassAuditsQueue);
@@ -2001,8 +2007,9 @@ class Thread implements Runnable {
          */
         @Override
         public boolean equals(Object obj) {
-            if (obj == this)
+            if (obj == this) {
                 return true;
+            }
 
             if (obj instanceof WeakClassKey) {
                 Object referent = get();

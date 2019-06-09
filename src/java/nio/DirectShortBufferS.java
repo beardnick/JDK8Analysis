@@ -267,19 +267,20 @@ class DirectShortBufferS
             int lim = limit();
             assert (pos <= lim);
             int rem = (pos <= lim ? lim - pos : 0);
-            if (length > rem)
+            if (length > rem) {
                 throw new BufferUnderflowException();
+            }
 
 
-            if (order() != ByteOrder.nativeOrder())
+            if (order() != ByteOrder.nativeOrder()) {
                 Bits.copyToShortArray(ix(pos), dst,
                                           offset << 1,
                                           length << 1);
-            else
-
+            } else {
                 Bits.copyToArray(ix(pos), dst, arrayBaseOffset,
                                  offset << 1,
                                  length << 1);
+            }
             position(pos + length);
         } else {
             super.get(dst, offset, length);
@@ -313,8 +314,9 @@ class DirectShortBufferS
     public ShortBuffer put(ShortBuffer src) {
 
         if (src instanceof DirectShortBufferS) {
-            if (src == this)
+            if (src == this) {
                 throw new IllegalArgumentException();
+            }
             DirectShortBufferS sb = (DirectShortBufferS)src;
 
             int spos = sb.position();
@@ -327,8 +329,9 @@ class DirectShortBufferS
             assert (pos <= lim);
             int rem = (pos <= lim ? lim - pos : 0);
 
-            if (srem > rem)
+            if (srem > rem) {
                 throw new BufferOverflowException();
+            }
             unsafe.copyMemory(sb.ix(spos), ix(pos), srem << 1);
             sb.position(spos + srem);
             position(pos + srem);
@@ -359,17 +362,18 @@ class DirectShortBufferS
             int lim = limit();
             assert (pos <= lim);
             int rem = (pos <= lim ? lim - pos : 0);
-            if (length > rem)
+            if (length > rem) {
                 throw new BufferOverflowException();
+            }
 
 
-            if (order() != ByteOrder.nativeOrder())
+            if (order() != ByteOrder.nativeOrder()) {
                 Bits.copyFromShortArray(src, offset << 1,
                                             ix(pos), length << 1);
-            else
-
+            } else {
                 Bits.copyFromArray(src, arrayBaseOffset, offset << 1,
                                    ix(pos), length << 1);
+            }
             position(pos + length);
         } else {
             super.put(src, offset, length);

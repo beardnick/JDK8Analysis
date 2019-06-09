@@ -85,8 +85,9 @@ public abstract class BasicPermission extends Permission
      * initialize a BasicPermission object. Common to all constructors.
      */
     private void init(String name) {
-        if (name == null)
+        if (name == null) {
             throw new NullPointerException("name can't be null");
+        }
 
         int len = name.length();
 
@@ -166,8 +167,9 @@ public abstract class BasicPermission extends Permission
      * implied by this permission, false otherwise.
      */
     public boolean implies(Permission p) {
-        if ((p == null) || (p.getClass() != getClass()))
+        if ((p == null) || (p.getClass() != getClass())) {
             return false;
+        }
 
         BasicPermission that = (BasicPermission) p;
 
@@ -201,11 +203,13 @@ public abstract class BasicPermission extends Permission
      *  and has the same name as this BasicPermission object, false otherwise.
      */
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
+        }
 
-        if ((obj == null) || (obj.getClass() != getClass()))
+        if ((obj == null) || (obj.getClass() != getClass())) {
             return false;
+        }
 
         BasicPermission bp = (BasicPermission) obj;
 
@@ -353,11 +357,13 @@ final class BasicPermissionCollection
      *                                has been marked readonly
      */
     public void add(Permission permission) {
-        if (! (permission instanceof BasicPermission))
+        if (! (permission instanceof BasicPermission)) {
             throw new IllegalArgumentException("invalid permission: "+
                                                permission);
-        if (isReadOnly())
+        }
+        if (isReadOnly()) {
             throw new SecurityException("attempt to add a Permission to a readonly PermissionCollection");
+        }
 
         BasicPermission bp = (BasicPermission) permission;
 
@@ -368,9 +374,10 @@ final class BasicPermissionCollection
             // adding first permission
             permClass = bp.getClass();
         } else {
-            if (bp.getClass() != permClass)
+            if (bp.getClass() != permClass) {
                 throw new IllegalArgumentException("invalid permission: " +
                                                 permission);
+            }
         }
 
         synchronized (this) {
@@ -379,8 +386,9 @@ final class BasicPermissionCollection
 
         // No sync on all_allowed; staleness OK
         if (!all_allowed) {
-            if (bp.getCanonicalName().equals("*"))
+            if (bp.getCanonicalName().equals("*")) {
                 all_allowed = true;
+            }
         }
     }
 
@@ -394,18 +402,21 @@ final class BasicPermissionCollection
      * the set, false if not.
      */
     public boolean implies(Permission permission) {
-        if (! (permission instanceof BasicPermission))
+        if (! (permission instanceof BasicPermission)) {
             return false;
+        }
 
         BasicPermission bp = (BasicPermission) permission;
 
         // random subclasses of BasicPermission do not imply each other
-        if (bp.getClass() != permClass)
+        if (bp.getClass() != permClass) {
             return false;
+        }
 
         // short circuit if the "*" Permission was added
-        if (all_allowed)
+        if (all_allowed) {
             return true;
+        }
 
         // strategy:
         // Check for full match first. Then work our way up the

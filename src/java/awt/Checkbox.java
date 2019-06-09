@@ -244,8 +244,9 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = getToolkit().createCheckbox(this);
+            }
             super.addNotify();
         }
     }
@@ -663,11 +664,12 @@ public class Checkbox extends Component implements ItemSelectable, Accessible {
       while(null != (keyOrNull = s.readObject())) {
         String key = ((String)keyOrNull).intern();
 
-        if (itemListenerK == key)
-          addItemListener((ItemListener)(s.readObject()));
-
-        else // skip value for unrecognized key
-          s.readObject();
+        if (itemListenerK == key) {
+            addItemListener((ItemListener)(s.readObject()));
+        } else // skip value for unrecognized key
+        {
+            s.readObject();
+        }
       }
     }
 

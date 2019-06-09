@@ -229,7 +229,9 @@ abstract class FileSystem {
 
     private static boolean getBooleanProperty(String prop, boolean defaultVal) {
         String val = System.getProperty(prop);
-        if (val == null) return defaultVal;
+        if (val == null) {
+            return defaultVal;
+        }
         if (val.equalsIgnoreCase("true")) {
             return true;
         } else {

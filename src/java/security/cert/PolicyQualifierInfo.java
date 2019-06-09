@@ -101,8 +101,9 @@ public class PolicyQualifierInfo {
         mEncoded = encoded.clone();
 
         DerValue val = new DerValue(mEncoded);
-        if (val.tag != DerValue.tag_Sequence)
+        if (val.tag != DerValue.tag_Sequence) {
             throw new IOException("Invalid encoding for PolicyQualifierInfo");
+        }
 
         mId = (val.data.getDerValue()).getOID().toString();
         byte [] tmp = val.data.toByteArray();
@@ -158,8 +159,9 @@ public class PolicyQualifierInfo {
      *         {@code PolicyQualifierInfo}
      */
     public String toString() {
-        if (pqiString != null)
+        if (pqiString != null) {
             return pqiString;
+        }
         HexDumpEncoder enc = new HexDumpEncoder();
         StringBuffer sb = new StringBuffer();
         sb.append("PolicyQualifierInfo: [\n");

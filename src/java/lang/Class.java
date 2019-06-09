@@ -201,10 +201,11 @@ public final class Class<T> implements java.io.Serializable,
             if (isInterface()) { // Note: all annotation types are interfaces
                 sb.append("interface");
             } else {
-                if (isEnum())
+                if (isEnum()) {
                     sb.append("enum");
-                else
+                } else {
                     sb.append("class");
+                }
             }
             sb.append(' ');
             sb.append(getName());
@@ -214,8 +215,9 @@ public final class Class<T> implements java.io.Serializable,
                 boolean first = true;
                 sb.append('<');
                 for(TypeVariable<?> typeparm: typeparms) {
-                    if (!first)
+                    if (!first) {
                         sb.append(',');
+                    }
                     sb.append(typeparm.getTypeName());
                     first = false;
                 }
@@ -638,8 +640,9 @@ public final class Class<T> implements java.io.Serializable,
      */
     public String getName() {
         String name = this.name;
-        if (name == null)
+        if (name == null) {
             this.name = name = getName0();
+        }
         return name;
     }
 
@@ -676,8 +679,9 @@ public final class Class<T> implements java.io.Serializable,
     @CallerSensitive
     public ClassLoader getClassLoader() {
         ClassLoader cl = getClassLoader0();
-        if (cl == null)
+        if (cl == null) {
             return null;
+        }
         SecurityManager sm = System.getSecurityManager();
         if (sm != null) {
             ClassLoader.checkClassLoaderPermission(cl, Reflection.getCallerClass());
@@ -711,10 +715,11 @@ public final class Class<T> implements java.io.Serializable,
     @SuppressWarnings("unchecked")
     public TypeVariable<Class<T>>[] getTypeParameters() {
         ClassRepository info = getGenericInfo();
-        if (info != null)
+        if (info != null) {
             return (TypeVariable<Class<T>>[])info.getTypeParameters();
-        else
+        } else {
             return (TypeVariable<Class<T>>[])new TypeVariable<?>[0];
+        }
     }
 
 
@@ -1014,11 +1019,12 @@ public final class Class<T> implements java.io.Serializable,
     public Method getEnclosingMethod() throws SecurityException {
         EnclosingMethodInfo enclosingInfo = getEnclosingMethodInfo();
 
-        if (enclosingInfo == null)
+        if (enclosingInfo == null) {
             return null;
-        else {
-            if (!enclosingInfo.isMethod())
+        } else {
+            if (!enclosingInfo.isMethod()) {
                 return null;
+            }
 
             MethodRepository typeInfo = MethodRepository.make(enclosingInfo.getDescriptor(),
                                                               getFactory());
@@ -1029,8 +1035,9 @@ public final class Class<T> implements java.io.Serializable,
             // Convert Types to Classes; returned types *should*
             // be class objects since the methodDescriptor's used
             // don't have generics information
-            for(int i = 0; i < parameterClasses.length; i++)
+            for(int i = 0; i < parameterClasses.length; i++) {
                 parameterClasses[i] = toClass(parameterTypes[i]);
+            }
 
             // Perform access check
             Class<?> enclosingCandidate = enclosingInfo.getEnclosingClass();
@@ -1055,8 +1062,9 @@ public final class Class<T> implements java.io.Serializable,
                         }
 
                         if (matches) { // finally, check return type
-                            if (m.getReturnType().equals(returnType) )
+                            if (m.getReturnType().equals(returnType) ) {
                                 return m;
+                            }
                         }
                     }
                 }
@@ -1070,9 +1078,9 @@ public final class Class<T> implements java.io.Serializable,
 
     private EnclosingMethodInfo getEnclosingMethodInfo() {
         Object[] enclosingInfo = getEnclosingMethod0();
-        if (enclosingInfo == null)
+        if (enclosingInfo == null) {
             return null;
-        else {
+        } else {
             return new EnclosingMethodInfo(enclosingInfo);
         }
     }
@@ -1083,8 +1091,9 @@ public final class Class<T> implements java.io.Serializable,
         private String descriptor;
 
         private EnclosingMethodInfo(Object[] enclosingInfo) {
-            if (enclosingInfo.length != 3)
+            if (enclosingInfo.length != 3) {
                 throw new InternalError("Malformed enclosing method information");
+            }
             try {
                 // The array is expected to have three elements:
 
@@ -1122,10 +1131,11 @@ public final class Class<T> implements java.io.Serializable,
     }
 
     private static Class<?> toClass(Type o) {
-        if (o instanceof GenericArrayType)
+        if (o instanceof GenericArrayType) {
             return Array.newInstance(toClass(((GenericArrayType)o).getGenericComponentType()),
                                      0)
                 .getClass();
+        }
         return (Class<?>)o;
      }
 
@@ -1167,11 +1177,12 @@ public final class Class<T> implements java.io.Serializable,
     public Constructor<?> getEnclosingConstructor() throws SecurityException {
         EnclosingMethodInfo enclosingInfo = getEnclosingMethodInfo();
 
-        if (enclosingInfo == null)
+        if (enclosingInfo == null) {
             return null;
-        else {
-            if (!enclosingInfo.isConstructor())
+        } else {
+            if (!enclosingInfo.isConstructor()) {
                 return null;
+            }
 
             ConstructorRepository typeInfo = ConstructorRepository.make(enclosingInfo.getDescriptor(),
                                                                         getFactory());
@@ -1181,8 +1192,9 @@ public final class Class<T> implements java.io.Serializable,
             // Convert Types to Classes; returned types *should*
             // be class objects since the methodDescriptor's used
             // don't have generics information
-            for(int i = 0; i < parameterClasses.length; i++)
+            for(int i = 0; i < parameterClasses.length; i++) {
                 parameterClasses[i] = toClass(parameterTypes[i]);
+            }
 
             // Perform access check
             Class<?> enclosingCandidate = enclosingInfo.getEnclosingClass();
@@ -1203,8 +1215,9 @@ public final class Class<T> implements java.io.Serializable,
                         }
                     }
 
-                    if (matches)
+                    if (matches) {
                         return c;
+                    }
                 }
             }
 
@@ -1234,9 +1247,10 @@ public final class Class<T> implements java.io.Serializable,
     public Class<?> getDeclaringClass() throws SecurityException {
         final Class<?> candidate = getDeclaringClass0();
 
-        if (candidate != null)
+        if (candidate != null) {
             candidate.checkPackageAccess(
                     ClassLoader.getClassLoader(Reflection.getCallerClass()), true);
+        }
         return candidate;
     }
 
@@ -1278,15 +1292,17 @@ public final class Class<T> implements java.io.Serializable,
         } else {
             Class<?> enclosingClass = enclosingInfo.getEnclosingClass();
             // This is a local class or an anonymous class (d or e)
-            if (enclosingClass == this || enclosingClass == null)
+            if (enclosingClass == this || enclosingClass == null) {
                 throw new InternalError("Malformed enclosing method information");
-            else
+            } else {
                 enclosingCandidate = enclosingClass;
+            }
         }
 
-        if (enclosingCandidate != null)
+        if (enclosingCandidate != null) {
             enclosingCandidate.checkPackageAccess(
                     ClassLoader.getClassLoader(Reflection.getCallerClass()), true);
+        }
         return enclosingCandidate;
     }
 
@@ -1303,8 +1319,9 @@ public final class Class<T> implements java.io.Serializable,
      * @since 1.5
      */
     public String getSimpleName() {
-        if (isArray())
+        if (isArray()) {
             return getComponentType().getSimpleName()+"[]";
+        }
 
         String simpleName = getSimpleBinaryName();
         if (simpleName == null) { // top level class
@@ -1326,11 +1343,13 @@ public final class Class<T> implements java.io.Serializable,
 
         // Remove leading "\$[0-9]*" from the name
         int length = simpleName.length();
-        if (length < 1 || simpleName.charAt(0) != '$')
+        if (length < 1 || simpleName.charAt(0) != '$') {
             throw new InternalError("Malformed class name");
+        }
         int index = 1;
-        while (index < length && isAsciiDigit(simpleName.charAt(index)))
+        while (index < length && isAsciiDigit(simpleName.charAt(index))) {
             index++;
+        }
         // Eventually, this is the empty string iff this is an anonymous class
         return simpleName.substring(index);
     }
@@ -1382,20 +1401,23 @@ public final class Class<T> implements java.io.Serializable,
     public String getCanonicalName() {
         if (isArray()) {
             String canonicalName = getComponentType().getCanonicalName();
-            if (canonicalName != null)
+            if (canonicalName != null) {
                 return canonicalName + "[]";
-            else
+            } else {
                 return null;
+            }
         }
-        if (isLocalOrAnonymousClass())
+        if (isLocalOrAnonymousClass()) {
             return null;
+        }
         Class<?> enclosingClass = getEnclosingClass();
         if (enclosingClass == null) { // top level class
             return getName();
         } else {
             String enclosingName = enclosingClass.getCanonicalName();
-            if (enclosingName == null)
+            if (enclosingName == null) {
                 return null;
+            }
             return enclosingName + "." + getSimpleName();
         }
     }
@@ -1442,7 +1464,9 @@ public final class Class<T> implements java.io.Serializable,
     private String getSimpleBinaryName() {
         Class<?> enclosingClass = getEnclosingClass();
         if (enclosingClass == null) // top level class
+        {
             return null;
+        }
         // Otherwise, strip the enclosing class' name
         try {
             return getName().substring(enclosingClass.getName().length());
@@ -2505,7 +2529,9 @@ public final class Class<T> implements java.io.Serializable,
 
     private ReflectionData<T> newReflectionData(SoftReference<ReflectionData<T>> oldReflectionData,
                                                 int classRedefinedCount) {
-        if (!useCaches) return null;
+        if (!useCaches) {
+            return null;
+        }
 
         while (true) {
             ReflectionData<T> rd = new ReflectionData<>(classRedefinedCount);
@@ -2577,7 +2603,9 @@ public final class Class<T> implements java.io.Serializable,
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
             res = publicOnly ? rd.declaredPublicFields : rd.declaredFields;
-            if (res != null) return res;
+            if (res != null) {
+                return res;
+            }
         }
         // No cached value available; request value from VM
         res = Reflection.filterFields(this, getDeclaredFields0(publicOnly));
@@ -2600,7 +2628,9 @@ public final class Class<T> implements java.io.Serializable,
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
             res = rd.publicFields;
-            if (res != null) return res;
+            if (res != null) {
+                return res;
+            }
         }
 
         // No cached value available; compute value recursively.
@@ -2660,7 +2690,9 @@ public final class Class<T> implements java.io.Serializable,
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
             res = publicOnly ? rd.publicConstructors : rd.declaredConstructors;
-            if (res != null) return res;
+            if (res != null) {
+                return res;
+            }
         }
         // No cached value available; request value from VM
         if (isInterface()) {
@@ -2695,7 +2727,9 @@ public final class Class<T> implements java.io.Serializable,
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
             res = publicOnly ? rd.declaredPublicMethods : rd.declaredMethods;
-            if (res != null) return res;
+            if (res != null) {
+                return res;
+            }
         }
         // No cached value available; request value from VM
         res = Reflection.filterMethods(this, getDeclaredMethods0(publicOnly));
@@ -2720,8 +2754,9 @@ public final class Class<T> implements java.io.Serializable,
         }
 
         MethodArray(int initialSize) {
-            if (initialSize < 2)
+            if (initialSize < 2) {
                 throw new IllegalArgumentException("Size should be 2 or more");
+            }
 
             methods = new Method[initialSize];
             length = 0;
@@ -2738,8 +2773,9 @@ public final class Class<T> implements java.io.Serializable,
             }
             methods[length++] = m;
 
-            if (m != null && m.isDefault())
+            if (m != null && m.isDefault()) {
                 defaults++;
+            }
         }
 
         void addAll(Method[] ma) {
@@ -2793,9 +2829,11 @@ public final class Class<T> implements java.io.Serializable,
         }
 
         Method getFirst() {
-            for (Method m : methods)
-                if (m != null)
+            for (Method m : methods) {
+                if (m != null) {
                     return m;
+                }
+            }
             return null;
         }
 
@@ -2809,8 +2847,9 @@ public final class Class<T> implements java.io.Serializable,
         }
 
         private void remove(int i) {
-            if (methods[i] != null && methods[i].isDefault())
+            if (methods[i] != null && methods[i].isDefault()) {
                 defaults--;
+            }
             methods[i] = null;
         }
 
@@ -2845,27 +2884,33 @@ public final class Class<T> implements java.io.Serializable,
          * a more specific <em>concrete</em> Method.
          */
         void removeLessSpecifics() {
-            if (!hasDefaults())
+            if (!hasDefaults()) {
                 return;
+            }
 
             for (int i = 0; i < length; i++) {
                 Method m = get(i);
-                if  (m == null || !m.isDefault())
+                if  (m == null || !m.isDefault()) {
                     continue;
+                }
 
                 for (int j  = 0; j < length; j++) {
-                    if (i == j)
+                    if (i == j) {
                         continue;
+                    }
 
                     Method candidate = get(j);
-                    if (candidate == null)
+                    if (candidate == null) {
                         continue;
+                    }
 
-                    if (!matchesNameAndDescriptor(m, candidate))
+                    if (!matchesNameAndDescriptor(m, candidate)) {
                         continue;
+                    }
 
-                    if (hasMoreSpecificClass(m, candidate))
+                    if (hasMoreSpecificClass(m, candidate)) {
                         remove(j);
+                    }
                 }
             }
         }
@@ -2892,7 +2937,9 @@ public final class Class<T> implements java.io.Serializable,
         ReflectionData<T> rd = reflectionData();
         if (rd != null) {
             res = rd.publicMethods;
-            if (res != null) return res;
+            if (res != null) {
+                return res;
+            }
         }
 
         // No cached value available; compute value recursively.
@@ -3006,8 +3053,9 @@ public final class Class<T> implements java.io.Serializable,
             if (m.getName() == internedName
                 && arrayContentsEq(parameterTypes, m.getParameterTypes())
                 && (res == null
-                    || res.getReturnType().isAssignableFrom(m.getReturnType())))
+                    || res.getReturnType().isAssignableFrom(m.getReturnType()))) {
                 res = m;
+            }
         }
 
         return (res == null ? res : getReflectionFactory().copyMethod(res));
@@ -3016,8 +3064,9 @@ public final class Class<T> implements java.io.Serializable,
     private Method getMethod0(String name, Class<?>[] parameterTypes, boolean includeStaticMethods) {
         MethodArray interfaceCandidates = new MethodArray(2);
         Method res =  privateGetMethodRecursive(name, parameterTypes, includeStaticMethods, interfaceCandidates);
-        if (res != null)
+        if (res != null) {
             return res;
+        }
 
         // Not found on class or superclass directly
         interfaceCandidates.removeLessSpecifics();
@@ -3048,8 +3097,9 @@ public final class Class<T> implements java.io.Serializable,
         if ((res = searchMethods(privateGetDeclaredMethods(true),
                                  name,
                                  parameterTypes)) != null) {
-            if (includeStaticMethods || !Modifier.isStatic(res.getModifiers()))
+            if (includeStaticMethods || !Modifier.isStatic(res.getModifiers())) {
                 return res;
+            }
         }
         // Search superclass's methods
         if (!isInterface()) {
@@ -3062,9 +3112,11 @@ public final class Class<T> implements java.io.Serializable,
         }
         // Search superinterfaces' methods
         Class<?>[] interfaces = getInterfaces();
-        for (Class<?> c : interfaces)
-            if ((res = c.getMethod0(name, parameterTypes, false)) != null)
+        for (Class<?> c : interfaces) {
+            if ((res = c.getMethod0(name, parameterTypes, false)) != null) {
                 allInterfaceCandidates.add(res);
+            }
+        }
         // Not found
         return null;
     }
@@ -3207,8 +3259,9 @@ public final class Class<T> implements java.io.Serializable,
     public boolean desiredAssertionStatus() {
         ClassLoader loader = getClassLoader();
         // If the loader is null this is a system class, so ask the VM
-        if (loader == null)
+        if (loader == null) {
             return desiredAssertionStatus0(this);
+        }
 
         // If the classloader has been initialized with the assertion
         // directives, ask it. Otherwise, ask the VM.
@@ -3253,7 +3306,9 @@ public final class Class<T> implements java.io.Serializable,
     // To be able to query system properties as soon as they're available
     private static boolean initted = false;
     private static void checkInitted() {
-        if (initted) return;
+        if (initted) {
+            return;
+        }
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
                 public Void run() {
                     // Tests to ensure the system properties table is fully
@@ -3306,7 +3361,9 @@ public final class Class<T> implements java.io.Serializable,
      */
     T[] getEnumConstantsShared() {
         if (enumConstants == null) {
-            if (!isEnum()) return null;
+            if (!isEnum()) {
+                return null;
+            }
             try {
                 final Method values = getMethod("values");
                 java.security.AccessController.doPrivileged(
@@ -3339,12 +3396,14 @@ public final class Class<T> implements java.io.Serializable,
     Map<String, T> enumConstantDirectory() {
         if (enumConstantDirectory == null) {
             T[] universe = getEnumConstantsShared();
-            if (universe == null)
+            if (universe == null) {
                 throw new IllegalArgumentException(
                     getName() + " is not an enum type");
+            }
             Map<String, T> m = new HashMap<>(2 * universe.length);
-            for (T constant : universe)
+            for (T constant : universe) {
                 m.put(((Enum<?>)constant).name(), constant);
+            }
             enumConstantDirectory = m;
         }
         return enumConstantDirectory;
@@ -3365,8 +3424,9 @@ public final class Class<T> implements java.io.Serializable,
      */
     @SuppressWarnings("unchecked")
     public T cast(Object obj) {
-        if (obj != null && !isInstance(obj))
+        if (obj != null && !isInstance(obj)) {
             throw new ClassCastException(cannotCastMsg(obj));
+        }
         return (T) obj;
     }
 
@@ -3398,10 +3458,11 @@ public final class Class<T> implements java.io.Serializable,
      */
     @SuppressWarnings("unchecked")
     public <U> Class<? extends U> asSubclass(Class<U> clazz) {
-        if (clazz.isAssignableFrom(this))
+        if (clazz.isAssignableFrom(this)) {
             return (Class<? extends U>) this;
-        else
+        } else {
             throw new ClassCastException(this.toString());
+        }
     }
 
     /**

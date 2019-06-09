@@ -1045,7 +1045,9 @@ public class LogManager {
                 // lead to deadlocks, given that dispose() can be called by
                 // multiple threads, and from within different synchronized
                 // methods/blocks.
-                if (disposed) return;
+                if (disposed) {
+                    return;
+                }
                 disposed = true;
             }
 
@@ -1430,8 +1432,9 @@ public class LogManager {
         // locks when calling the listeners.
         Map<Object,Integer> listeners = null;
         synchronized (listenerMap) {
-            if (!listenerMap.isEmpty())
+            if (!listenerMap.isEmpty()) {
                 listeners = new HashMap<>(listenerMap);
+            }
         }
         if (listeners != null) {
             assert Beans.isBeansPresent();
@@ -1582,8 +1585,9 @@ public class LogManager {
 
     void checkPermission() {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
+        if (sm != null) {
             sm.checkPermission(controlPermission);
+        }
     }
 
     /**
@@ -1803,10 +1807,12 @@ public class LogManager {
                 throw new AssertionError(x);
             } catch (InvocationTargetException x) {
                 Throwable cause = x.getCause();
-                if (cause instanceof Error)
+                if (cause instanceof Error) {
                     throw (Error)cause;
-                if (cause instanceof RuntimeException)
+                }
+                if (cause instanceof RuntimeException) {
                     throw (RuntimeException)cause;
+                }
                 throw new AssertionError(x);
             }
         }
@@ -1822,10 +1828,12 @@ public class LogManager {
                 throw new AssertionError(x);
             } catch (InvocationTargetException x) {
                 Throwable cause = x.getCause();
-                if (cause instanceof Error)
+                if (cause instanceof Error) {
                     throw (Error)cause;
-                if (cause instanceof RuntimeException)
+                }
+                if (cause instanceof RuntimeException) {
                     throw (RuntimeException)cause;
+                }
                 throw new AssertionError(x);
             }
         }

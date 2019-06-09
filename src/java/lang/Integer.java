@@ -128,8 +128,9 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @see     java.lang.Character#MIN_RADIX
      */
     public static String toString(int i, int radix) {
-        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
+        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
             radix = 10;
+        }
 
         /* Use the faster version */
         if (radix == 10) {
@@ -395,8 +396,9 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @return  a string representation of the argument in base&nbsp;10.
      */
     public static String toString(int i) {
-        if (i == Integer.MIN_VALUE)
+        if (i == Integer.MIN_VALUE) {
             return "-2147483648";
+        }
         int size = (i < 0) ? stringSize(-i) + 1 : stringSize(i);
         char[] buf = new char[size];
         getChars(i, size, buf);
@@ -457,7 +459,9 @@ public final class Integer extends Number implements Comparable<Integer> {
             r = i - ((q << 3) + (q << 1));  // r = i-(q*10) ...
             buf [--charPos] = digits [r];
             i = q;
-            if (i == 0) break;
+            if (i == 0) {
+                break;
+            }
         }
         if (sign != 0) {
             buf [--charPos] = sign;
@@ -469,9 +473,11 @@ public final class Integer extends Number implements Comparable<Integer> {
 
     // Requires positive x
     static int stringSize(int x) {
-        for (int i=0; ; i++)
-            if (x <= sizeTable[i])
-                return i+1;
+        for (int i=0; ; i++) {
+            if (x <= sizeTable[i]) {
+                return i + 1;
+            }
+        }
     }
 
     /**
@@ -565,11 +571,14 @@ public final class Integer extends Number implements Comparable<Integer> {
                 if (firstChar == '-') {
                     negative = true;
                     limit = Integer.MIN_VALUE;
-                } else if (firstChar != '+')
+                } else if (firstChar != '+') {
                     throw NumberFormatException.forInputString(s);
+                }
 
                 if (len == 1) // Cannot have lone "+" or "-"
+                {
                     throw NumberFormatException.forInputString(s);
+                }
                 i++;
             }
             multmin = limit / radix;
@@ -801,8 +810,9 @@ public final class Integer extends Number implements Comparable<Integer> {
 
             cache = new Integer[(high - low) + 1];
             int j = low;
-            for(int k = 0; k < cache.length; k++)
+            for(int k = 0; k < cache.length; k++) {
                 cache[k] = new Integer(j++);
+            }
 
             // range [-128, 127] must be interned (JLS7 5.1.7)
             assert IntegerCache.high >= 127;
@@ -827,8 +837,9 @@ public final class Integer extends Number implements Comparable<Integer> {
      * @since  1.5
      */
     public static Integer valueOf(int i) {
-        if (i >= IntegerCache.low && i <= IntegerCache.high)
+        if (i >= IntegerCache.low && i <= IntegerCache.high) {
             return IntegerCache.cache[i + (-IntegerCache.low)];
+        }
         return new Integer(i);
     }
 
@@ -1158,15 +1169,17 @@ public final class Integer extends Number implements Comparable<Integer> {
         boolean negative = false;
         Integer result;
 
-        if (nm.length() == 0)
+        if (nm.length() == 0) {
             throw new NumberFormatException("Zero length string");
+        }
         char firstChar = nm.charAt(0);
         // Handle sign, if present
         if (firstChar == '-') {
             negative = true;
             index++;
-        } else if (firstChar == '+')
+        } else if (firstChar == '+') {
             index++;
+        }
 
         // Handle radix specifier, if present
         if (nm.startsWith("0x", index) || nm.startsWith("0X", index)) {
@@ -1182,8 +1195,9 @@ public final class Integer extends Number implements Comparable<Integer> {
             radix = 8;
         }
 
-        if (nm.startsWith("-", index) || nm.startsWith("+", index))
+        if (nm.startsWith("-", index) || nm.startsWith("+", index)) {
             throw new NumberFormatException("Sign character in wrong position");
+        }
 
         try {
             result = Integer.valueOf(nm.substring(index), radix);
@@ -1394,8 +1408,9 @@ public final class Integer extends Number implements Comparable<Integer> {
      */
     public static int numberOfLeadingZeros(int i) {
         // HD, Figure 5-6
-        if (i == 0)
+        if (i == 0) {
             return 32;
+        }
         int n = 1;
         if (i >>> 16 == 0) { n += 16; i <<= 16; }
         if (i >>> 24 == 0) { n +=  8; i <<=  8; }
@@ -1422,7 +1437,9 @@ public final class Integer extends Number implements Comparable<Integer> {
     public static int numberOfTrailingZeros(int i) {
         // HD, Figure 5-14
         int y;
-        if (i == 0) return 32;
+        if (i == 0) {
+            return 32;
+        }
         int n = 31;
         y = i <<16; if (y != 0) { n = n -16; i = y; }
         y = i << 8; if (y != 0) { n = n - 8; i = y; }

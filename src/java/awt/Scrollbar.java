@@ -432,8 +432,9 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = getToolkit().createScrollbar(this);
+            }
             super.addNotify();
         }
     }
@@ -1208,11 +1209,12 @@ public class Scrollbar extends Component implements Adjustable, Accessible {
       while(null != (keyOrNull = s.readObject())) {
         String key = ((String)keyOrNull).intern();
 
-        if (adjustmentListenerK == key)
-          addAdjustmentListener((AdjustmentListener)(s.readObject()));
-
-        else // skip value for unrecognized key
-          s.readObject();
+        if (adjustmentListenerK == key) {
+            addAdjustmentListener((AdjustmentListener)(s.readObject()));
+        } else // skip value for unrecognized key
+        {
+            s.readObject();
+        }
       }
     }
 

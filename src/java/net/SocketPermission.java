@@ -367,8 +367,9 @@ public final class SocketPermission extends Permission
             } else {
                 h = Integer.parseInt(high);
             }
-            if (l < 0 || h < 0 || h<l)
+            if (l < 0 || h < 0 || h<l) {
                 throw new IllegalArgumentException("invalid port range");
+            }
 
             return new int[] {l, h};
         }
@@ -390,8 +391,9 @@ public final class SocketPermission extends Permission
     private void init(String host, int mask) {
         // Set the integer mask that represents the actions
 
-        if ((mask & ALL) != mask)
+        if ((mask & ALL) != mask) {
             throw new IllegalArgumentException("invalid actions mask");
+        }
 
         // always OR in RESOLVE if we allow any of the others
         this.mask = mask | RESOLVE;
@@ -517,8 +519,9 @@ public final class SocketPermission extends Permission
         char[] a = action.toCharArray();
 
         int i = a.length - 1;
-        if (i < 0)
+        if (i < 0) {
             return mask;
+        }
 
         while (i != -1) {
             char c;
@@ -528,8 +531,9 @@ public final class SocketPermission extends Permission
                                c == '\r' ||
                                c == '\n' ||
                                c == '\f' ||
-                               c == '\t'))
+                               c == '\t')) {
                 i--;
+            }
 
             // check for the known strings
             int matchlen;
@@ -610,8 +614,12 @@ public final class SocketPermission extends Permission
     private boolean isUntrusted()
         throws UnknownHostException
     {
-        if (trusted) return false;
-        if (invalid || untrusted) return true;
+        if (trusted) {
+            return false;
+        }
+        if (invalid || untrusted) {
+            return true;
+        }
         try {
             if (!trustNameService && (defaultDeny ||
                 sun.net.www.URLConnection.isProxiedHost(hostname))) {
@@ -645,7 +653,9 @@ public final class SocketPermission extends Permission
     void getCanonName()
         throws UnknownHostException
     {
-        if (cname != null || invalid || untrusted) return;
+        if (cname != null || invalid || untrusted) {
+            return;
+        }
 
         // attempt to get the canonical name
 
@@ -677,8 +687,9 @@ public final class SocketPermission extends Permission
         String a = cname.toLowerCase();
         String b = hname.toLowerCase();
         if (a.startsWith(b)  &&
-            ((a.length() == b.length()) || (a.charAt(b.length()) == '.')))
+            ((a.length() == b.length()) || (a.charAt(b.length()) == '.'))) {
             return true;
+        }
         if (cdomain == null) {
             cdomain = RegisteredDomain.getRegisteredDomain(a);
         }
@@ -691,12 +702,13 @@ public final class SocketPermission extends Permission
     }
 
     private boolean authorized(String cname, byte[] addr) {
-        if (addr.length == 4)
+        if (addr.length == 4) {
             return authorizedIPv4(cname, addr);
-        else if (addr.length == 16)
+        } else if (addr.length == 16) {
             return authorizedIPv6(cname, addr);
-        else
+        } else {
             return false;
+        }
     }
 
     private boolean authorizedIPv4(String cname, byte[] addr) {
@@ -745,8 +757,9 @@ public final class SocketPermission extends Permission
             //auth = InetAddress.getAllByName0(authHost, false)[0];
             authHost = hostname + '.' + authHost;
             auth = InetAddress.getAllByName0(authHost, false)[0];
-            if (auth.equals(InetAddress.getByAddress(addr)))
+            if (auth.equals(InetAddress.getByAddress(addr))) {
                 return true;
+            }
             Debug debug = getDebug();
             if (debug != null && Debug.isOn("failure")) {
                 debug.println("socket access restriction: IP address of " + auth + " != " + InetAddress.getByAddress(addr));
@@ -768,7 +781,9 @@ public final class SocketPermission extends Permission
     void getIP()
         throws UnknownHostException
     {
-        if (addresses != null || wildcard || invalid) return;
+        if (addresses != null || wildcard || invalid) {
+            return;
+        }
 
         try {
             // now get all the IP addresses
@@ -778,9 +793,9 @@ public final class SocketPermission extends Permission
                 host = getName().substring(1, getName().indexOf(']'));
             } else {
                 int i = getName().indexOf(":");
-                if (i == -1)
+                if (i == -1) {
                     host = getName();
-                else {
+                } else {
                     host = getName().substring(0,i);
                 }
             }
@@ -834,11 +849,13 @@ public final class SocketPermission extends Permission
     public boolean implies(Permission p) {
         int i,j;
 
-        if (!(p instanceof SocketPermission))
+        if (!(p instanceof SocketPermission)) {
             return false;
+        }
 
-        if (p == this)
+        if (p == this) {
             return true;
+        }
 
         SocketPermission that = (SocketPermission) p;
 
@@ -892,8 +909,9 @@ public final class SocketPermission extends Permission
         }
 
         // allow a "*" wildcard to always match anything
-        if (this.wildcard && "".equals(this.cname))
+        if (this.wildcard && "".equals(this.cname)) {
             return true;
+        }
 
         // return if either one of these NetPerm objects are invalid...
         if (this.invalid || that.invalid) {
@@ -902,8 +920,9 @@ public final class SocketPermission extends Permission
 
         try {
             if (this.init_with_ip) { // we only check IP addresses
-                if (that.wildcard)
+                if (that.wildcard) {
                     return false;
+                }
 
                 if (that.init_with_ip) {
                     return (this.addresses[0].equals(that.addresses[0]));
@@ -912,8 +931,9 @@ public final class SocketPermission extends Permission
                         that.getIP();
                     }
                     for (i=0; i < that.addresses.length; i++) {
-                        if (this.addresses[0].equals(that.addresses[i]))
+                        if (this.addresses[0].equals(that.addresses[i])) {
                             return true;
+                        }
                     }
                 }
                 // since "this" was initialized with an IP address, we
@@ -926,12 +946,14 @@ public final class SocketPermission extends Permission
                 // if they are both wildcards, return true iff
                 // that's cname ends with this cname (i.e., *.sun.com
                 // implies *.eng.sun.com)
-                if (this.wildcard && that.wildcard)
+                if (this.wildcard && that.wildcard) {
                     return (that.cname.endsWith(this.cname));
+                }
 
                 // a non-wildcard can't imply a wildcard
-                if (that.wildcard)
+                if (that.wildcard) {
                     return false;
+                }
 
                 // this is a wildcard, lets see if that's cname ends with
                 // it...
@@ -953,8 +975,9 @@ public final class SocketPermission extends Permission
             if (!(that.init_with_ip && this.isUntrusted())) {
                 for (j = 0; j < this.addresses.length; j++) {
                     for (i=0; i < that.addresses.length; i++) {
-                        if (this.addresses[j].equals(that.addresses[i]))
+                        if (this.addresses[j].equals(that.addresses[i])) {
                             return true;
+                        }
                     }
                 }
 
@@ -1010,18 +1033,22 @@ public final class SocketPermission extends Permission
      *  in the comparison if <i>obj</i> only contains the action, 'resolve'.
      */
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
+        }
 
-        if (! (obj instanceof SocketPermission))
+        if (! (obj instanceof SocketPermission)) {
             return false;
+        }
 
         SocketPermission that = (SocketPermission) obj;
 
         //this is (overly?) complex!!!
 
         // check the mask first
-        if (this.mask != that.mask) return false;
+        if (this.mask != that.mask) {
+            return false;
+        }
 
         if ((that.mask & RESOLVE) != that.mask) {
             // now check the port range...
@@ -1053,8 +1080,9 @@ public final class SocketPermission extends Permission
             return false;
         }
 
-        if (this.invalid || that.invalid)
+        if (this.invalid || that.invalid) {
             return false;
+        }
 
         if (this.cname != null) {
             return this.cname.equalsIgnoreCase(that.cname);
@@ -1087,10 +1115,11 @@ public final class SocketPermission extends Permission
 
         }
 
-        if (invalid || cname == null)
+        if (invalid || cname == null) {
             return this.getName().hashCode();
-        else
+        } else {
             return this.cname.hashCode();
+        }
     }
 
     /**
@@ -1123,21 +1152,30 @@ public final class SocketPermission extends Permission
         }
 
         if ((mask & LISTEN) == LISTEN) {
-            if (comma) sb.append(',');
-            else comma = true;
+            if (comma) {
+                sb.append(',');
+            } else {
+                comma = true;
+            }
             sb.append("listen");
         }
 
         if ((mask & ACCEPT) == ACCEPT) {
-            if (comma) sb.append(',');
-            else comma = true;
+            if (comma) {
+                sb.append(',');
+            } else {
+                comma = true;
+            }
             sb.append("accept");
         }
 
 
         if ((mask & RESOLVE) == RESOLVE) {
-            if (comma) sb.append(',');
-            else comma = true;
+            if (comma) {
+                sb.append(',');
+            } else {
+                comma = true;
+            }
             sb.append("resolve");
         }
 
@@ -1153,8 +1191,9 @@ public final class SocketPermission extends Permission
      */
     public String getActions()
     {
-        if (actions == null)
+        if (actions == null) {
             actions = getActions(this.mask);
+        }
 
         return actions;
     }
@@ -1185,8 +1224,9 @@ public final class SocketPermission extends Permission
     {
         // Write out the actions. The superclass takes care of the name
         // call getActions to make sure actions field is initialized
-        if (actions == null)
+        if (actions == null) {
             getActions();
+        }
         s.defaultWriteObject();
     }
 
@@ -1358,12 +1398,14 @@ final class SocketPermissionCollection extends PermissionCollection
      *                                has been marked readonly
      */
     public void add(Permission permission) {
-        if (! (permission instanceof SocketPermission))
+        if (! (permission instanceof SocketPermission)) {
             throw new IllegalArgumentException("invalid permission: "+
                                                permission);
-        if (isReadOnly())
+        }
+        if (isReadOnly()) {
             throw new SecurityException(
                 "attempt to add a Permission to a readonly PermissionCollection");
+        }
 
         // optimization to ensure perms most likely to be tested
         // show up early (4301064)
@@ -1384,8 +1426,9 @@ final class SocketPermissionCollection extends PermissionCollection
 
     public boolean implies(Permission permission)
     {
-        if (! (permission instanceof SocketPermission))
-                return false;
+        if (! (permission instanceof SocketPermission)) {
+            return false;
+        }
 
         SocketPermission np = (SocketPermission) permission;
 
@@ -1401,8 +1444,9 @@ final class SocketPermissionCollection extends PermissionCollection
                 //System.out.println("  trying "+x);
                 if (((needed & x.getMask()) != 0) && x.impliesIgnoreMask(np)) {
                     effective |=  x.getMask();
-                    if ((effective & desired) == desired)
+                    if ((effective & desired) == desired) {
                         return true;
+                    }
                     needed = (desired ^ effective);
                 }
             }

@@ -226,18 +226,23 @@ public final class HttpCookie implements Cloneable {
      *          otherwise, {@code false}
      */
     public boolean hasExpired() {
-        if (maxAge == 0) return true;
+        if (maxAge == 0) {
+            return true;
+        }
 
         // if not specify max-age, this cookie should be
         // discarded when user agent is to be closed, but
         // it is not expired.
-        if (maxAge == MAX_AGE_UNSPECIFIED) return false;
+        if (maxAge == MAX_AGE_UNSPECIFIED) {
+            return false;
+        }
 
         long deltaSecond = (System.currentTimeMillis() - whenCreated) / 1000;
-        if (deltaSecond > maxAge)
+        if (deltaSecond > maxAge) {
             return true;
-        else
+        } else {
             return false;
+        }
     }
 
     /**
@@ -359,10 +364,11 @@ public final class HttpCookie implements Cloneable {
      * @see  #getDomain
      */
     public void setDomain(String pattern) {
-        if (pattern != null)
+        if (pattern != null) {
             domain = pattern.toLowerCase();
-        else
+        } else {
             domain = pattern;
+        }
     }
 
     /**
@@ -633,18 +639,21 @@ public final class HttpCookie implements Cloneable {
      * @return  {@code true} if they domain-matches; {@code false} if not
      */
     public static boolean domainMatches(String domain, String host) {
-        if (domain == null || host == null)
+        if (domain == null || host == null) {
             return false;
+        }
 
         // if there's no embedded dot in domain and domain is not .local
         boolean isLocalDomain = ".local".equalsIgnoreCase(domain);
         int embeddedDotInDomain = domain.indexOf('.');
-        if (embeddedDotInDomain == 0)
+        if (embeddedDotInDomain == 0) {
             embeddedDotInDomain = domain.indexOf('.', 1);
+        }
         if (!isLocalDomain
             && (embeddedDotInDomain == -1 ||
-                embeddedDotInDomain == domain.length() - 1))
+                embeddedDotInDomain == domain.length() - 1)) {
             return false;
+        }
 
         // if the host name contains no dot and the domain name
         // is .local or host.local
@@ -705,10 +714,12 @@ public final class HttpCookie implements Cloneable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
-        if (!(obj instanceof HttpCookie))
+        }
+        if (!(obj instanceof HttpCookie)) {
             return false;
+        }
         HttpCookie other = (HttpCookie)obj;
 
         // One http cookie equals to another cookie (RFC 2965 sec. 3.3.3) if:
@@ -778,8 +789,9 @@ public final class HttpCookie implements Cloneable {
         for (int i = 0; i < len; i++) {
             char c = value.charAt(i);
 
-            if (c < 0x20 || c >= 0x7f || tspecials.indexOf(c) != -1)
+            if (c < 0x20 || c >= 0x7f || tspecials.indexOf(c) != -1) {
                 return false;
+            }
         }
         return true;
     }
@@ -811,13 +823,14 @@ public final class HttpCookie implements Cloneable {
             if (index != -1) {
                 String name = namevaluePair.substring(0, index).trim();
                 String value = namevaluePair.substring(index + 1).trim();
-                if (retainHeader)
+                if (retainHeader) {
                     cookie = new HttpCookie(name,
                                             stripOffSurroundingQuote(value),
                                             header);
-                else
+                } else {
                     cookie = new HttpCookie(name,
                                             stripOffSurroundingQuote(value));
+                }
             } else {
                 // no "=" in name-value pair; it's an error
                 throw new IllegalArgumentException("Invalid cookie name-value pair");
@@ -862,16 +875,18 @@ public final class HttpCookie implements Cloneable {
                 public void assign(HttpCookie cookie,
                                    String attrName,
                                    String attrValue) {
-                    if (cookie.getComment() == null)
+                    if (cookie.getComment() == null) {
                         cookie.setComment(attrValue);
+                    }
                 }
             });
         assignors.put("commenturl", new CookieAttributeAssignor() {
                 public void assign(HttpCookie cookie,
                                    String attrName,
                                    String attrValue) {
-                    if (cookie.getCommentURL() == null)
+                    if (cookie.getCommentURL() == null) {
                         cookie.setCommentURL(attrValue);
+                    }
                 }
             });
         assignors.put("discard", new CookieAttributeAssignor() {
@@ -885,8 +900,9 @@ public final class HttpCookie implements Cloneable {
                 public void assign(HttpCookie cookie,
                                    String attrName,
                                    String attrValue) {
-                    if (cookie.getDomain() == null)
+                    if (cookie.getDomain() == null) {
                         cookie.setDomain(attrValue);
+                    }
                 }
             });
         assignors.put("max-age", new CookieAttributeAssignor(){
@@ -895,8 +911,9 @@ public final class HttpCookie implements Cloneable {
                                    String attrValue) {
                     try {
                         long maxage = Long.parseLong(attrValue);
-                        if (cookie.getMaxAge() == MAX_AGE_UNSPECIFIED)
+                        if (cookie.getMaxAge() == MAX_AGE_UNSPECIFIED) {
                             cookie.setMaxAge(maxage);
+                        }
                     } catch (NumberFormatException ignored) {
                         throw new IllegalArgumentException(
                                 "Illegal cookie max-age attribute");
@@ -907,16 +924,18 @@ public final class HttpCookie implements Cloneable {
                 public void assign(HttpCookie cookie,
                                    String attrName,
                                    String attrValue) {
-                    if (cookie.getPath() == null)
+                    if (cookie.getPath() == null) {
                         cookie.setPath(attrValue);
+                    }
                 }
             });
         assignors.put("port", new CookieAttributeAssignor(){
                 public void assign(HttpCookie cookie,
                                    String attrName,
                                    String attrValue) {
-                    if (cookie.getPortlist() == null)
+                    if (cookie.getPortlist() == null) {
                         cookie.setPortlist(attrValue == null ? "" : attrValue);
+                    }
                 }
             });
         assignors.put("secure", new CookieAttributeAssignor(){
@@ -1008,12 +1027,15 @@ public final class HttpCookie implements Cloneable {
         StringBuilder sb = new StringBuilder();
 
         sb.append(getName()).append("=\"").append(getValue()).append('"');
-        if (getPath() != null)
+        if (getPath() != null) {
             sb.append(";$Path=\"").append(getPath()).append('"');
-        if (getDomain() != null)
+        }
+        if (getDomain() != null) {
             sb.append(";$Domain=\"").append(getDomain()).append('"');
-        if (getPortlist() != null)
+        }
+        if (getPortlist() != null) {
             sb.append(";$Port=\"").append(getPortlist()).append('"');
+        }
 
         return sb.toString();
     }
@@ -1095,7 +1117,9 @@ public final class HttpCookie implements Cloneable {
     }
 
     private static boolean equalsIgnoreCase(String s, String t) {
-        if (s == t) return true;
+        if (s == t) {
+            return true;
+        }
         if ((s != null) && (t != null)) {
             return s.equalsIgnoreCase(t);
         }
@@ -1103,7 +1127,9 @@ public final class HttpCookie implements Cloneable {
     }
 
     private static boolean startsWithIgnoreCase(String s, String start) {
-        if (s == null || start == null) return false;
+        if (s == null || start == null) {
+            return false;
+        }
 
         if (s.length() >= start.length() &&
                 start.equalsIgnoreCase(s.substring(0, start.length()))) {
@@ -1131,7 +1157,9 @@ public final class HttpCookie implements Cloneable {
 
         for (p = 0, q = 0; p < header.length(); p++) {
             char c = header.charAt(p);
-            if (c == '"') quoteCount++;
+            if (c == '"') {
+                quoteCount++;
+            }
             if (c == ',' && (quoteCount % 2 == 0)) {
                 // it is comma and not surrounding by double-quotes
                 cookies.add(header.substring(q, p));

@@ -147,8 +147,9 @@ class HeapCharBuffer
 
     public CharBuffer get(char[] dst, int offset, int length) {
         checkBounds(offset, length, dst.length);
-        if (length > remaining())
+        if (length > remaining()) {
             throw new BufferUnderflowException();
+        }
         System.arraycopy(hb, ix(position()), dst, offset, length);
         position(position() + length);
         return this;
@@ -185,8 +186,9 @@ class HeapCharBuffer
     public CharBuffer put(char[] src, int offset, int length) {
 
         checkBounds(offset, length, src.length);
-        if (length > remaining())
+        if (length > remaining()) {
             throw new BufferOverflowException();
+        }
         System.arraycopy(src, offset, hb, ix(position()), length);
         position(position() + length);
         return this;
@@ -198,20 +200,23 @@ class HeapCharBuffer
     public CharBuffer put(CharBuffer src) {
 
         if (src instanceof HeapCharBuffer) {
-            if (src == this)
+            if (src == this) {
                 throw new IllegalArgumentException();
+            }
             HeapCharBuffer sb = (HeapCharBuffer)src;
             int n = sb.remaining();
-            if (n > remaining())
+            if (n > remaining()) {
                 throw new BufferOverflowException();
+            }
             System.arraycopy(sb.hb, sb.ix(sb.position()),
                              hb, ix(position()), n);
             sb.position(sb.position() + n);
             position(position() + n);
         } else if (src.isDirect()) {
             int n = src.remaining();
-            if (n > remaining())
+            if (n > remaining()) {
                 throw new BufferOverflowException();
+            }
             src.get(hb, ix(position()), n);
             position(position() + n);
         } else {
@@ -576,8 +581,9 @@ class HeapCharBuffer
     public CharBuffer subSequence(int start, int end) {
         if ((start < 0)
             || (end > length())
-            || (start > end))
+            || (start > end)) {
             throw new IndexOutOfBoundsException();
+        }
         int pos = position();
         return new HeapCharBuffer(hb,
                                       -1,

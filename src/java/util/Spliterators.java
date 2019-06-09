@@ -677,16 +677,17 @@ public final class Spliterators {
 
             @Override
             public boolean hasNext() {
-                if (!valueReady)
+                if (!valueReady) {
                     spliterator.tryAdvance(this);
+                }
                 return valueReady;
             }
 
             @Override
             public T next() {
-                if (!valueReady && !hasNext())
+                if (!valueReady && !hasNext()) {
                     throw new NoSuchElementException();
-                else {
+                } else {
                     valueReady = false;
                     return nextElement;
                 }
@@ -722,16 +723,17 @@ public final class Spliterators {
 
             @Override
             public boolean hasNext() {
-                if (!valueReady)
+                if (!valueReady) {
                     spliterator.tryAdvance(this);
+                }
                 return valueReady;
             }
 
             @Override
             public int nextInt() {
-                if (!valueReady && !hasNext())
+                if (!valueReady && !hasNext()) {
                     throw new NoSuchElementException();
-                else {
+                } else {
                     valueReady = false;
                     return nextElement;
                 }
@@ -767,16 +769,17 @@ public final class Spliterators {
 
             @Override
             public boolean hasNext() {
-                if (!valueReady)
+                if (!valueReady) {
                     spliterator.tryAdvance(this);
+                }
                 return valueReady;
             }
 
             @Override
             public long nextLong() {
-                if (!valueReady && !hasNext())
+                if (!valueReady && !hasNext()) {
                     throw new NoSuchElementException();
-                else {
+                } else {
                     valueReady = false;
                     return nextElement;
                 }
@@ -812,16 +815,17 @@ public final class Spliterators {
 
             @Override
             public boolean hasNext() {
-                if (!valueReady)
+                if (!valueReady) {
                     spliterator.tryAdvance(this);
+                }
                 return valueReady;
             }
 
             @Override
             public double nextDouble() {
-                if (!valueReady && !hasNext())
+                if (!valueReady && !hasNext()) {
                     throw new NoSuchElementException();
-                else {
+                } else {
                     valueReady = false;
                     return nextElement;
                 }
@@ -941,8 +945,9 @@ public final class Spliterators {
         @Override
         public void forEachRemaining(Consumer<? super T> action) {
             Object[] a; int i, hi; // hoist accesses and checks from loop
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             if ((a = array).length >= (hi = fence) &&
                 (i = index) >= 0 && i < (index = hi)) {
                 do { action.accept((T)a[i]); } while (++i < hi);
@@ -951,8 +956,9 @@ public final class Spliterators {
 
         @Override
         public boolean tryAdvance(Consumer<? super T> action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             if (index >= 0 && index < fence) {
                 @SuppressWarnings("unchecked") T e = (T) array[index++];
                 action.accept(e);
@@ -971,8 +977,9 @@ public final class Spliterators {
 
         @Override
         public Comparator<? super T> getComparator() {
-            if (hasCharacteristics(Spliterator.SORTED))
+            if (hasCharacteristics(Spliterator.SORTED)) {
                 return null;
+            }
             throw new IllegalStateException();
         }
     }
@@ -1025,8 +1032,9 @@ public final class Spliterators {
         @Override
         public void forEachRemaining(IntConsumer action) {
             int[] a; int i, hi; // hoist accesses and checks from loop
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             if ((a = array).length >= (hi = fence) &&
                 (i = index) >= 0 && i < (index = hi)) {
                 do { action.accept(a[i]); } while (++i < hi);
@@ -1035,8 +1043,9 @@ public final class Spliterators {
 
         @Override
         public boolean tryAdvance(IntConsumer action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             if (index >= 0 && index < fence) {
                 action.accept(array[index++]);
                 return true;
@@ -1054,8 +1063,9 @@ public final class Spliterators {
 
         @Override
         public Comparator<? super Integer> getComparator() {
-            if (hasCharacteristics(Spliterator.SORTED))
+            if (hasCharacteristics(Spliterator.SORTED)) {
                 return null;
+            }
             throw new IllegalStateException();
         }
     }
@@ -1108,8 +1118,9 @@ public final class Spliterators {
         @Override
         public void forEachRemaining(LongConsumer action) {
             long[] a; int i, hi; // hoist accesses and checks from loop
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             if ((a = array).length >= (hi = fence) &&
                 (i = index) >= 0 && i < (index = hi)) {
                 do { action.accept(a[i]); } while (++i < hi);
@@ -1118,8 +1129,9 @@ public final class Spliterators {
 
         @Override
         public boolean tryAdvance(LongConsumer action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             if (index >= 0 && index < fence) {
                 action.accept(array[index++]);
                 return true;
@@ -1137,8 +1149,9 @@ public final class Spliterators {
 
         @Override
         public Comparator<? super Long> getComparator() {
-            if (hasCharacteristics(Spliterator.SORTED))
+            if (hasCharacteristics(Spliterator.SORTED)) {
                 return null;
+            }
             throw new IllegalStateException();
         }
     }
@@ -1191,8 +1204,9 @@ public final class Spliterators {
         @Override
         public void forEachRemaining(DoubleConsumer action) {
             double[] a; int i, hi; // hoist accesses and checks from loop
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             if ((a = array).length >= (hi = fence) &&
                 (i = index) >= 0 && i < (index = hi)) {
                 do { action.accept(a[i]); } while (++i < hi);
@@ -1201,8 +1215,9 @@ public final class Spliterators {
 
         @Override
         public boolean tryAdvance(DoubleConsumer action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             if (index >= 0 && index < fence) {
                 action.accept(array[index++]);
                 return true;
@@ -1220,8 +1235,9 @@ public final class Spliterators {
 
         @Override
         public Comparator<? super Double> getComparator() {
-            if (hasCharacteristics(Spliterator.SORTED))
+            if (hasCharacteristics(Spliterator.SORTED)) {
                 return null;
+            }
             throw new IllegalStateException();
         }
     }
@@ -1310,16 +1326,19 @@ public final class Spliterators {
             long s = est;
             if (s > 1 && tryAdvance(holder)) {
                 int n = batch + BATCH_UNIT;
-                if (n > s)
+                if (n > s) {
                     n = (int) s;
-                if (n > MAX_BATCH)
+                }
+                if (n > MAX_BATCH) {
                     n = MAX_BATCH;
+                }
                 Object[] a = new Object[n];
                 int j = 0;
                 do { a[j] = holder.value; } while (++j < n && tryAdvance(holder));
                 batch = j;
-                if (est != Long.MAX_VALUE)
+                if (est != Long.MAX_VALUE) {
                     est -= j;
+                }
                 return new ArraySpliterator<>(a, 0, j, characteristics());
             }
             return null;
@@ -1420,16 +1439,19 @@ public final class Spliterators {
             long s = est;
             if (s > 1 && tryAdvance(holder)) {
                 int n = batch + BATCH_UNIT;
-                if (n > s)
+                if (n > s) {
                     n = (int) s;
-                if (n > MAX_BATCH)
+                }
+                if (n > MAX_BATCH) {
                     n = MAX_BATCH;
+                }
                 int[] a = new int[n];
                 int j = 0;
                 do { a[j] = holder.value; } while (++j < n && tryAdvance(holder));
                 batch = j;
-                if (est != Long.MAX_VALUE)
+                if (est != Long.MAX_VALUE) {
                     est -= j;
+                }
                 return new IntArraySpliterator(a, 0, j, characteristics());
             }
             return null;
@@ -1530,16 +1552,19 @@ public final class Spliterators {
             long s = est;
             if (s > 1 && tryAdvance(holder)) {
                 int n = batch + BATCH_UNIT;
-                if (n > s)
+                if (n > s) {
                     n = (int) s;
-                if (n > MAX_BATCH)
+                }
+                if (n > MAX_BATCH) {
                     n = MAX_BATCH;
+                }
                 long[] a = new long[n];
                 int j = 0;
                 do { a[j] = holder.value; } while (++j < n && tryAdvance(holder));
                 batch = j;
-                if (est != Long.MAX_VALUE)
+                if (est != Long.MAX_VALUE) {
                     est -= j;
+                }
                 return new LongArraySpliterator(a, 0, j, characteristics());
             }
             return null;
@@ -1640,16 +1665,19 @@ public final class Spliterators {
             long s = est;
             if (s > 1 && tryAdvance(holder)) {
                 int n = batch + BATCH_UNIT;
-                if (n > s)
+                if (n > s) {
                     n = (int) s;
-                if (n > MAX_BATCH)
+                }
+                if (n > MAX_BATCH) {
                     n = MAX_BATCH;
+                }
                 double[] a = new double[n];
                 int j = 0;
                 do { a[j] = holder.value; } while (++j < n && tryAdvance(holder));
                 batch = j;
-                if (est != Long.MAX_VALUE)
+                if (est != Long.MAX_VALUE) {
                     est -= j;
+                }
                 return new DoubleArraySpliterator(a, 0, j, characteristics());
             }
             return null;
@@ -1771,20 +1799,24 @@ public final class Spliterators {
                 i = it = collection.iterator();
                 s = est = (long) collection.size();
             }
-            else
+            else {
                 s = est;
+            }
             if (s > 1 && i.hasNext()) {
                 int n = batch + BATCH_UNIT;
-                if (n > s)
+                if (n > s) {
                     n = (int) s;
-                if (n > MAX_BATCH)
+                }
+                if (n > MAX_BATCH) {
                     n = MAX_BATCH;
+                }
                 Object[] a = new Object[n];
                 int j = 0;
                 do { a[j] = i.next(); } while (++j < n && i.hasNext());
                 batch = j;
-                if (est != Long.MAX_VALUE)
+                if (est != Long.MAX_VALUE) {
                     est -= j;
+                }
                 return new ArraySpliterator<>(a, 0, j, characteristics);
             }
             return null;
@@ -1792,7 +1824,9 @@ public final class Spliterators {
 
         @Override
         public void forEachRemaining(Consumer<? super T> action) {
-            if (action == null) throw new NullPointerException();
+            if (action == null) {
+                throw new NullPointerException();
+            }
             Iterator<? extends T> i;
             if ((i = it) == null) {
                 i = it = collection.iterator();
@@ -1803,7 +1837,9 @@ public final class Spliterators {
 
         @Override
         public boolean tryAdvance(Consumer<? super T> action) {
-            if (action == null) throw new NullPointerException();
+            if (action == null) {
+                throw new NullPointerException();
+            }
             if (it == null) {
                 it = collection.iterator();
                 est = (long) collection.size();
@@ -1829,8 +1865,9 @@ public final class Spliterators {
 
         @Override
         public Comparator<? super T> getComparator() {
-            if (hasCharacteristics(Spliterator.SORTED))
+            if (hasCharacteristics(Spliterator.SORTED)) {
                 return null;
+            }
             throw new IllegalStateException();
         }
     }
@@ -1887,16 +1924,19 @@ public final class Spliterators {
             long s = est;
             if (s > 1 && i.hasNext()) {
                 int n = batch + BATCH_UNIT;
-                if (n > s)
+                if (n > s) {
                     n = (int) s;
-                if (n > MAX_BATCH)
+                }
+                if (n > MAX_BATCH) {
                     n = MAX_BATCH;
+                }
                 int[] a = new int[n];
                 int j = 0;
                 do { a[j] = i.nextInt(); } while (++j < n && i.hasNext());
                 batch = j;
-                if (est != Long.MAX_VALUE)
+                if (est != Long.MAX_VALUE) {
                     est -= j;
+                }
                 return new IntArraySpliterator(a, 0, j, characteristics);
             }
             return null;
@@ -1904,13 +1944,17 @@ public final class Spliterators {
 
         @Override
         public void forEachRemaining(IntConsumer action) {
-            if (action == null) throw new NullPointerException();
+            if (action == null) {
+                throw new NullPointerException();
+            }
             it.forEachRemaining(action);
         }
 
         @Override
         public boolean tryAdvance(IntConsumer action) {
-            if (action == null) throw new NullPointerException();
+            if (action == null) {
+                throw new NullPointerException();
+            }
             if (it.hasNext()) {
                 action.accept(it.nextInt());
                 return true;
@@ -1928,8 +1972,9 @@ public final class Spliterators {
 
         @Override
         public Comparator<? super Integer> getComparator() {
-            if (hasCharacteristics(Spliterator.SORTED))
+            if (hasCharacteristics(Spliterator.SORTED)) {
                 return null;
+            }
             throw new IllegalStateException();
         }
     }
@@ -1981,16 +2026,19 @@ public final class Spliterators {
             long s = est;
             if (s > 1 && i.hasNext()) {
                 int n = batch + BATCH_UNIT;
-                if (n > s)
+                if (n > s) {
                     n = (int) s;
-                if (n > MAX_BATCH)
+                }
+                if (n > MAX_BATCH) {
                     n = MAX_BATCH;
+                }
                 long[] a = new long[n];
                 int j = 0;
                 do { a[j] = i.nextLong(); } while (++j < n && i.hasNext());
                 batch = j;
-                if (est != Long.MAX_VALUE)
+                if (est != Long.MAX_VALUE) {
                     est -= j;
+                }
                 return new LongArraySpliterator(a, 0, j, characteristics);
             }
             return null;
@@ -1998,13 +2046,17 @@ public final class Spliterators {
 
         @Override
         public void forEachRemaining(LongConsumer action) {
-            if (action == null) throw new NullPointerException();
+            if (action == null) {
+                throw new NullPointerException();
+            }
             it.forEachRemaining(action);
         }
 
         @Override
         public boolean tryAdvance(LongConsumer action) {
-            if (action == null) throw new NullPointerException();
+            if (action == null) {
+                throw new NullPointerException();
+            }
             if (it.hasNext()) {
                 action.accept(it.nextLong());
                 return true;
@@ -2022,8 +2074,9 @@ public final class Spliterators {
 
         @Override
         public Comparator<? super Long> getComparator() {
-            if (hasCharacteristics(Spliterator.SORTED))
+            if (hasCharacteristics(Spliterator.SORTED)) {
                 return null;
+            }
             throw new IllegalStateException();
         }
     }
@@ -2075,16 +2128,19 @@ public final class Spliterators {
             long s = est;
             if (s > 1 && i.hasNext()) {
                 int n = batch + BATCH_UNIT;
-                if (n > s)
+                if (n > s) {
                     n = (int) s;
-                if (n > MAX_BATCH)
+                }
+                if (n > MAX_BATCH) {
                     n = MAX_BATCH;
+                }
                 double[] a = new double[n];
                 int j = 0;
                 do { a[j] = i.nextDouble(); } while (++j < n && i.hasNext());
                 batch = j;
-                if (est != Long.MAX_VALUE)
+                if (est != Long.MAX_VALUE) {
                     est -= j;
+                }
                 return new DoubleArraySpliterator(a, 0, j, characteristics);
             }
             return null;
@@ -2092,13 +2148,17 @@ public final class Spliterators {
 
         @Override
         public void forEachRemaining(DoubleConsumer action) {
-            if (action == null) throw new NullPointerException();
+            if (action == null) {
+                throw new NullPointerException();
+            }
             it.forEachRemaining(action);
         }
 
         @Override
         public boolean tryAdvance(DoubleConsumer action) {
-            if (action == null) throw new NullPointerException();
+            if (action == null) {
+                throw new NullPointerException();
+            }
             if (it.hasNext()) {
                 action.accept(it.nextDouble());
                 return true;
@@ -2116,8 +2176,9 @@ public final class Spliterators {
 
         @Override
         public Comparator<? super Double> getComparator() {
-            if (hasCharacteristics(Spliterator.SORTED))
+            if (hasCharacteristics(Spliterator.SORTED)) {
                 return null;
+            }
             throw new IllegalStateException();
         }
     }

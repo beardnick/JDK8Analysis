@@ -224,8 +224,9 @@ interface MethodHandleInfo {
     // spelling derived from java.lang.reflect.Executable, not MethodHandle.isVarargsCollector
     public default boolean isVarArgs()  {
         // fields are never varargs:
-        if (MethodHandleNatives.refKindIsField((byte) getReferenceKind()))
+        if (MethodHandleNatives.refKindIsField((byte) getReferenceKind())) {
             return false;
+        }
         // not in the public API: Modifier.VARARGS
         final int ACC_VARARGS = 0x00000080;  // from JVMS 4.6 (Table 4.20)
         assert(ACC_VARARGS == Modifier.TRANSIENT);
@@ -242,8 +243,9 @@ interface MethodHandleInfo {
      *            <a href="MethodHandleInfo.html#refkinds">reference kind number</a>
      */
     public static String referenceKindToString(int referenceKind) {
-        if (!MethodHandleNatives.refKindIsValid(referenceKind))
+        if (!MethodHandleNatives.refKindIsValid(referenceKind)) {
             throw newIllegalArgumentException("invalid reference kind", referenceKind);
+        }
         return MethodHandleNatives.refKindName((byte)referenceKind);
     }
 

@@ -376,15 +376,21 @@ public class      BeanContextSupport extends BeanContextChildSupport
      */
     public boolean add(Object targetChild) {
 
-        if (targetChild == null) throw new IllegalArgumentException();
+        if (targetChild == null) {
+            throw new IllegalArgumentException();
+        }
 
         // The specification requires that we do nothing if the child
         // is already nested herein.
 
-        if (children.containsKey(targetChild)) return false; // test before locking
+        if (children.containsKey(targetChild)) {
+            return false; // test before locking
+        }
 
         synchronized(BeanContext.globalHierarchyLock) {
-            if (children.containsKey(targetChild)) return false; // check again
+            if (children.containsKey(targetChild)) {
+                return false; // check again
+            }
 
             if (!validatePendingAdd(targetChild)) {
                 throw new IllegalStateException();
@@ -402,7 +408,9 @@ public class      BeanContextSupport extends BeanContextChildSupport
                 if (targetChild instanceof BeanContextProxy) {
                     bccp = ((BeanContextProxy)targetChild).getBeanContextProxy();
 
-                    if (bccp == null) throw new NullPointerException("BeanContextPeer.getBeanContextProxy()");
+                    if (bccp == null) {
+                        throw new NullPointerException("BeanContextPeer.getBeanContextProxy()");
+                    }
                 }
 
                 BCSChild bcsc  = createBCSChild(targetChild, bccp);
@@ -411,37 +419,46 @@ public class      BeanContextSupport extends BeanContextChildSupport
                 synchronized (children) {
                     children.put(targetChild, bcsc);
 
-                    if (bccp != null) children.put(bccp, pbcsc = createBCSChild(bccp, targetChild));
+                    if (bccp != null) {
+                        children.put(bccp, pbcsc = createBCSChild(bccp, targetChild));
+                    }
                 }
 
-                if (cbcc != null) synchronized(cbcc) {
-                    try {
-                        cbcc.setBeanContext(getBeanContextPeer());
-                    } catch (PropertyVetoException pve) {
+                if (cbcc != null) {
+                    synchronized(cbcc) {
+                        try {
+                            cbcc.setBeanContext(getBeanContextPeer());
+                        } catch (PropertyVetoException pve) {
 
-                        synchronized (children) {
-                            children.remove(targetChild);
+                            synchronized (children) {
+                                children.remove(targetChild);
 
-                            if (bccp != null) children.remove(bccp);
+                                if (bccp != null) {
+                                    children.remove(bccp);
+                                }
+                            }
+
+                            throw new IllegalStateException();
                         }
 
-                        throw new IllegalStateException();
+                        cbcc.addPropertyChangeListener("beanContext", childPCL);
+                        cbcc.addVetoableChangeListener("beanContext", childVCL);
                     }
-
-                    cbcc.addPropertyChangeListener("beanContext", childPCL);
-                    cbcc.addVetoableChangeListener("beanContext", childVCL);
                 }
 
                 Visibility v = getChildVisibility(targetChild);
 
                 if (v != null) {
-                    if (okToUseGui)
+                    if (okToUseGui) {
                         v.okToUseGui();
-                    else
+                    } else {
                         v.dontUseGui();
+                    }
                 }
 
-                if (getChildSerializable(targetChild) != null) serializable++;
+                if (getChildSerializable(targetChild) != null) {
+                    serializable++;
+                }
 
                 childJustAddedHook(targetChild, bcsc);
 
@@ -449,13 +466,16 @@ public class      BeanContextSupport extends BeanContextChildSupport
                     v = getChildVisibility(bccp);
 
                     if (v != null) {
-                        if (okToUseGui)
+                        if (okToUseGui) {
                             v.okToUseGui();
-                        else
+                        } else {
                             v.dontUseGui();
+                        }
                     }
 
-                    if (getChildSerializable(bccp) != null) serializable++;
+                    if (getChildSerializable(bccp) != null) {
+                        serializable++;
+                    }
 
                     childJustAddedHook(bccp, pbcsc);
                 }
@@ -494,10 +514,14 @@ public class      BeanContextSupport extends BeanContextChildSupport
      */
     protected boolean remove(Object targetChild, boolean callChildSetBC) {
 
-        if (targetChild == null) throw new IllegalArgumentException();
+        if (targetChild == null) {
+            throw new IllegalArgumentException();
+        }
 
         synchronized(BeanContext.globalHierarchyLock) {
-            if (!containsKey(targetChild)) return false;
+            if (!containsKey(targetChild)) {
+                return false;
+            }
 
             if (!validatePendingRemove(targetChild)) {
                 throw new IllegalStateException();
@@ -513,18 +537,20 @@ public class      BeanContextSupport extends BeanContextChildSupport
             synchronized(targetChild) {
                 if (callChildSetBC) {
                     BeanContextChild cbcc = getChildBeanContextChild(targetChild);
-                    if (cbcc != null) synchronized(cbcc) {
-                        cbcc.removePropertyChangeListener("beanContext", childPCL);
-                        cbcc.removeVetoableChangeListener("beanContext", childVCL);
+                    if (cbcc != null) {
+                        synchronized(cbcc) {
+                            cbcc.removePropertyChangeListener("beanContext", childPCL);
+                            cbcc.removeVetoableChangeListener("beanContext", childVCL);
 
-                        try {
-                            cbcc.setBeanContext(null);
-                        } catch (PropertyVetoException pve1) {
-                            cbcc.addPropertyChangeListener("beanContext", childPCL);
-                            cbcc.addVetoableChangeListener("beanContext", childVCL);
-                            throw new IllegalStateException();
+                            try {
+                                cbcc.setBeanContext(null);
+                            } catch (PropertyVetoException pve1) {
+                                cbcc.addPropertyChangeListener("beanContext", childPCL);
+                                cbcc.addVetoableChangeListener("beanContext", childVCL);
+                                throw new IllegalStateException();
+                            }
+
                         }
-
                     }
                 }
 
@@ -537,12 +563,16 @@ public class      BeanContextSupport extends BeanContextChildSupport
                     }
                 }
 
-                if (getChildSerializable(targetChild) != null) serializable--;
+                if (getChildSerializable(targetChild) != null) {
+                    serializable--;
+                }
 
                 childJustRemovedHook(targetChild, bcsc);
 
                 if (peer != null) {
-                    if (getChildSerializable(peer) != null) serializable--;
+                    if (getChildSerializable(peer) != null) {
+                        serializable--;
+                    }
 
                     childJustRemovedHook(peer, pbcsc);
                 }
@@ -568,9 +598,11 @@ public class      BeanContextSupport extends BeanContextChildSupport
     public boolean containsAll(Collection c) {
         synchronized(children) {
             Iterator i = c.iterator();
-            while (i.hasNext())
-                if(!contains(i.next()))
+            while (i.hasNext()) {
+                if(!contains(i.next())) {
                     return false;
+                }
+            }
 
             return true;
         }
@@ -625,13 +657,16 @@ public class      BeanContextSupport extends BeanContextChildSupport
      */
 
     public void addBeanContextMembershipListener(BeanContextMembershipListener bcml) {
-        if (bcml == null) throw new NullPointerException("listener");
+        if (bcml == null) {
+            throw new NullPointerException("listener");
+        }
 
         synchronized(bcmListeners) {
-            if (bcmListeners.contains(bcml))
+            if (bcmListeners.contains(bcml)) {
                 return;
-            else
+            } else {
                 bcmListeners.add(bcml);
+            }
         }
     }
 
@@ -643,13 +678,16 @@ public class      BeanContextSupport extends BeanContextChildSupport
      */
 
     public void removeBeanContextMembershipListener(BeanContextMembershipListener bcml) {
-        if (bcml == null) throw new NullPointerException("listener");
+        if (bcml == null) {
+            throw new NullPointerException("listener");
+        }
 
         synchronized(bcmListeners) {
-            if (!bcmListeners.contains(bcml))
+            if (!bcmListeners.contains(bcml)) {
                 return;
-            else
+            } else {
                 bcmListeners.remove(bcml);
+            }
         }
     }
 
@@ -662,15 +700,21 @@ public class      BeanContextSupport extends BeanContextChildSupport
      */
 
     public InputStream getResourceAsStream(String name, BeanContextChild bcc) {
-        if (name == null) throw new NullPointerException("name");
-        if (bcc  == null) throw new NullPointerException("bcc");
+        if (name == null) {
+            throw new NullPointerException("name");
+        }
+        if (bcc  == null) {
+            throw new NullPointerException("bcc");
+        }
 
         if (containsKey(bcc)) {
             ClassLoader cl = bcc.getClass().getClassLoader();
 
             return cl != null ? cl.getResourceAsStream(name)
                               : ClassLoader.getSystemResourceAsStream(name);
-        } else throw new IllegalArgumentException("Not a valid child");
+        } else {
+            throw new IllegalArgumentException("Not a valid child");
+        }
     }
 
     /**
@@ -681,15 +725,21 @@ public class      BeanContextSupport extends BeanContextChildSupport
      */
 
     public URL getResource(String name, BeanContextChild bcc) {
-        if (name == null) throw new NullPointerException("name");
-        if (bcc  == null) throw new NullPointerException("bcc");
+        if (name == null) {
+            throw new NullPointerException("name");
+        }
+        if (bcc  == null) {
+            throw new NullPointerException("bcc");
+        }
 
         if (containsKey(bcc)) {
             ClassLoader cl = bcc.getClass().getClassLoader();
 
             return cl != null ? cl.getResource(name)
                               : ClassLoader.getSystemResource(name);
-        } else throw new IllegalArgumentException("Not a valid child");
+        } else {
+            throw new IllegalArgumentException("Not a valid child");
+        }
     }
 
     /**
@@ -755,10 +805,13 @@ public class      BeanContextSupport extends BeanContextChildSupport
         BeanContext bc = getBeanContextPeer();
 
         if (bc != this) {
-            if (bc instanceof Visibility) return ((Visibility)bc).needsGui();
+            if (bc instanceof Visibility) {
+                return ((Visibility)bc).needsGui();
+            }
 
-            if (bc instanceof Container || bc instanceof Component)
+            if (bc instanceof Container || bc instanceof Component) {
                 return true;
+            }
         }
 
         synchronized(children) {
@@ -771,8 +824,9 @@ public class      BeanContextSupport extends BeanContextChildSupport
                         // do nothing ...
                     }
 
-                    if (c instanceof Container || c instanceof Component)
+                    if (c instanceof Container || c instanceof Component) {
                         return true;
+                    }
             }
         }
 
@@ -792,7 +846,9 @@ public class      BeanContextSupport extends BeanContextChildSupport
                 for (Iterator i = children.keySet().iterator(); i.hasNext();) {
                     Visibility v = getChildVisibility(i.next());
 
-                    if (v != null) v.dontUseGui();
+                    if (v != null) {
+                        v.dontUseGui();
+                    }
                }
             }
         }
@@ -811,7 +867,9 @@ public class      BeanContextSupport extends BeanContextChildSupport
                 for (Iterator i = children.keySet().iterator(); i.hasNext();) {
                     Visibility v = getChildVisibility(i.next());
 
-                    if (v != null) v.okToUseGui();
+                    if (v != null) {
+                        v.okToUseGui();
+                    }
                 }
             }
         }
@@ -900,10 +958,11 @@ public class      BeanContextSupport extends BeanContextChildSupport
         Object[] objects = coll.toArray();
 
         for (int i = 0; i < objects.length; i++) {
-            if (objects[i] instanceof Serializable)
+            if (objects[i] instanceof Serializable) {
                 count++;
-            else
+            } else {
                 objects[i] = null;
+            }
         }
 
         oos.writeInt(count); // number of subsequent objects
@@ -943,7 +1002,9 @@ public class      BeanContextSupport extends BeanContextChildSupport
      * @throws IOException if serialization failed
      */
     public final void writeChildren(ObjectOutputStream oos) throws IOException {
-        if (serializable <= 0) return;
+        if (serializable <= 0) {
+            return;
+        }
 
         boolean prev = serializing;
 
@@ -1001,8 +1062,9 @@ public class      BeanContextSupport extends BeanContextChildSupport
 
                 bcsPreSerializationHook(oos);
 
-                if (serializable > 0 && this.equals(getBeanContextPeer()))
+                if (serializable > 0 && this.equals(getBeanContextPeer())) {
                     writeChildren(oos);
+                }
 
                 serialize(oos, (Collection)bcmListeners);
             } finally {
@@ -1078,8 +1140,9 @@ public class      BeanContextSupport extends BeanContextChildSupport
 
             bcsPreDeserializationHook(ois);
 
-            if (serializable > 0 && this.equals(getBeanContextPeer()))
+            if (serializable > 0 && this.equals(getBeanContextPeer())) {
                 readChildren(ois);
+            }
 
             deserialize(ois, bcmListeners = new ArrayList(1));
         }
@@ -1100,7 +1163,9 @@ public class      BeanContextSupport extends BeanContextChildSupport
             ) {
                 if (!validatePendingRemove(source)) {
                     throw new PropertyVetoException("current BeanContext vetoes setBeanContext()", pce);
-                } else ((BCSChild)children.get(source)).setRemovePending(true);
+                } else {
+                    ((BCSChild)children.get(source)).setRemovePending(true);
+                }
             }
         }
     }
@@ -1258,10 +1323,11 @@ public class      BeanContextSupport extends BeanContextChildSupport
         try {
             BeanContextChild bcc = (BeanContextChild)child;
 
-            if (child instanceof BeanContextChild && child instanceof BeanContextProxy)
+            if (child instanceof BeanContextChild && child instanceof BeanContextProxy) {
                 throw new IllegalArgumentException("child cannot implement both BeanContextChild and BeanContextProxy");
-            else
+            } else {
                 return bcc;
+            }
         } catch (ClassCastException cce) {
             try {
                 return ((BeanContextProxy)child).getBeanContextProxy();
@@ -1281,8 +1347,9 @@ public class      BeanContextSupport extends BeanContextChildSupport
 
         synchronized(bcmListeners) { copy = bcmListeners.toArray(); }
 
-        for (int i = 0; i < copy.length; i++)
+        for (int i = 0; i < copy.length; i++) {
             ((BeanContextMembershipListener)copy[i]).childrenAdded(bcme);
+        }
     }
 
     /**
@@ -1295,8 +1362,9 @@ public class      BeanContextSupport extends BeanContextChildSupport
 
         synchronized(bcmListeners) { copy = bcmListeners.toArray(); }
 
-        for (int i = 0; i < copy.length; i++)
+        for (int i = 0; i < copy.length; i++) {
             ((BeanContextMembershipListener)copy[i]).childrenRemoved(bcme);
+        }
     }
 
     /**

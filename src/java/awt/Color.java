@@ -638,9 +638,15 @@ public class Color implements Paint, java.io.Serializable {
         if ( r == 0 && g == 0 && b == 0) {
             return new Color(i, i, i, alpha);
         }
-        if ( r > 0 && r < i ) r = i;
-        if ( g > 0 && g < i ) g = i;
-        if ( b > 0 && b < i ) b = i;
+        if ( r > 0 && r < i ) {
+            r = i;
+        }
+        if ( g > 0 && g < i ) {
+            g = i;
+        }
+        if ( b > 0 && b < i ) {
+            b = i;
+        }
 
         return new Color(Math.min((int)(r/FACTOR), 255),
                          Math.min((int)(g/FACTOR), 255),
@@ -910,30 +916,37 @@ public class Color implements Paint, java.io.Serializable {
             hsbvals = new float[3];
         }
         int cmax = (r > g) ? r : g;
-        if (b > cmax) cmax = b;
+        if (b > cmax) {
+            cmax = b;
+        }
         int cmin = (r < g) ? r : g;
-        if (b < cmin) cmin = b;
+        if (b < cmin) {
+            cmin = b;
+        }
 
         brightness = ((float) cmax) / 255.0f;
-        if (cmax != 0)
+        if (cmax != 0) {
             saturation = ((float) (cmax - cmin)) / ((float) cmax);
-        else
+        } else {
             saturation = 0;
-        if (saturation == 0)
+        }
+        if (saturation == 0) {
             hue = 0;
-        else {
+        } else {
             float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
             float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
             float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
-            if (r == cmax)
+            if (r == cmax) {
                 hue = bluec - greenc;
-            else if (g == cmax)
+            } else if (g == cmax) {
                 hue = 2.0f + redc - bluec;
-            else
+            } else {
                 hue = 4.0f + greenc - redc;
+            }
             hue = hue / 6.0f;
-            if (hue < 0)
+            if (hue < 0) {
                 hue = hue + 1.0f;
+            }
         }
         hsbvals[0] = hue;
         hsbvals[1] = saturation;
@@ -1043,8 +1056,9 @@ public class Color implements Paint, java.io.Serializable {
      *          array.
      */
     public float[] getComponents(float[] compArray) {
-        if (fvalue == null)
+        if (fvalue == null) {
             return getRGBComponents(compArray);
+        }
         float[] f;
         int n = fvalue.length;
         if (compArray == null) {
@@ -1075,8 +1089,9 @@ public class Color implements Paint, java.io.Serializable {
      * @return the color components in a <code>float</code> array.
      */
     public float[] getColorComponents(float[] compArray) {
-        if (fvalue == null)
+        if (fvalue == null) {
             return getRGBColorComponents(compArray);
+        }
         float[] f;
         int n = fvalue.length;
         if (compArray == null) {

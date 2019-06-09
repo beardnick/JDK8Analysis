@@ -48,8 +48,9 @@ public class DuplicateFormatFlagsException extends IllegalFormatException {
      *         The set of format flags which contain a duplicate flag.
      */
     public DuplicateFormatFlagsException(String f) {
-        if (f == null)
+        if (f == null) {
             throw new NullPointerException();
+        }
         this.flags = f;
     }
 

@@ -147,8 +147,9 @@ class HeapIntBuffer
 
     public IntBuffer get(int[] dst, int offset, int length) {
         checkBounds(offset, length, dst.length);
-        if (length > remaining())
+        if (length > remaining()) {
             throw new BufferUnderflowException();
+        }
         System.arraycopy(hb, ix(position()), dst, offset, length);
         position(position() + length);
         return this;
@@ -185,8 +186,9 @@ class HeapIntBuffer
     public IntBuffer put(int[] src, int offset, int length) {
 
         checkBounds(offset, length, src.length);
-        if (length > remaining())
+        if (length > remaining()) {
             throw new BufferOverflowException();
+        }
         System.arraycopy(src, offset, hb, ix(position()), length);
         position(position() + length);
         return this;
@@ -198,20 +200,23 @@ class HeapIntBuffer
     public IntBuffer put(IntBuffer src) {
 
         if (src instanceof HeapIntBuffer) {
-            if (src == this)
+            if (src == this) {
                 throw new IllegalArgumentException();
+            }
             HeapIntBuffer sb = (HeapIntBuffer)src;
             int n = sb.remaining();
-            if (n > remaining())
+            if (n > remaining()) {
                 throw new BufferOverflowException();
+            }
             System.arraycopy(sb.hb, sb.ix(sb.position()),
                              hb, ix(position()), n);
             sb.position(sb.position() + n);
             position(position() + n);
         } else if (src.isDirect()) {
             int n = src.remaining();
-            if (n > remaining())
+            if (n > remaining()) {
                 throw new BufferOverflowException();
+            }
             src.get(hb, ix(position()), n);
             position(position() + n);
         } else {

@@ -138,8 +138,9 @@ public final class OptionalLong {
      * null
      */
     public void ifPresent(LongConsumer consumer) {
-        if (isPresent)
+        if (isPresent) {
             consumer.accept(value);
+        }
     }
 
     /**

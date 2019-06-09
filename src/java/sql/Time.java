@@ -96,7 +96,9 @@ public class Time extends java.util.Date {
         int firstColon;
         int secondColon;
 
-        if (s == null) throw new java.lang.IllegalArgumentException();
+        if (s == null) {
+            throw new IllegalArgumentException();
+        }
 
         firstColon = s.indexOf(':');
         secondColon = s.indexOf(':', firstColon+1);

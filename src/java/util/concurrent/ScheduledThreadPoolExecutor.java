@@ -238,18 +238,21 @@ public class ScheduledThreadPoolExecutor
 
         public int compareTo(Delayed other) {
             if (other == this) // compare zero if same object
+            {
                 return 0;
+            }
             if (other instanceof ScheduledFutureTask) {
                 ScheduledFutureTask<?> x = (ScheduledFutureTask<?>)other;
                 long diff = time - x.time;
-                if (diff < 0)
+                if (diff < 0) {
                     return -1;
-                else if (diff > 0)
+                } else if (diff > 0) {
                     return 1;
-                else if (sequenceNumber < x.sequenceNumber)
+                } else if (sequenceNumber < x.sequenceNumber) {
                     return -1;
-                else
+                } else {
                     return 1;
+                }
             }
             long diff = getDelay(NANOSECONDS) - other.getDelay(NANOSECONDS);
             return (diff < 0) ? -1 : (diff > 0) ? 1 : 0;
@@ -269,16 +272,18 @@ public class ScheduledThreadPoolExecutor
          */
         private void setNextRunTime() {
             long p = period;
-            if (p > 0)
+            if (p > 0) {
                 time += p;
-            else
+            } else {
                 time = triggerTime(-p);
+            }
         }
 
         public boolean cancel(boolean mayInterruptIfRunning) {
             boolean cancelled = super.cancel(mayInterruptIfRunning);
-            if (cancelled && removeOnCancel && heapIndex >= 0)
+            if (cancelled && removeOnCancel && heapIndex >= 0) {
                 remove(this);
+            }
             return cancelled;
         }
 
@@ -287,11 +292,11 @@ public class ScheduledThreadPoolExecutor
          */
         public void run() {
             boolean periodic = isPeriodic();
-            if (!canRunInCurrentRunState(periodic))
+            if (!canRunInCurrentRunState(periodic)) {
                 cancel(false);
-            else if (!periodic)
+            } else if (!periodic) {
                 ScheduledFutureTask.super.run();
-            else if (ScheduledFutureTask.super.runAndReset()) {
+            } else if (ScheduledFutureTask.super.runAndReset()) {
                 setNextRunTime();
                 reExecutePeriodic(outerTask);
             }
@@ -322,16 +327,17 @@ public class ScheduledThreadPoolExecutor
      * @param task the task
      */
     private void delayedExecute(RunnableScheduledFuture<?> task) {
-        if (isShutdown())
+        if (isShutdown()) {
             reject(task);
-        else {
+        } else {
             super.getQueue().add(task);
             if (isShutdown() &&
                 !canRunInCurrentRunState(task.isPeriodic()) &&
-                remove(task))
+                remove(task)) {
                 task.cancel(false);
-            else
+            } else {
                 ensurePrestart();
+            }
         }
     }
 
@@ -344,10 +350,11 @@ public class ScheduledThreadPoolExecutor
     void reExecutePeriodic(RunnableScheduledFuture<?> task) {
         if (canRunInCurrentRunState(true)) {
             super.getQueue().add(task);
-            if (!canRunInCurrentRunState(true) && remove(task))
+            if (!canRunInCurrentRunState(true) && remove(task)) {
                 task.cancel(false);
-            else
+            } else {
                 ensurePrestart();
+            }
         }
     }
 
@@ -362,9 +369,11 @@ public class ScheduledThreadPoolExecutor
         boolean keepPeriodic =
             getContinueExistingPeriodicTasksAfterShutdownPolicy();
         if (!keepDelayed && !keepPeriodic) {
-            for (Object e : q.toArray())
-                if (e instanceof RunnableScheduledFuture<?>)
+            for (Object e : q.toArray()) {
+                if (e instanceof RunnableScheduledFuture<?>) {
                     ((RunnableScheduledFuture<?>) e).cancel(false);
+                }
+            }
             q.clear();
         }
         else {
@@ -375,8 +384,9 @@ public class ScheduledThreadPoolExecutor
                         (RunnableScheduledFuture<?>)e;
                     if ((t.isPeriodic() ? !keepPeriodic : !keepDelayed) ||
                         t.isCancelled()) { // also remove if already cancelled
-                        if (q.remove(t))
+                        if (q.remove(t)) {
                             t.cancel(false);
+                        }
                     }
                 }
             }
@@ -512,8 +522,9 @@ public class ScheduledThreadPoolExecutor
         Delayed head = (Delayed) super.getQueue().peek();
         if (head != null) {
             long headDelay = head.getDelay(NANOSECONDS);
-            if (headDelay < 0 && (delay - headDelay < 0))
+            if (headDelay < 0 && (delay - headDelay < 0)) {
                 delay = Long.MAX_VALUE + headDelay;
+            }
         }
         return delay;
     }
@@ -525,8 +536,9 @@ public class ScheduledThreadPoolExecutor
     public ScheduledFuture<?> schedule(Runnable command,
                                        long delay,
                                        TimeUnit unit) {
-        if (command == null || unit == null)
+        if (command == null || unit == null) {
             throw new NullPointerException();
+        }
         RunnableScheduledFuture<?> t = decorateTask(command,
             new ScheduledFutureTask<Void>(command, null,
                                           triggerTime(delay, unit)));
@@ -541,8 +553,9 @@ public class ScheduledThreadPoolExecutor
     public <V> ScheduledFuture<V> schedule(Callable<V> callable,
                                            long delay,
                                            TimeUnit unit) {
-        if (callable == null || unit == null)
+        if (callable == null || unit == null) {
             throw new NullPointerException();
+        }
         RunnableScheduledFuture<V> t = decorateTask(callable,
             new ScheduledFutureTask<V>(callable,
                                        triggerTime(delay, unit)));
@@ -559,10 +572,12 @@ public class ScheduledThreadPoolExecutor
                                                   long initialDelay,
                                                   long period,
                                                   TimeUnit unit) {
-        if (command == null || unit == null)
+        if (command == null || unit == null) {
             throw new NullPointerException();
-        if (period <= 0)
+        }
+        if (period <= 0) {
             throw new IllegalArgumentException();
+        }
         ScheduledFutureTask<Void> sft =
             new ScheduledFutureTask<Void>(command,
                                           null,
@@ -583,10 +598,12 @@ public class ScheduledThreadPoolExecutor
                                                      long initialDelay,
                                                      long delay,
                                                      TimeUnit unit) {
-        if (command == null || unit == null)
+        if (command == null || unit == null) {
             throw new NullPointerException();
-        if (delay <= 0)
+        }
+        if (delay <= 0) {
             throw new IllegalArgumentException();
+        }
         ScheduledFutureTask<Void> sft =
             new ScheduledFutureTask<Void>(command,
                                           null,
@@ -661,8 +678,9 @@ public class ScheduledThreadPoolExecutor
      */
     public void setContinueExistingPeriodicTasksAfterShutdownPolicy(boolean value) {
         continueExistingPeriodicTasksAfterShutdown = value;
-        if (!value && isShutdown())
+        if (!value && isShutdown()) {
             onShutdown();
+        }
     }
 
     /**
@@ -693,8 +711,9 @@ public class ScheduledThreadPoolExecutor
      */
     public void setExecuteExistingDelayedTasksAfterShutdownPolicy(boolean value) {
         executeExistingDelayedTasksAfterShutdown = value;
-        if (!value && isShutdown())
+        if (!value && isShutdown()) {
             onShutdown();
+        }
     }
 
     /**
@@ -866,8 +885,9 @@ public class ScheduledThreadPoolExecutor
          * Sets f's heapIndex if it is a ScheduledFutureTask.
          */
         private void setIndex(RunnableScheduledFuture<?> f, int idx) {
-            if (f instanceof ScheduledFutureTask)
+            if (f instanceof ScheduledFutureTask) {
                 ((ScheduledFutureTask)f).heapIndex = idx;
+            }
         }
 
         /**
@@ -878,8 +898,9 @@ public class ScheduledThreadPoolExecutor
             while (k > 0) {
                 int parent = (k - 1) >>> 1;
                 RunnableScheduledFuture<?> e = queue[parent];
-                if (key.compareTo(e) >= 0)
+                if (key.compareTo(e) >= 0) {
                     break;
+                }
                 queue[k] = e;
                 setIndex(e, k);
                 k = parent;
@@ -898,10 +919,12 @@ public class ScheduledThreadPoolExecutor
                 int child = (k << 1) + 1;
                 RunnableScheduledFuture<?> c = queue[child];
                 int right = child + 1;
-                if (right < size && c.compareTo(queue[right]) > 0)
+                if (right < size && c.compareTo(queue[right]) > 0) {
                     c = queue[child = right];
-                if (key.compareTo(c) <= 0)
+                }
+                if (key.compareTo(c) <= 0) {
                     break;
+                }
                 queue[k] = c;
                 setIndex(c, k);
                 k = child;
@@ -917,7 +940,9 @@ public class ScheduledThreadPoolExecutor
             int oldCapacity = queue.length;
             int newCapacity = oldCapacity + (oldCapacity >> 1); // grow 50%
             if (newCapacity < 0) // overflow
+            {
                 newCapacity = Integer.MAX_VALUE;
+            }
             queue = Arrays.copyOf(queue, newCapacity);
         }
 
@@ -930,12 +955,15 @@ public class ScheduledThreadPoolExecutor
                     int i = ((ScheduledFutureTask) x).heapIndex;
                     // Sanity check; x could conceivably be a
                     // ScheduledFutureTask from some other pool.
-                    if (i >= 0 && i < size && queue[i] == x)
+                    if (i >= 0 && i < size && queue[i] == x) {
                         return i;
+                    }
                 } else {
-                    for (int i = 0; i < size; i++)
-                        if (x.equals(queue[i]))
+                    for (int i = 0; i < size; i++) {
+                        if (x.equals(queue[i])) {
                             return i;
+                        }
+                    }
                 }
             }
             return -1;
@@ -956,8 +984,9 @@ public class ScheduledThreadPoolExecutor
             lock.lock();
             try {
                 int i = indexOf(x);
-                if (i < 0)
+                if (i < 0) {
                     return false;
+                }
 
                 setIndex(queue[i], -1);
                 int s = --size;
@@ -965,8 +994,9 @@ public class ScheduledThreadPoolExecutor
                 queue[s] = null;
                 if (s != i) {
                     siftDown(i, replacement);
-                    if (queue[i] == replacement)
+                    if (queue[i] == replacement) {
                         siftUp(i, replacement);
+                    }
                 }
                 return true;
             } finally {
@@ -1003,15 +1033,17 @@ public class ScheduledThreadPoolExecutor
         }
 
         public boolean offer(Runnable x) {
-            if (x == null)
+            if (x == null) {
                 throw new NullPointerException();
+            }
             RunnableScheduledFuture<?> e = (RunnableScheduledFuture<?>)x;
             final ReentrantLock lock = this.lock;
             lock.lock();
             try {
                 int i = size;
-                if (i >= queue.length)
+                if (i >= queue.length) {
                     grow();
+                }
                 size = i + 1;
                 if (i == 0) {
                     queue[0] = e;
@@ -1051,8 +1083,9 @@ public class ScheduledThreadPoolExecutor
             int s = --size;
             RunnableScheduledFuture<?> x = queue[s];
             queue[s] = null;
-            if (s != 0)
+            if (s != 0) {
                 siftDown(0, x);
+            }
             setIndex(f, -1);
             return f;
         }
@@ -1062,10 +1095,11 @@ public class ScheduledThreadPoolExecutor
             lock.lock();
             try {
                 RunnableScheduledFuture<?> first = queue[0];
-                if (first == null || first.getDelay(NANOSECONDS) > 0)
+                if (first == null || first.getDelay(NANOSECONDS) > 0) {
                     return null;
-                else
+                } else {
                     return finishPoll(first);
+                }
             } finally {
                 lock.unlock();
             }
@@ -1077,30 +1111,33 @@ public class ScheduledThreadPoolExecutor
             try {
                 for (;;) {
                     RunnableScheduledFuture<?> first = queue[0];
-                    if (first == null)
+                    if (first == null) {
                         available.await();
-                    else {
+                    } else {
                         long delay = first.getDelay(NANOSECONDS);
-                        if (delay <= 0)
+                        if (delay <= 0) {
                             return finishPoll(first);
+                        }
                         first = null; // don't retain ref while waiting
-                        if (leader != null)
+                        if (leader != null) {
                             available.await();
-                        else {
+                        } else {
                             Thread thisThread = Thread.currentThread();
                             leader = thisThread;
                             try {
                                 available.awaitNanos(delay);
                             } finally {
-                                if (leader == thisThread)
+                                if (leader == thisThread) {
                                     leader = null;
+                                }
                             }
                         }
                     }
                 }
             } finally {
-                if (leader == null && queue[0] != null)
+                if (leader == null && queue[0] != null) {
                     available.signal();
+                }
                 lock.unlock();
             }
         }
@@ -1114,35 +1151,40 @@ public class ScheduledThreadPoolExecutor
                 for (;;) {
                     RunnableScheduledFuture<?> first = queue[0];
                     if (first == null) {
-                        if (nanos <= 0)
+                        if (nanos <= 0) {
                             return null;
-                        else
+                        } else {
                             nanos = available.awaitNanos(nanos);
+                        }
                     } else {
                         long delay = first.getDelay(NANOSECONDS);
-                        if (delay <= 0)
+                        if (delay <= 0) {
                             return finishPoll(first);
-                        if (nanos <= 0)
+                        }
+                        if (nanos <= 0) {
                             return null;
+                        }
                         first = null; // don't retain ref while waiting
-                        if (nanos < delay || leader != null)
+                        if (nanos < delay || leader != null) {
                             nanos = available.awaitNanos(nanos);
-                        else {
+                        } else {
                             Thread thisThread = Thread.currentThread();
                             leader = thisThread;
                             try {
                                 long timeLeft = available.awaitNanos(delay);
                                 nanos -= delay - timeLeft;
                             } finally {
-                                if (leader == thisThread)
+                                if (leader == thisThread) {
                                     leader = null;
+                                }
                             }
                         }
                     }
                 }
             } finally {
-                if (leader == null && queue[0] != null)
+                if (leader == null && queue[0] != null) {
                     available.signal();
+                }
                 lock.unlock();
             }
         }
@@ -1176,10 +1218,12 @@ public class ScheduledThreadPoolExecutor
         }
 
         public int drainTo(Collection<? super Runnable> c) {
-            if (c == null)
+            if (c == null) {
                 throw new NullPointerException();
-            if (c == this)
+            }
+            if (c == this) {
                 throw new IllegalArgumentException();
+            }
             final ReentrantLock lock = this.lock;
             lock.lock();
             try {
@@ -1197,12 +1241,15 @@ public class ScheduledThreadPoolExecutor
         }
 
         public int drainTo(Collection<? super Runnable> c, int maxElements) {
-            if (c == null)
+            if (c == null) {
                 throw new NullPointerException();
-            if (c == this)
+            }
+            if (c == this) {
                 throw new IllegalArgumentException();
-            if (maxElements <= 0)
+            }
+            if (maxElements <= 0) {
                 return 0;
+            }
             final ReentrantLock lock = this.lock;
             lock.lock();
             try {
@@ -1234,11 +1281,13 @@ public class ScheduledThreadPoolExecutor
             final ReentrantLock lock = this.lock;
             lock.lock();
             try {
-                if (a.length < size)
+                if (a.length < size) {
                     return (T[]) Arrays.copyOf(queue, size, a.getClass());
+                }
                 System.arraycopy(queue, 0, a, 0, size);
-                if (a.length > size)
+                if (a.length > size) {
                     a[size] = null;
+                }
                 return a;
             } finally {
                 lock.unlock();
@@ -1266,15 +1315,17 @@ public class ScheduledThreadPoolExecutor
             }
 
             public Runnable next() {
-                if (cursor >= array.length)
+                if (cursor >= array.length) {
                     throw new NoSuchElementException();
+                }
                 lastRet = cursor;
                 return array[cursor++];
             }
 
             public void remove() {
-                if (lastRet < 0)
+                if (lastRet < 0) {
                     throw new IllegalStateException();
+                }
                 DelayedWorkQueue.this.remove(array[lastRet]);
                 lastRet = -1;
             }

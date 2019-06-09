@@ -672,8 +672,9 @@ class Character implements java.io.Serializable, Comparable<Character> {
          */
         private UnicodeBlock(String idName, String... aliases) {
             this(idName);
-            for (String alias : aliases)
+            for (String alias : aliases) {
                 map.put(alias, this);
+            }
         }
 
         /**
@@ -4474,15 +4475,18 @@ class Character implements java.io.Serializable, Comparable<Character> {
          *
          */
         public static UnicodeScript of(int codePoint) {
-            if (!isValidCodePoint(codePoint))
+            if (!isValidCodePoint(codePoint)) {
                 throw new IllegalArgumentException();
+            }
             int type = getType(codePoint);
             // leave SURROGATE and PRIVATE_USE for table lookup
-            if (type == UNASSIGNED)
+            if (type == UNASSIGNED) {
                 return UNKNOWN;
+            }
             int index = Arrays.binarySearch(scriptStarts, codePoint);
-            if (index < 0)
+            if (index < 0) {
                 index = -index - 2;
+            }
             return scripts[index];
         }
 
@@ -4511,8 +4515,9 @@ class Character implements java.io.Serializable, Comparable<Character> {
             scriptName = scriptName.toUpperCase(Locale.ENGLISH);
                                  //.replace(' ', '_'));
             UnicodeScript sc = aliases.get(scriptName);
-            if (sc != null)
+            if (sc != null) {
                 return sc;
+            }
             return valueOf(scriptName);
         }
     }
@@ -4544,8 +4549,9 @@ class Character implements java.io.Serializable, Comparable<Character> {
         static final Character cache[] = new Character[127 + 1];
 
         static {
-            for (int i = 0; i < cache.length; i++)
+            for (int i = 0; i < cache.length; i++) {
                 cache[i] = new Character((char)i);
+            }
         }
     }
 
@@ -7217,14 +7223,17 @@ class Character implements java.io.Serializable, Comparable<Character> {
             throw new IllegalArgumentException();
         }
         String name = CharacterName.get(codePoint);
-        if (name != null)
+        if (name != null) {
             return name;
-        if (getType(codePoint) == UNASSIGNED)
+        }
+        if (getType(codePoint) == UNASSIGNED) {
             return null;
+        }
         UnicodeBlock block = UnicodeBlock.of(codePoint);
-        if (block != null)
+        if (block != null) {
             return block.toString().replace('_', ' ') + " "
                    + Integer.toHexString(codePoint).toUpperCase(Locale.ENGLISH);
+        }
         // should never come here
         return Integer.toHexString(codePoint).toUpperCase(Locale.ENGLISH);
     }

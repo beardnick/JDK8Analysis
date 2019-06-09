@@ -628,8 +628,11 @@ class CharacterData00 extends CharacterData {
             }
             current = (top + bottom) / 2;
         }
-        if (ch == charMap[current][0][0]) return current;
-        else return -1;
+        if (ch == charMap[current][0][0]) {
+            return current;
+        } else {
+            return -1;
+        }
     }
 
     static final CharacterData00 instance = new CharacterData00();

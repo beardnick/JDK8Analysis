@@ -138,7 +138,9 @@ public class ReentrantLock implements Lock, java.io.Serializable {
             else if (current == getExclusiveOwnerThread()) {
                 int nextc = c + acquires;
                 if (nextc < 0) // overflow
+                {
                     throw new Error("Maximum lock count exceeded");
+                }
                 setState(nextc);
                 return true;
             }
@@ -147,8 +149,9 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 
         protected final boolean tryRelease(int releases) {
             int c = getState() - releases;
-            if (Thread.currentThread() != getExclusiveOwnerThread())
+            if (Thread.currentThread() != getExclusiveOwnerThread()) {
                 throw new IllegalMonitorStateException();
+            }
             boolean free = false;
             if (c == 0) {
                 free = true;
@@ -203,10 +206,11 @@ public class ReentrantLock implements Lock, java.io.Serializable {
          * acquire on failure.
          */
         final void lock() {
-            if (compareAndSetState(0, 1))
+            if (compareAndSetState(0, 1)) {
                 setExclusiveOwnerThread(Thread.currentThread());
-            else
+            } else {
                 acquire(1);
+            }
         }
 
         protected final boolean tryAcquire(int acquires) {
@@ -240,8 +244,9 @@ public class ReentrantLock implements Lock, java.io.Serializable {
             }
             else if (current == getExclusiveOwnerThread()) {
                 int nextc = c + acquires;
-                if (nextc < 0)
+                if (nextc < 0) {
                     throw new Error("Maximum lock count exceeded");
+                }
                 setState(nextc);
                 return true;
             }
@@ -690,10 +695,12 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @throws NullPointerException if the condition is null
      */
     public boolean hasWaiters(Condition condition) {
-        if (condition == null)
+        if (condition == null) {
             throw new NullPointerException();
-        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject))
+        }
+        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject)) {
             throw new IllegalArgumentException("not owner");
+        }
         return sync.hasWaiters((AbstractQueuedSynchronizer.ConditionObject)condition);
     }
 
@@ -713,10 +720,12 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @throws NullPointerException if the condition is null
      */
     public int getWaitQueueLength(Condition condition) {
-        if (condition == null)
+        if (condition == null) {
             throw new NullPointerException();
-        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject))
+        }
+        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject)) {
             throw new IllegalArgumentException("not owner");
+        }
         return sync.getWaitQueueLength((AbstractQueuedSynchronizer.ConditionObject)condition);
     }
 
@@ -738,10 +747,12 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @throws NullPointerException if the condition is null
      */
     protected Collection<Thread> getWaitingThreads(Condition condition) {
-        if (condition == null)
+        if (condition == null) {
             throw new NullPointerException();
-        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject))
+        }
+        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject)) {
             throw new IllegalArgumentException("not owner");
+        }
         return sync.getWaitingThreads((AbstractQueuedSynchronizer.ConditionObject)condition);
     }
 

@@ -93,15 +93,18 @@ class Shutdown {
      */
     static void add(int slot, boolean registerShutdownInProgress, Runnable hook) {
         synchronized (lock) {
-            if (hooks[slot] != null)
+            if (hooks[slot] != null) {
                 throw new InternalError("Shutdown hook at slot " + slot + " already registered");
+            }
 
             if (!registerShutdownInProgress) {
-                if (state > RUNNING)
+                if (state > RUNNING) {
                     throw new IllegalStateException("Shutdown in progress");
+                }
             } else {
-                if (state > HOOKS || (state == HOOKS && slot <= currentRunningHook))
+                if (state > HOOKS || (state == HOOKS && slot <= currentRunningHook)) {
                     throw new IllegalStateException("Shutdown in progress");
+                }
             }
 
             hooks[slot] = hook;
@@ -120,7 +123,9 @@ class Shutdown {
                     currentRunningHook = i;
                     hook = hooks[i];
                 }
-                if (hook != null) hook.run();
+                if (hook != null) {
+                    hook.run();
+                }
             } catch(Throwable t) {
                 if (t instanceof ThreadDeath) {
                     ThreadDeath td = (ThreadDeath)t;
@@ -162,7 +167,9 @@ class Shutdown {
             /* Guard against the possibility of a daemon thread invoking exit
              * after DestroyJavaVM initiates the shutdown sequence
              */
-            if (state != HOOKS) return;
+            if (state != HOOKS) {
+                return;
+            }
         }
         runHooks();
         boolean rfoe;
@@ -170,7 +177,9 @@ class Shutdown {
             state = FINALIZERS;
             rfoe = runFinalizersOnExit;
         }
-        if (rfoe) runAllFinalizers();
+        if (rfoe) {
+            runAllFinalizers();
+        }
     }
 
 
@@ -181,7 +190,9 @@ class Shutdown {
     static void exit(int status) {
         boolean runMoreFinalizers = false;
         synchronized (lock) {
-            if (status != 0) runFinalizersOnExit = false;
+            if (status != 0) {
+                runFinalizersOnExit = false;
+            }
             switch (state) {
             case RUNNING:       /* Initiate shutdown */
                 state = HOOKS;

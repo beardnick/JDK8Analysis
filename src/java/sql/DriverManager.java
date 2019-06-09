@@ -504,10 +504,11 @@ public class DriverManager {
         }
 
         logStream = out;
-        if ( out != null )
+        if ( out != null ) {
             logWriter = new java.io.PrintWriter(out);
-        else
+        } else {
             logWriter = null;
+        }
     }
 
     /**

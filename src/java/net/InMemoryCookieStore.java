@@ -338,8 +338,9 @@ class InMemoryCookieStore implements CookieStore {
                             if (!ck.hasExpired()) {
                                 // don't add twice
                                 if ((secureLink || !ck.getSecure()) &&
-                                        !cookies.contains(ck))
+                                        !cookies.contains(ck)) {
                                     cookies.add(ck);
+                                }
                             } else {
                                 it.remove();
                                 cookieJar.remove(ck);

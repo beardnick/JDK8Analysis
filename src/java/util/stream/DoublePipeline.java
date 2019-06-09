@@ -98,9 +98,10 @@ abstract class DoublePipeline<E_IN>
         if (sink instanceof DoubleConsumer) {
             return (DoubleConsumer) sink;
         } else {
-            if (Tripwire.ENABLED)
+            if (Tripwire.ENABLED) {
                 Tripwire.trip(AbstractPipeline.class,
                               "using DoubleStream.adapt(Sink<Double> s)");
+            }
             return sink::accept;
         }
     }
@@ -116,9 +117,10 @@ abstract class DoublePipeline<E_IN>
         if (s instanceof Spliterator.OfDouble) {
             return (Spliterator.OfDouble) s;
         } else {
-            if (Tripwire.ENABLED)
+            if (Tripwire.ENABLED) {
                 Tripwire.trip(AbstractPipeline.class,
                               "using DoubleStream.adapt(Spliterator<Double> s)");
+            }
             throw new UnsupportedOperationException("DoubleStream.adapt(Spliterator<Double> s)");
         }
     }
@@ -268,8 +270,9 @@ abstract class DoublePipeline<E_IN>
                     public void accept(double t) {
                         try (DoubleStream result = mapper.apply(t)) {
                             // We can do better that this too; optimize for depth=0 case and just grab spliterator and forEach it
-                            if (result != null)
+                            if (result != null) {
                                 result.sequential().forEach(i -> downstream.accept(i));
+                            }
                         }
                     }
                 };
@@ -279,8 +282,9 @@ abstract class DoublePipeline<E_IN>
 
     @Override
     public DoubleStream unordered() {
-        if (!isOrdered())
+        if (!isOrdered()) {
             return this;
+        }
         return new StatelessOp<Double>(this, StreamShape.DOUBLE_VALUE, StreamOpFlag.NOT_ORDERED) {
             @Override
             Sink<Double> opWrapSink(int flags, Sink<Double> sink) {
@@ -304,8 +308,9 @@ abstract class DoublePipeline<E_IN>
 
                     @Override
                     public void accept(double t) {
-                        if (predicate.test(t))
+                        if (predicate.test(t)) {
                             downstream.accept(t);
+                        }
                     }
                 };
             }
@@ -334,18 +339,20 @@ abstract class DoublePipeline<E_IN>
 
     @Override
     public final DoubleStream limit(long maxSize) {
-        if (maxSize < 0)
+        if (maxSize < 0) {
             throw new IllegalArgumentException(Long.toString(maxSize));
+        }
         return SliceOps.makeDouble(this, (long) 0, maxSize);
     }
 
     @Override
     public final DoubleStream skip(long n) {
-        if (n < 0)
+        if (n < 0) {
             throw new IllegalArgumentException(Long.toString(n));
-        if (n == 0)
+        }
+        if (n == 0) {
             return this;
-        else {
+        } else {
             long limit = -1;
             return SliceOps.makeDouble(this, n, limit);
         }

@@ -293,7 +293,9 @@ public final class Float extends Number implements Comparable<Float> {
             return s.replaceFirst("p-1022$", "p-126");
         }
         else // double string will be the same as float string
+        {
             return Double.toHexString(f);
+        }
     }
 
     /**
@@ -746,8 +748,9 @@ public final class Float extends Number implements Comparable<Float> {
         // exponent and nonzero significand.
         if ( ((result & FloatConsts.EXP_BIT_MASK) ==
               FloatConsts.EXP_BIT_MASK) &&
-             (result & FloatConsts.SIGNIF_BIT_MASK) != 0)
+             (result & FloatConsts.SIGNIF_BIT_MASK) != 0) {
             result = 0x7fc00000;
+        }
         return result;
     }
 
@@ -904,10 +907,12 @@ public final class Float extends Number implements Comparable<Float> {
      * @since 1.4
      */
     public static int compare(float f1, float f2) {
-        if (f1 < f2)
+        if (f1 < f2) {
             return -1;           // Neither val is NaN, thisVal is smaller
-        if (f1 > f2)
+        }
+        if (f1 > f2) {
             return 1;            // Neither val is NaN, thisVal is larger
+        }
 
         // Cannot use floatToRawIntBits because of possibility of NaNs.
         int thisBits    = Float.floatToIntBits(f1);

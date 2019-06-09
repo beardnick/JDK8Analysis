@@ -57,10 +57,11 @@ final class RuleBasedCollationKey extends CollationKey {
     public int compareTo(CollationKey target)
     {
         int result = key.compareTo(((RuleBasedCollationKey)(target)).key);
-        if (result <= Collator.LESS)
+        if (result <= Collator.LESS) {
             return Collator.LESS;
-        else if (result >= Collator.GREATER)
+        } else if (result >= Collator.GREATER) {
             return Collator.GREATER;
+        }
         return Collator.EQUAL;
     }
 
@@ -73,7 +74,9 @@ final class RuleBasedCollationKey extends CollationKey {
      * @return Returns true if two objects are equal, false otherwise.
      */
     public boolean equals(Object target) {
-        if (this == target) return true;
+        if (this == target) {
+            return true;
+        }
         if (target == null || !getClass().equals(target.getClass())) {
             return false;
         }

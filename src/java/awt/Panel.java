@@ -82,8 +82,9 @@ public class Panel extends Container implements Accessible {
 
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = getToolkit().createPanel(this);
+            }
             super.addNotify();
         }
     }

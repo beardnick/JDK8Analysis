@@ -281,15 +281,18 @@ public abstract class ActivationGroup
         throws ActivationException
     {
         SecurityManager security = System.getSecurityManager();
-        if (security != null)
+        if (security != null) {
             security.checkSetFactory();
+        }
 
-        if (currGroup != null)
+        if (currGroup != null) {
             throw new ActivationException("group already exists");
+        }
 
-        if (canCreate == false)
+        if (canCreate == false) {
             throw new ActivationException("group deactivated and " +
                                           "cannot be recreated");
+        }
 
         try {
             // load group's class
@@ -372,8 +375,9 @@ public abstract class ActivationGroup
     static synchronized ActivationGroupID internalCurrentGroupID()
         throws ActivationException
     {
-        if (currGroupID == null)
+        if (currGroupID == null) {
             throw new ActivationException("nonexistent group");
+        }
 
         return currGroupID;
     }
@@ -410,11 +414,13 @@ public abstract class ActivationGroup
         throws ActivationException
     {
         SecurityManager security = System.getSecurityManager();
-        if (security != null)
+        if (security != null) {
             security.checkSetFactory();
+        }
 
-        if (currSystem != null)
+        if (currSystem != null) {
             throw new ActivationException("activation system already set");
+        }
 
         currSystem = system;
     }

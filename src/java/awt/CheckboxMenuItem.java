@@ -160,8 +160,9 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = Toolkit.getDefaultToolkit().createCheckboxMenuItem(this);
+            }
             super.addNotify();
         }
     }
@@ -474,11 +475,12 @@ public class CheckboxMenuItem extends MenuItem implements ItemSelectable, Access
       while(null != (keyOrNull = s.readObject())) {
         String key = ((String)keyOrNull).intern();
 
-        if (itemListenerK == key)
-          addItemListener((ItemListener)(s.readObject()));
-
-        else // skip value for unrecognized key
-          s.readObject();
+        if (itemListenerK == key) {
+            addItemListener((ItemListener)(s.readObject()));
+        } else // skip value for unrecognized key
+        {
+            s.readObject();
+        }
       }
     }
 

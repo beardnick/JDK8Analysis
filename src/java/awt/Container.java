@@ -1371,8 +1371,9 @@ public class Container extends Component {
             }
         }
 
-        if (num == 0)
+        if (num == 0) {
             return;
+        }
 
         if ((mask & AWTEvent.HIERARCHY_EVENT_MASK) != 0) {
             listeningChildren += num;
@@ -1386,8 +1387,9 @@ public class Container extends Component {
 
     // Should only be called while holding tree lock
     void adjustDescendants(int num) {
-        if (num == 0)
+        if (num == 0) {
             return;
+        }
 
         descendantsCount += num;
         adjustDecendantsOnParent(num);

@@ -72,8 +72,9 @@ class Inet6AddressImpl implements InetAddressImpl {
                 return false;
             }
         }
-        if (addr instanceof Inet6Address)
+        if (addr instanceof Inet6Address) {
             scope = ((Inet6Address) addr).getScopeId();
+        }
         return isReachable0(addr.getAddress(), scope, timeout, ifaddr, ttl, netif_scope);
     }
 

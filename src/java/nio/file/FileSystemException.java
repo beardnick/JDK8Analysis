@@ -107,11 +107,13 @@ public class FileSystemException
      */
     @Override
     public String getMessage() {
-        if (file == null && other == null)
+        if (file == null && other == null) {
             return getReason();
+        }
         StringBuilder sb = new StringBuilder();
-        if (file != null)
+        if (file != null) {
             sb.append(file);
+        }
         if (other != null) {
             sb.append(" -> ");
             sb.append(other);

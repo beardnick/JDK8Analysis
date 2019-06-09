@@ -181,14 +181,17 @@ public final class FilePermission extends Permission implements Serializable {
      *
      */
     private void init(int mask) {
-        if ((mask & ALL) != mask)
-                throw new IllegalArgumentException("invalid actions mask");
+        if ((mask & ALL) != mask) {
+            throw new IllegalArgumentException("invalid actions mask");
+        }
 
-        if (mask == NONE)
-                throw new IllegalArgumentException("invalid actions mask");
+        if (mask == NONE) {
+            throw new IllegalArgumentException("invalid actions mask");
+        }
 
-        if ((cpath = getName()) == null)
-                throw new NullPointerException("name can't be null");
+        if ((cpath = getName()) == null) {
+            throw new NullPointerException("name can't be null");
+        }
 
         this.mask = mask;
 
@@ -315,8 +318,9 @@ public final class FilePermission extends Permission implements Serializable {
      *                  <code>false</code> otherwise.
      */
     public boolean implies(Permission p) {
-        if (!(p instanceof FilePermission))
+        if (!(p instanceof FilePermission)) {
             return false;
+        }
 
         FilePermission that = (FilePermission) p;
 
@@ -352,15 +356,16 @@ public final class FilePermission extends Permission implements Serializable {
                     // specification, make sure that a non-recursive
                     // permission (i.e., this object) can't imply a recursive
                     // permission.
-                    if (that.recursive)
+                    if (that.recursive) {
                         return false;
-                    else
+                    } else {
                         return (this.cpath.equals(that.cpath));
+                    }
                 } else {
                     int last = that.cpath.lastIndexOf(File.separatorChar);
-                    if (last == -1)
+                    if (last == -1) {
                         return false;
-                    else {
+                    } else {
                         // this.cpath.equals(that.cpath.substring(0, last+1));
                         // Use regionMatches to avoid creating new string
                         return (this.cpath.length() == (last + 1)) &&
@@ -387,11 +392,13 @@ public final class FilePermission extends Permission implements Serializable {
      *          <code>false</code> otherwise.
      */
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
+        }
 
-        if (! (obj instanceof FilePermission))
+        if (! (obj instanceof FilePermission)) {
             return false;
+        }
 
         FilePermission that = (FilePermission) obj;
 
@@ -441,8 +448,9 @@ public final class FilePermission extends Permission implements Serializable {
         char[] a = actions.toCharArray();
 
         int i = a.length - 1;
-        if (i < 0)
+        if (i < 0) {
             return mask;
+        }
 
         while (i != -1) {
             char c;
@@ -452,8 +460,9 @@ public final class FilePermission extends Permission implements Serializable {
                                c == '\r' ||
                                c == '\n' ||
                                c == '\f' ||
-                               c == '\t'))
+                               c == '\t')) {
                 i--;
+            }
 
             // check for the known strings
             int matchlen;
@@ -565,26 +574,38 @@ public final class FilePermission extends Permission implements Serializable {
         }
 
         if ((mask & WRITE) == WRITE) {
-            if (comma) sb.append(',');
-            else comma = true;
+            if (comma) {
+                sb.append(',');
+            } else {
+                comma = true;
+            }
             sb.append("write");
         }
 
         if ((mask & EXECUTE) == EXECUTE) {
-            if (comma) sb.append(',');
-            else comma = true;
+            if (comma) {
+                sb.append(',');
+            } else {
+                comma = true;
+            }
             sb.append("execute");
         }
 
         if ((mask & DELETE) == DELETE) {
-            if (comma) sb.append(',');
-            else comma = true;
+            if (comma) {
+                sb.append(',');
+            } else {
+                comma = true;
+            }
             sb.append("delete");
         }
 
         if ((mask & READLINK) == READLINK) {
-            if (comma) sb.append(',');
-            else comma = true;
+            if (comma) {
+                sb.append(',');
+            } else {
+                comma = true;
+            }
             sb.append("readlink");
         }
 
@@ -601,8 +622,9 @@ public final class FilePermission extends Permission implements Serializable {
      * @return the canonical string representation of the actions.
      */
     public String getActions() {
-        if (actions == null)
+        if (actions == null) {
             actions = getActions(this.mask);
+        }
 
         return actions;
     }
@@ -652,8 +674,9 @@ public final class FilePermission extends Permission implements Serializable {
     {
         // Write out the actions. The superclass takes care of the name
         // call getActions to make sure actions field is initialized
-        if (actions == null)
+        if (actions == null) {
             getActions();
+        }
         s.defaultWriteObject();
     }
 
@@ -724,12 +747,14 @@ final class FilePermissionCollection extends PermissionCollection
      *                                has been marked readonly
      */
     public void add(Permission permission) {
-        if (! (permission instanceof FilePermission))
+        if (! (permission instanceof FilePermission)) {
             throw new IllegalArgumentException("invalid permission: "+
                                                permission);
-        if (isReadOnly())
+        }
+        if (isReadOnly()) {
             throw new SecurityException(
                 "attempt to add a Permission to a readonly PermissionCollection");
+        }
 
         synchronized (this) {
             perms.add(permission);
@@ -746,8 +771,9 @@ final class FilePermissionCollection extends PermissionCollection
      * the set, false if not.
      */
     public boolean implies(Permission permission) {
-        if (! (permission instanceof FilePermission))
+        if (! (permission instanceof FilePermission)) {
             return false;
+        }
 
         FilePermission fp = (FilePermission) permission;
 
@@ -761,8 +787,9 @@ final class FilePermissionCollection extends PermissionCollection
                 FilePermission x = (FilePermission) perms.get(i);
                 if (((needed & x.getMask()) != 0) && x.impliesIgnoreMask(fp)) {
                     effective |=  x.getMask();
-                    if ((effective & desired) == desired)
+                    if ((effective & desired) == desired) {
                         return true;
+                    }
                     needed = (desired ^ effective);
                 }
             }

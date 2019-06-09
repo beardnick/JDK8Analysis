@@ -194,9 +194,10 @@ public abstract class Process {
                 exitValue();
                 return true;
             } catch(IllegalThreadStateException ex) {
-                if (rem > 0)
+                if (rem > 0) {
                     Thread.sleep(
                         Math.min(TimeUnit.NANOSECONDS.toMillis(rem) + 1, 100));
+                }
             }
             rem = unit.toNanos(timeout) - (System.nanoTime() - startTime);
         } while (rem > 0);

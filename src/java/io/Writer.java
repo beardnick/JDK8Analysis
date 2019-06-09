@@ -221,10 +221,11 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
      * @since  1.5
      */
     public Writer append(CharSequence csq) throws IOException {
-        if (csq == null)
+        if (csq == null) {
             write("null");
-        else
+        } else {
             write(csq.toString());
+        }
         return this;
     }
 

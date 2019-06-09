@@ -80,8 +80,9 @@ public final class Byte extends Number implements Comparable<Byte> {
         static final Byte cache[] = new Byte[-(-128) + 127 + 1];
 
         static {
-            for(int i = 0; i < cache.length; i++)
+            for(int i = 0; i < cache.length; i++) {
                 cache[i] = new Byte((byte)(i - 128));
+            }
         }
     }
 
@@ -147,9 +148,10 @@ public final class Byte extends Number implements Comparable<Byte> {
     public static byte parseByte(String s, int radix)
         throws NumberFormatException {
         int i = Integer.parseInt(s, radix);
-        if (i < MIN_VALUE || i > MAX_VALUE)
+        if (i < MIN_VALUE || i > MAX_VALUE) {
             throw new NumberFormatException(
                 "Value out of range. Value:\"" + s + "\" Radix:" + radix);
+        }
         return (byte)i;
     }
 
@@ -275,9 +277,10 @@ public final class Byte extends Number implements Comparable<Byte> {
      */
     public static Byte decode(String nm) throws NumberFormatException {
         int i = Integer.decode(nm);
-        if (i < MIN_VALUE || i > MAX_VALUE)
+        if (i < MIN_VALUE || i > MAX_VALUE) {
             throw new NumberFormatException(
                     "Value " + i + " out of range from input " + nm);
+        }
         return valueOf((byte)i);
     }
 

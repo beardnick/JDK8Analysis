@@ -96,8 +96,9 @@ public final class Naming {
         ParsedNamingURL parsed = parseURL(name);
         Registry registry = getRegistry(parsed);
 
-        if (parsed.name == null)
+        if (parsed.name == null) {
             return registry;
+        }
         return registry.lookup(parsed.name);
     }
 
@@ -122,8 +123,9 @@ public final class Naming {
         ParsedNamingURL parsed = parseURL(name);
         Registry registry = getRegistry(parsed);
 
-        if (obj == null)
+        if (obj == null) {
             throw new NullPointerException("cannot bind to null");
+        }
 
         registry.bind(parsed.name, obj);
     }
@@ -171,8 +173,9 @@ public final class Naming {
         ParsedNamingURL parsed = parseURL(name);
         Registry registry = getRegistry(parsed);
 
-        if (obj == null)
+        if (obj == null) {
             throw new NullPointerException("cannot bind to null");
+        }
 
         registry.rebind(parsed.name, obj);
     }
@@ -199,10 +202,12 @@ public final class Naming {
         Registry registry = getRegistry(parsed);
 
         String prefix = "";
-        if (parsed.port > 0 || !parsed.host.equals(""))
+        if (parsed.port > 0 || !parsed.host.equals("")) {
             prefix += "//" + parsed.host;
-        if (parsed.port > 0)
+        }
+        if (parsed.port > 0) {
             prefix += ":" + parsed.port;
+        }
         prefix += "/";
 
         String[] names = registry.list();

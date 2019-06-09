@@ -180,8 +180,9 @@ public abstract class MenuComponent implements java.io.Serializable {
     public String getName() {
         if (name == null && !nameExplicitlySet) {
             synchronized(this) {
-                if (name == null && !nameExplicitlySet)
+                if (name == null && !nameExplicitlySet) {
                     name = constructComponentName();
+                }
             }
         }
         return name;
@@ -624,10 +625,11 @@ public abstract class MenuComponent implements java.io.Serializable {
          */
         public java.util.Locale getLocale() {
             MenuContainer parent = MenuComponent.this.getParent();
-            if (parent instanceof Component)
+            if (parent instanceof Component) {
                 return ((Component)parent).getLocale();
-            else
+            } else {
                 return java.util.Locale.getDefault();
+            }
         }
 
         /**

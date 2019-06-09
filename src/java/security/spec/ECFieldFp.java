@@ -81,7 +81,9 @@ public class ECFieldFp implements ECField {
      * of ECFieldFp and the prime value match, false otherwise.
      */
     public boolean equals(Object obj) {
-        if (this == obj)  return true;
+        if (this == obj) {
+            return true;
+        }
         if (obj instanceof ECFieldFp) {
             return (p.equals(((ECFieldFp)obj).p));
         }

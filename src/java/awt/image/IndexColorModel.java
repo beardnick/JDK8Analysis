@@ -919,7 +919,9 @@ public class IndexColorModel extends ColorModel {
                     continue;
                 }
                 d = (this.rgb[i] & 0xff) - gray;
-                if (d < 0) d = -d;
+                if (d < 0) {
+                    d = -d;
+                }
                 if (d < minDist) {
                     pix = i;
                     if (d == 0) {

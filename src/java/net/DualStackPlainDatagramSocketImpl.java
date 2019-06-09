@@ -62,8 +62,9 @@ class DualStackPlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
     }
 
     protected void datagramSocketCreate() throws SocketException {
-        if (fd == null)
+        if (fd == null) {
             throw new SocketException("Socket closed");
+        }
 
         int newfd = socketCreate(false /* v6Only */);
 
@@ -74,8 +75,9 @@ class DualStackPlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
         throws SocketException {
         int nativefd = checkAndReturnNativeFD();
 
-        if (laddr == null)
+        if (laddr == null) {
             throw new NullPointerException("argument address");
+        }
 
         socketBind(nativefd, laddr, lport, exclusiveBind);
         if (lport == 0) {
@@ -88,8 +90,9 @@ class DualStackPlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
     protected synchronized int peek(InetAddress address) throws IOException {
         int nativefd = checkAndReturnNativeFD();
 
-        if (address == null)
+        if (address == null) {
             throw new NullPointerException("Null address in peek()");
+        }
 
         // Use peekData()
         DatagramPacket peekPacket = new DatagramPacket(new byte[1], 1);
@@ -101,10 +104,12 @@ class DualStackPlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
     protected synchronized int peekData(DatagramPacket p) throws IOException {
         int nativefd = checkAndReturnNativeFD();
 
-        if (p == null)
+        if (p == null) {
             throw new NullPointerException("packet");
-        if (p.getData() == null)
+        }
+        if (p.getData() == null) {
             throw new NullPointerException("packet buffer");
+        }
 
         return socketReceiveOrPeekData(nativefd, p, timeout, connected, true /*peek*/);
     }
@@ -112,10 +117,12 @@ class DualStackPlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
     protected synchronized void receive0(DatagramPacket p) throws IOException {
         int nativefd = checkAndReturnNativeFD();
 
-        if (p == null)
+        if (p == null) {
             throw new NullPointerException("packet");
-        if (p.getData() == null)
+        }
+        if (p.getData() == null) {
             throw new NullPointerException("packet buffer");
+        }
 
         socketReceiveOrPeekData(nativefd, p, timeout, connected, false /*receive*/);
     }
@@ -123,11 +130,13 @@ class DualStackPlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
     protected void send(DatagramPacket p) throws IOException {
         int nativefd = checkAndReturnNativeFD();
 
-        if (p == null)
+        if (p == null) {
             throw new NullPointerException("null packet");
+        }
 
-        if (p.getAddress() == null ||p.getData() ==null)
+        if (p.getAddress() == null ||p.getData() ==null) {
             throw new NullPointerException("null address || null buffer");
+        }
 
         socketSend(nativefd, p.getData(), p.getOffset(), p.getLength(),
                    p.getAddress(), p.getPort(), connected);
@@ -136,22 +145,25 @@ class DualStackPlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
     protected void connect0(InetAddress address, int port) throws SocketException {
         int nativefd = checkAndReturnNativeFD();
 
-        if (address == null)
+        if (address == null) {
             throw new NullPointerException("address");
+        }
 
         socketConnect(nativefd, address, port);
     }
 
     protected void disconnect0(int family /*unused*/) {
-        if (fd == null || !fd.valid())
+        if (fd == null || !fd.valid()) {
             return;   // disconnect doesn't throw any exceptions
+        }
 
         socketDisconnect(fdAccess.get(fd));
     }
 
     protected void datagramSocketClose() {
-        if (fd == null || !fd.valid())
+        if (fd == null || !fd.valid()) {
             return;   // close doesn't throw any exceptions
+        }
 
         socketClose(fdAccess.get(fd));
         fdAccess.set(fd, -1);
@@ -194,8 +206,9 @@ class DualStackPlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
         if (opt == SO_BINDADDR) {
             return socketLocalAddress(nativefd);
         }
-        if (opt == SO_REUSEADDR && reuseAddressEmulated)
+        if (opt == SO_REUSEADDR && reuseAddressEmulated) {
             return isReuseAddress;
+        }
 
         int value = socketGetIntOption(nativefd, opt);
         Object returnValue = null;
@@ -252,8 +265,9 @@ class DualStackPlainDatagramSocketImpl extends AbstractPlainDatagramSocketImpl
     /* END Multicast specific methods */
 
     private int checkAndReturnNativeFD() throws SocketException {
-        if (fd == null || !fd.valid())
+        if (fd == null || !fd.valid()) {
             throw new SocketException("Socket closed");
+        }
 
         return fdAccess.get(fd);
     }

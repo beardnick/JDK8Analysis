@@ -222,8 +222,9 @@ public abstract class MessageDigest extends MessageDigestSpi {
     public static MessageDigest getInstance(String algorithm, String provider)
         throws NoSuchAlgorithmException, NoSuchProviderException
     {
-        if (provider == null || provider.length() == 0)
+        if (provider == null || provider.length() == 0) {
             throw new IllegalArgumentException("missing provider");
+        }
         Object[] objs = Security.getImpl(algorithm, "MessageDigest", provider);
         if (objs[0] instanceof MessageDigest) {
             MessageDigest md = (MessageDigest)objs[0];
@@ -270,8 +271,9 @@ public abstract class MessageDigest extends MessageDigestSpi {
                                             Provider provider)
         throws NoSuchAlgorithmException
     {
-        if (provider == null)
+        if (provider == null) {
             throw new IllegalArgumentException("missing provider");
+        }
         Object[] objs = Security.getImpl(algorithm, "MessageDigest", provider);
         if (objs[0] instanceof MessageDigest) {
             MessageDigest md = (MessageDigest)objs[0];
@@ -440,7 +442,9 @@ public abstract class MessageDigest extends MessageDigestSpi {
      * @return true if the digests are equal, false otherwise.
      */
     public static boolean isEqual(byte[] digesta, byte[] digestb) {
-        if (digesta == digestb) return true;
+        if (digesta == digestb) {
+            return true;
+        }
         if (digesta == null || digestb == null) {
             return false;
         }

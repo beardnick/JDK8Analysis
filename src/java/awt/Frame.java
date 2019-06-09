@@ -1234,8 +1234,9 @@ public class Frame extends Window implements MenuContainer {
           }
       }
 
-      if (menuBar != null)
-        menuBar.parent = this;
+      if (menuBar != null) {
+          menuBar.parent = this;
+      }
 
       // Ensure 1.1 serialized Frames can read & hook-up
       // owned windows properly

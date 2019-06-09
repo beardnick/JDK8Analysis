@@ -219,8 +219,9 @@ abstract class AbstractTask<P_IN, P_OUT, R,
      */
     @Override
     protected void setRawResult(R result) {
-        if (result != null)
+        if (result != null) {
             throw new IllegalStateException();
+        }
     }
 
     /**
@@ -343,8 +344,9 @@ abstract class AbstractTask<P_IN, P_OUT, R,
         K node = (K) this;
         while (node != null) {
             K parent = node.getParent();
-            if (parent != null && parent.leftChild != node)
+            if (parent != null && parent.leftChild != node) {
                 return false;
+            }
             node = parent;
         }
         return true;

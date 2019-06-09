@@ -69,7 +69,9 @@ class PatternEntry {
      * this method is ill-defined and ignores strength.
      */
     public boolean equals(Object obj) {
-        if (obj == null) return false;
+        if (obj == null) {
+            return false;
+        }
         PatternEntry other = (PatternEntry) obj;
         boolean result = chars.equals(other.chars);
         return result;
@@ -116,19 +118,23 @@ class PatternEntry {
                      boolean showWhiteSpace,
                      PatternEntry lastEntry)
     {
-        if (showWhiteSpace && toAddTo.length() > 0)
-            if (strength == Collator.PRIMARY || lastEntry != null)
+        if (showWhiteSpace && toAddTo.length() > 0) {
+            if (strength == Collator.PRIMARY || lastEntry != null) {
                 toAddTo.append('\n');
-            else
+            } else {
                 toAddTo.append(' ');
+            }
+        }
         if (lastEntry != null) {
             toAddTo.append('&');
-            if (showWhiteSpace)
+            if (showWhiteSpace) {
                 toAddTo.append(' ');
+            }
             lastEntry.appendQuotedChars(toAddTo);
             appendQuotedExtension(toAddTo);
-            if (showWhiteSpace)
+            if (showWhiteSpace) {
                 toAddTo.append(' ');
+            }
         }
         switch (strength) {
         case Collator.IDENTICAL: toAddTo.append('='); break;
@@ -138,8 +144,9 @@ class PatternEntry {
         case RESET: toAddTo.append('&'); break;
         case UNSET: toAddTo.append('?'); break;
         }
-        if (showWhiteSpace)
+        if (showWhiteSpace) {
             toAddTo.append(' ');
+        }
         appendQuoted(chars,toAddTo);
         if (showExtension && extension.length() != 0) {
             toAddTo.append('/');
@@ -177,8 +184,9 @@ class PatternEntry {
            }
         }
         toAddTo.append(chars);
-        if (inQuote)
+        if (inQuote) {
             toAddTo.append('\'');
+        }
     }
 
     //========================================================================
@@ -219,57 +227,79 @@ class PatternEntry {
                     if (ch == '\'') {
                         inQuote = false;
                     } else {
-                        if (newChars.length() == 0) newChars.append(ch);
-                        else if (inChars) newChars.append(ch);
-                        else newExtension.append(ch);
+                        if (newChars.length() == 0) {
+                            newChars.append(ch);
+                        } else if (inChars) {
+                            newChars.append(ch);
+                        } else {
+                            newExtension.append(ch);
+                        }
                     }
-                } else switch (ch) {
-                case '=': if (newStrength != UNSET) break mainLoop;
-                    newStrength = Collator.IDENTICAL; break;
-                case ',': if (newStrength != UNSET) break mainLoop;
-                    newStrength = Collator.TERTIARY; break;
-                case ';': if (newStrength != UNSET) break mainLoop;
-                    newStrength = Collator.SECONDARY; break;
-                case '<': if (newStrength != UNSET) break mainLoop;
-                    newStrength = Collator.PRIMARY; break;
-                case '&': if (newStrength != UNSET) break mainLoop;
-                    newStrength = RESET; break;
-                case '\t':
-                case '\n':
-                case '\f':
-                case '\r':
-                case ' ': break; // skip whitespace TODO use Character
-                case '/': inChars = false; break;
-                case '\'':
-                    inQuote = true;
-                    ch = pattern.charAt(++i);
-                    if (newChars.length() == 0) newChars.append(ch);
-                    else if (inChars) newChars.append(ch);
-                    else newExtension.append(ch);
-                    break;
-                default:
-                    if (newStrength == UNSET) {
-                        throw new ParseException
-                            ("missing char (=,;<&) : " +
-                             pattern.substring(i,
-                                (i+10 < pattern.length()) ?
-                                 i+10 : pattern.length()),
-                             i);
+                } else {
+                    switch (ch) {
+                    case '=': if (newStrength != UNSET) {
+                        break mainLoop;
                     }
-                    if (PatternEntry.isSpecialChar(ch) && (inQuote == false))
-                        throw new ParseException
-                            ("Unquoted punctuation character : " + Integer.toString(ch, 16), i);
-                    if (inChars) {
-                        newChars.append(ch);
-                    } else {
-                        newExtension.append(ch);
+                        newStrength = Collator.IDENTICAL; break;
+                    case ',': if (newStrength != UNSET) {
+                        break mainLoop;
                     }
-                    break;
+                        newStrength = Collator.TERTIARY; break;
+                    case ';': if (newStrength != UNSET) {
+                        break mainLoop;
+                    }
+                        newStrength = Collator.SECONDARY; break;
+                    case '<': if (newStrength != UNSET) {
+                        break mainLoop;
+                    }
+                        newStrength = Collator.PRIMARY; break;
+                    case '&': if (newStrength != UNSET) {
+                        break mainLoop;
+                    }
+                        newStrength = RESET; break;
+                    case '\t':
+                    case '\n':
+                    case '\f':
+                    case '\r':
+                    case ' ': break; // skip whitespace TODO use Character
+                    case '/': inChars = false; break;
+                    case '\'':
+                        inQuote = true;
+                        ch = pattern.charAt(++i);
+                        if (newChars.length() == 0) {
+                            newChars.append(ch);
+                        } else if (inChars) {
+                            newChars.append(ch);
+                        } else {
+                            newExtension.append(ch);
+                        }
+                        break;
+                    default:
+                        if (newStrength == UNSET) {
+                            throw new ParseException
+                                ("missing char (=,;<&) : " +
+                                 pattern.substring(i,
+                                    (i+10 < pattern.length()) ?
+                                     i+10 : pattern.length()),
+                                 i);
+                        }
+                        if (PatternEntry.isSpecialChar(ch) && (inQuote == false)) {
+                            throw new ParseException
+                                    ("Unquoted punctuation character : " + Integer.toString(ch, 16), i);
+                        }
+                        if (inChars) {
+                            newChars.append(ch);
+                        } else {
+                            newExtension.append(ch);
+                        }
+                        break;
+                    }
                 }
                 i++;
             }
-            if (newStrength == UNSET)
+            if (newStrength == UNSET) {
                 return null;
+            }
             if (newChars.length() == 0) {
                 throw new ParseException
                     ("missing chars (=,;<&): " +

@@ -174,8 +174,9 @@ public class Menu extends MenuItem implements MenuContainer, Accessible {
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = Toolkit.getDefaultToolkit().createMenu(this);
+            }
             int nitems = getItemCount();
             for (int i = 0 ; i < nitems ; i++) {
                 MenuItem mi = getItem(i);

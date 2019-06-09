@@ -244,12 +244,14 @@ public final class Console implements Flushable
         String line = null;
         synchronized (writeLock) {
             synchronized(readLock) {
-                if (fmt.length() != 0)
+                if (fmt.length() != 0) {
                     pw.format(fmt, args);
+                }
                 try {
                     char[] ca = readline(false);
-                    if (ca != null)
+                    if (ca != null) {
                         line = new String(ca);
+                    }
                 } catch (IOException x) {
                     throw new IOError(x);
                 }
@@ -315,8 +317,9 @@ public final class Console implements Flushable
                 }
                 IOError ioe = null;
                 try {
-                    if (fmt.length() != 0)
+                    if (fmt.length() != 0) {
                         pw.format(fmt, args);
+                    }
                     passwd = readline(true);
                 } catch (IOException x) {
                     ioe = new IOError(x);
@@ -324,13 +327,15 @@ public final class Console implements Flushable
                     try {
                         echoOff = echo(true);
                     } catch (IOException x) {
-                        if (ioe == null)
+                        if (ioe == null) {
                             ioe = new IOError(x);
-                        else
+                        } else {
                             ioe.addSuppressed(x);
+                        }
                     }
-                    if (ioe != null)
+                    if (ioe != null) {
                         throw ioe;
+                    }
                 }
                 pw.println();
             }
@@ -374,14 +379,16 @@ public final class Console implements Flushable
 
     private char[] readline(boolean zeroOut) throws IOException {
         int len = reader.read(rcb, 0, rcb.length);
-        if (len < 0)
+        if (len < 0) {
             return null;  //EOL
-        if (rcb[len-1] == '\r')
+        }
+        if (rcb[len-1] == '\r') {
             len--;        //remove CR at end;
-        else if (rcb[len-1] == '\n') {
+        } else if (rcb[len-1] == '\n') {
             len--;        //remove LF at end;
-            if (len > 0 && rcb[len-1] == '\r')
+            if (len > 0 && rcb[len-1] == '\r') {
                 len--;    //remove the CR, if there is one
+            }
         }
         char[] b = new char[len];
         if (len > 0) {
@@ -449,8 +456,9 @@ public final class Console implements Flushable
                                 eof = true;
                             }
                         } else { /*EOF*/
-                            if (off - offset == 0)
+                            if (off - offset == 0) {
                                 return -1;
+                            }
                             return off - offset;
                         }
                     }
@@ -506,8 +514,9 @@ public final class Console implements Flushable
                            }
                         }
                     }
-                    if (eof)
+                    if (eof) {
                         return off - offset;
+                    }
                 }
             }
         }
@@ -538,8 +547,9 @@ public final class Console implements Flushable
         sun.misc.SharedSecrets.setJavaIOAccess(new sun.misc.JavaIOAccess() {
             public Console console() {
                 if (istty()) {
-                    if (cons == null)
+                    if (cons == null) {
                         cons = new Console();
+                    }
                     return cons;
                 }
                 return null;
@@ -563,8 +573,9 @@ public final class Console implements Flushable
                 cs = Charset.forName(csname);
             } catch (Exception x) {}
         }
-        if (cs == null)
+        if (cs == null) {
             cs = Charset.defaultCharset();
+        }
         out = StreamEncoder.forOutputStreamWriter(
                   new FileOutputStream(FileDescriptor.out),
                   writeLock,

@@ -182,8 +182,12 @@ class DnDEventMulticaster extends AWTEventMulticaster
      * @param b event listener-b
      */
     protected static EventListener addInternal(EventListener a, EventListener b) {
-        if (a == null)  return b;
-        if (b == null)  return a;
+        if (a == null) {
+            return b;
+        }
+        if (b == null) {
+            return a;
+        }
         return new DnDEventMulticaster(a, b);
     }
 
@@ -193,8 +197,12 @@ class DnDEventMulticaster extends AWTEventMulticaster
      * @param oldl the listener to be removed
      */
     protected EventListener remove(EventListener oldl) {
-        if (oldl == a)  return b;
-        if (oldl == b)  return a;
+        if (oldl == a) {
+            return b;
+        }
+        if (oldl == b) {
+            return a;
+        }
         EventListener a2 = removeInternal(a, oldl);
         EventListener b2 = removeInternal(b, oldl);
         if (a2 == a && b2 == b) {

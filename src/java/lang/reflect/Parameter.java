@@ -127,13 +127,15 @@ public final class Parameter implements AnnotatedElement {
 
         sb.append(Modifier.toString(getModifiers()));
 
-        if(0 != modifiers)
+        if(0 != modifiers) {
             sb.append(' ');
+        }
 
-        if(isVarArgs())
+        if(isVarArgs()) {
             sb.append(typename.replaceFirst("\\[\\]$", "..."));
-        else
+        } else {
             sb.append(typename);
+        }
 
         sb.append(' ');
         sb.append(getName());
@@ -176,10 +178,11 @@ public final class Parameter implements AnnotatedElement {
         // Note: empty strings as paramete names are now outlawed.
         // The .equals("") is for compatibility with current JVM
         // behavior.  It may be removed at some point.
-        if(name == null || name.equals(""))
+        if(name == null || name.equals("")) {
             return "arg" + index;
-        else
+        } else {
             return name;
+        }
     }
 
     // Package-private accessor to the real name field.
@@ -340,8 +343,9 @@ public final class Parameter implements AnnotatedElement {
             declaredAnnotations =
                 new HashMap<Class<? extends Annotation>, Annotation>();
             Annotation[] ann = getDeclaredAnnotations();
-            for(int i = 0; i < ann.length; i++)
+            for(int i = 0; i < ann.length; i++) {
                 declaredAnnotations.put(ann[i].annotationType(), ann[i]);
+            }
         }
         return declaredAnnotations;
    }

@@ -100,9 +100,10 @@ abstract class IntPipeline<E_IN>
             return (IntConsumer) sink;
         }
         else {
-            if (Tripwire.ENABLED)
+            if (Tripwire.ENABLED) {
                 Tripwire.trip(AbstractPipeline.class,
                               "using IntStream.adapt(Sink<Integer> s)");
+            }
             return sink::accept;
         }
     }
@@ -119,9 +120,10 @@ abstract class IntPipeline<E_IN>
             return (Spliterator.OfInt) s;
         }
         else {
-            if (Tripwire.ENABLED)
+            if (Tripwire.ENABLED) {
                 Tripwire.trip(AbstractPipeline.class,
                               "using IntStream.adapt(Spliterator<Integer> s)");
+            }
             throw new UnsupportedOperationException("IntStream.adapt(Spliterator<Integer> s)");
         }
     }
@@ -304,8 +306,9 @@ abstract class IntPipeline<E_IN>
                     public void accept(int t) {
                         try (IntStream result = mapper.apply(t)) {
                             // We can do better that this too; optimize for depth=0 case and just grab spliterator and forEach it
-                            if (result != null)
+                            if (result != null) {
                                 result.sequential().forEach(i -> downstream.accept(i));
+                            }
                         }
                     }
                 };
@@ -315,8 +318,9 @@ abstract class IntPipeline<E_IN>
 
     @Override
     public IntStream unordered() {
-        if (!isOrdered())
+        if (!isOrdered()) {
             return this;
+        }
         return new StatelessOp<Integer>(this, StreamShape.INT_VALUE, StreamOpFlag.NOT_ORDERED) {
             @Override
             Sink<Integer> opWrapSink(int flags, Sink<Integer> sink) {
@@ -340,8 +344,9 @@ abstract class IntPipeline<E_IN>
 
                     @Override
                     public void accept(int t) {
-                        if (predicate.test(t))
+                        if (predicate.test(t)) {
                             downstream.accept(t);
+                        }
                     }
                 };
             }
@@ -370,19 +375,22 @@ abstract class IntPipeline<E_IN>
 
     @Override
     public final IntStream limit(long maxSize) {
-        if (maxSize < 0)
+        if (maxSize < 0) {
             throw new IllegalArgumentException(Long.toString(maxSize));
+        }
         return SliceOps.makeInt(this, 0, maxSize);
     }
 
     @Override
     public final IntStream skip(long n) {
-        if (n < 0)
+        if (n < 0) {
             throw new IllegalArgumentException(Long.toString(n));
-        if (n == 0)
+        }
+        if (n == 0) {
             return this;
-        else
+        } else {
             return SliceOps.makeInt(this, n, -1);
+        }
     }
 
     @Override

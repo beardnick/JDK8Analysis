@@ -81,8 +81,9 @@ public class GuardedObject implements java.io.Serializable {
     public Object getObject()
         throws SecurityException
     {
-        if (guard != null)
+        if (guard != null) {
             guard.checkGuard(object);
+        }
 
         return object;
     }
@@ -94,8 +95,9 @@ public class GuardedObject implements java.io.Serializable {
     private void writeObject(java.io.ObjectOutputStream oos)
         throws java.io.IOException
     {
-        if (guard != null)
+        if (guard != null) {
             guard.checkGuard(object);
+        }
 
         oos.defaultWriteObject();
     }

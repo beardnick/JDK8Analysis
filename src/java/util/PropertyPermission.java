@@ -130,14 +130,17 @@ public final class PropertyPermission extends BasicPermission {
      *
      */
     private void init(int mask) {
-        if ((mask & ALL) != mask)
+        if ((mask & ALL) != mask) {
             throw new IllegalArgumentException("invalid actions mask");
+        }
 
-        if (mask == NONE)
+        if (mask == NONE) {
             throw new IllegalArgumentException("invalid actions mask");
+        }
 
-        if (getName() == null)
+        if (getName() == null) {
             throw new NullPointerException("name can't be null");
+        }
 
         this.mask = mask;
     }
@@ -179,8 +182,9 @@ public final class PropertyPermission extends BasicPermission {
      * false if not.
      */
     public boolean implies(Permission p) {
-        if (!(p instanceof PropertyPermission))
+        if (!(p instanceof PropertyPermission)) {
             return false;
+        }
 
         PropertyPermission that = (PropertyPermission) p;
 
@@ -199,11 +203,13 @@ public final class PropertyPermission extends BasicPermission {
      * actions as this PropertyPermission object.
      */
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
+        }
 
-        if (! (obj instanceof PropertyPermission))
+        if (! (obj instanceof PropertyPermission)) {
             return false;
+        }
 
         PropertyPermission that = (PropertyPermission) obj;
 
@@ -250,8 +256,9 @@ public final class PropertyPermission extends BasicPermission {
         char[] a = actions.toCharArray();
 
         int i = a.length - 1;
-        if (i < 0)
+        if (i < 0) {
             return mask;
+        }
 
         while (i != -1) {
             char c;
@@ -261,8 +268,9 @@ public final class PropertyPermission extends BasicPermission {
                                c == '\r' ||
                                c == '\n' ||
                                c == '\f' ||
-                               c == '\t'))
+                               c == '\t')) {
                 i--;
+            }
 
             // check for the known strings
             int matchlen;
@@ -333,8 +341,11 @@ public final class PropertyPermission extends BasicPermission {
         }
 
         if ((mask & WRITE) == WRITE) {
-            if (comma) sb.append(',');
-            else comma = true;
+            if (comma) {
+                sb.append(',');
+            } else {
+                comma = true;
+            }
             sb.append("write");
         }
         return sb.toString();
@@ -350,8 +361,9 @@ public final class PropertyPermission extends BasicPermission {
      * @return the canonical string representation of the actions.
      */
     public String getActions() {
-        if (actions == null)
+        if (actions == null) {
             actions = getActions(this.mask);
+        }
 
         return actions;
     }
@@ -391,8 +403,9 @@ public final class PropertyPermission extends BasicPermission {
     {
         // Write out the actions. The superclass takes care of the name
         // call getActions to make sure actions field is initialized
-        if (actions == null)
+        if (actions == null) {
             getActions();
+        }
         s.defaultWriteObject();
     }
 
@@ -461,12 +474,14 @@ final class PropertyPermissionCollection extends PermissionCollection
      *                                object has been marked readonly
      */
     public void add(Permission permission) {
-        if (! (permission instanceof PropertyPermission))
+        if (! (permission instanceof PropertyPermission)) {
             throw new IllegalArgumentException("invalid permission: "+
                                                permission);
-        if (isReadOnly())
+        }
+        if (isReadOnly()) {
             throw new SecurityException(
                 "attempt to add a Permission to a readonly PermissionCollection");
+        }
 
         PropertyPermission pp = (PropertyPermission) permission;
         String propName = pp.getName();
@@ -488,8 +503,9 @@ final class PropertyPermissionCollection extends PermissionCollection
         }
 
         if (!all_allowed) {
-            if (propName.equals("*"))
+            if (propName.equals("*")) {
                 all_allowed = true;
+            }
         }
     }
 
@@ -503,8 +519,9 @@ final class PropertyPermissionCollection extends PermissionCollection
      * the set, false if not.
      */
     public boolean implies(Permission permission) {
-        if (! (permission instanceof PropertyPermission))
-                return false;
+        if (! (permission instanceof PropertyPermission)) {
+            return false;
+        }
 
         PropertyPermission pp = (PropertyPermission) permission;
         PropertyPermission x;
@@ -519,8 +536,9 @@ final class PropertyPermissionCollection extends PermissionCollection
             }
             if (x != null) {
                 effective |= x.getMask();
-                if ((effective & desired) == desired)
+                if ((effective & desired) == desired) {
                     return true;
+                }
             }
         }
 
@@ -538,8 +556,9 @@ final class PropertyPermissionCollection extends PermissionCollection
         if (x != null) {
             // we have a direct hit!
             effective |= x.getMask();
-            if ((effective & desired) == desired)
+            if ((effective & desired) == desired) {
                 return true;
+            }
         }
 
         // work our way up the tree...
@@ -557,8 +576,9 @@ final class PropertyPermissionCollection extends PermissionCollection
 
             if (x != null) {
                 effective |= x.getMask();
-                if ((effective & desired) == desired)
+                if ((effective & desired) == desired) {
                     return true;
+                }
             }
             offset = last -1;
         }

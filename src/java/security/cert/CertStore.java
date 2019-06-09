@@ -117,8 +117,9 @@ public class CertStore {
         this.storeSpi = storeSpi;
         this.provider = provider;
         this.type = type;
-        if (params != null)
+        if (params != null) {
             this.params = (CertStoreParameters) params.clone();
+        }
     }
 
     /**

@@ -498,9 +498,10 @@ class WindowsPreferences extends AbstractPreferences{
         if (windowsAbsolutePath.length <= MAX_WINDOWS_PATH_LENGTH + 1) {
             int[] result = WindowsRegOpenKey1(rootNativeHandle(),
                                               windowsAbsolutePath, mask1);
-            if (result[ERROR_CODE] == ERROR_ACCESS_DENIED && mask2 != mask1)
+            if (result[ERROR_CODE] == ERROR_ACCESS_DENIED && mask2 != mask1) {
                 result = WindowsRegOpenKey1(rootNativeHandle(),
                                             windowsAbsolutePath, mask2);
+            }
 
             if (result[ERROR_CODE] != ERROR_SUCCESS) {
                 logger().warning("Could not open windows registry node " +
@@ -544,9 +545,10 @@ class WindowsPreferences extends AbstractPreferences{
         if (windowsRelativePath.length <= MAX_WINDOWS_PATH_LENGTH + 1 ) {
             int[] result = WindowsRegOpenKey1(nativeHandle,
                                               windowsRelativePath, mask1);
-            if (result[ERROR_CODE] == ERROR_ACCESS_DENIED && mask2 != mask1)
+            if (result[ERROR_CODE] == ERROR_ACCESS_DENIED && mask2 != mask1) {
                 result = WindowsRegOpenKey1(nativeHandle,
                                             windowsRelativePath, mask2);
+            }
 
             if (result[ERROR_CODE] != ERROR_SUCCESS) {
                 logger().warning("Could not open windows registry node " +
@@ -833,8 +835,9 @@ class WindowsPreferences extends AbstractPreferences{
      * @see flush()
      */
     public void sync() throws BackingStoreException{
-        if (isRemoved())
+        if (isRemoved()) {
             throw new IllegalStateException("Node has been removed");
+        }
         flush();
     }
 

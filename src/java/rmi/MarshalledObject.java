@@ -148,7 +148,9 @@ public final class MarshalledObject<T> implements Serializable {
      */
     public T get() throws IOException, ClassNotFoundException {
         if (objBytes == null)   // must have been a null object
+        {
             return null;
+        }
 
         ByteArrayInputStream bin = new ByteArrayInputStream(objBytes);
         // locBytes is null if no annotations
@@ -187,25 +189,29 @@ public final class MarshalledObject<T> implements Serializable {
      * @since 1.2
      */
     public boolean equals(Object obj) {
-        if (obj == this)
+        if (obj == this) {
             return true;
+        }
 
         if (obj != null && obj instanceof MarshalledObject) {
             MarshalledObject<?> other = (MarshalledObject<?>) obj;
 
             // if either is a ref to null, both must be
-            if (objBytes == null || other.objBytes == null)
+            if (objBytes == null || other.objBytes == null) {
                 return objBytes == other.objBytes;
+            }
 
             // quick, easy test
-            if (objBytes.length != other.objBytes.length)
+            if (objBytes.length != other.objBytes.length) {
                 return false;
+            }
 
             //!! There is talk about adding an array comparision method
             //!! at 1.2 -- if so, this should be rewritten.  -arnold
             for (int i = 0; i < objBytes.length; ++i) {
-                if (objBytes[i] != other.objBytes[i])
+                if (objBytes[i] != other.objBytes[i]) {
                     return false;
+                }
             }
             return true;
         } else {

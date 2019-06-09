@@ -235,10 +235,12 @@ class ZipEntry implements ZipConstants, Cloneable {
      * @since 1.8
      */
     public FileTime getLastModifiedTime() {
-        if (mtime != null)
+        if (mtime != null) {
             return mtime;
-        if (xdostime == -1)
+        }
+        if (xdostime == -1) {
             return null;
+        }
         return FileTime.from(getTime(), TimeUnit.MILLISECONDS);
     }
 
@@ -464,7 +466,9 @@ class ZipEntry implements ZipConstants, Cloneable {
                 int sz = get16(extra, off + 2);
                 off += 4;
                 if (off + sz > len)         // invalid data
+                {
                     break;
+                }
                 switch (tag) {
                 case EXTID_ZIP64:
                     if (doZIP64) {
@@ -482,10 +486,13 @@ class ZipEntry implements ZipConstants, Cloneable {
                     break;
                 case EXTID_NTFS:
                     if (sz < 32) // reserved  4 bytes + tag 2 bytes + size 2 bytes
+                    {
                         break;   // m[a|c]time 24 bytes
+                    }
                     int pos = off + 4;               // reserved 4 bytes
-                    if (get16(extra, pos) !=  0x0001 || get16(extra, pos + 2) != 24)
+                    if (get16(extra, pos) !=  0x0001 || get16(extra, pos + 2) != 24) {
                         break;
+                    }
                     mtime = winTimeToFileTime(get64(extra, pos + 4));
                     atime = winTimeToFileTime(get64(extra, pos + 12));
                     ctime = winTimeToFileTime(get64(extra, pos + 20));

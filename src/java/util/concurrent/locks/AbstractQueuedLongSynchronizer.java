@@ -271,10 +271,11 @@ public abstract class AbstractQueuedLongSynchronizer
          */
         final Node predecessor() throws NullPointerException {
             Node p = prev;
-            if (p == null)
+            if (p == null) {
                 throw new NullPointerException();
-            else
+            } else {
                 return p;
+            }
         }
 
         Node() {    // Used to establish initial head or SHARED marker
@@ -362,8 +363,9 @@ public abstract class AbstractQueuedLongSynchronizer
         for (;;) {
             Node t = tail;
             if (t == null) { // Must initialize
-                if (compareAndSetHead(new Node()))
+                if (compareAndSetHead(new Node())) {
                     tail = head;
+                }
             } else {
                 node.prev = t;
                 if (compareAndSetTail(t, node)) {
@@ -420,8 +422,9 @@ public abstract class AbstractQueuedLongSynchronizer
          * fails or if status is changed by waiting thread.
          */
         int ws = node.waitStatus;
-        if (ws < 0)
+        if (ws < 0) {
             compareAndSetWaitStatus(node, ws, 0);
+        }
 
         /*
          * Thread to unpark is held in successor, which is normally
@@ -432,12 +435,15 @@ public abstract class AbstractQueuedLongSynchronizer
         Node s = node.next;
         if (s == null || s.waitStatus > 0) {
             s = null;
-            for (Node t = tail; t != null && t != node; t = t.prev)
-                if (t.waitStatus <= 0)
+            for (Node t = tail; t != null && t != node; t = t.prev) {
+                if (t.waitStatus <= 0) {
                     s = t;
+                }
+            }
         }
-        if (s != null)
+        if (s != null) {
             LockSupport.unpark(s.thread);
+        }
     }
 
     /**
@@ -462,16 +468,20 @@ public abstract class AbstractQueuedLongSynchronizer
             if (h != null && h != tail) {
                 int ws = h.waitStatus;
                 if (ws == Node.SIGNAL) {
-                    if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0))
+                    if (!compareAndSetWaitStatus(h, Node.SIGNAL, 0)) {
                         continue;            // loop to recheck cases
+                    }
                     unparkSuccessor(h);
                 }
                 else if (ws == 0 &&
-                         !compareAndSetWaitStatus(h, 0, Node.PROPAGATE))
+                         !compareAndSetWaitStatus(h, 0, Node.PROPAGATE)) {
                     continue;                // loop on failed CAS
+                }
             }
             if (h == head)                   // loop if head changed
+            {
                 break;
+            }
         }
     }
 
@@ -505,8 +515,9 @@ public abstract class AbstractQueuedLongSynchronizer
         if (propagate > 0 || h == null || h.waitStatus < 0 ||
             (h = head) == null || h.waitStatus < 0) {
             Node s = node.next;
-            if (s == null || s.isShared())
+            if (s == null || s.isShared()) {
                 doReleaseShared();
+            }
         }
     }
 
@@ -519,15 +530,17 @@ public abstract class AbstractQueuedLongSynchronizer
      */
     private void cancelAcquire(Node node) {
         // Ignore if node doesn't exist
-        if (node == null)
+        if (node == null) {
             return;
+        }
 
         node.thread = null;
 
         // Skip cancelled predecessors
         Node pred = node.prev;
-        while (pred.waitStatus > 0)
+        while (pred.waitStatus > 0) {
             node.prev = pred = pred.prev;
+        }
 
         // predNext is the apparent node to unsplice. CASes below will
         // fail if not, in which case, we lost race vs another cancel
@@ -551,8 +564,9 @@ public abstract class AbstractQueuedLongSynchronizer
                  (ws <= 0 && compareAndSetWaitStatus(pred, ws, Node.SIGNAL))) &&
                 pred.thread != null) {
                 Node next = node.next;
-                if (next != null && next.waitStatus <= 0)
+                if (next != null && next.waitStatus <= 0) {
                     compareAndSetNext(pred, predNext, next);
+                }
             } else {
                 unparkSuccessor(node);
             }
@@ -576,8 +590,9 @@ public abstract class AbstractQueuedLongSynchronizer
             /*
              * This node has already set status asking a release
              * to signal it, so it can safely park.
-             */
+             */ {
             return true;
+        }
         if (ws > 0) {
             /*
              * Predecessor was cancelled. Skip over predecessors and
@@ -645,12 +660,14 @@ public abstract class AbstractQueuedLongSynchronizer
                     return interrupted;
                 }
                 if (shouldParkAfterFailedAcquire(p, node) &&
-                    parkAndCheckInterrupt())
+                    parkAndCheckInterrupt()) {
                     interrupted = true;
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -672,12 +689,14 @@ public abstract class AbstractQueuedLongSynchronizer
                     return;
                 }
                 if (shouldParkAfterFailedAcquire(p, node) &&
-                    parkAndCheckInterrupt())
+                    parkAndCheckInterrupt()) {
                     throw new InterruptedException();
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -690,8 +709,9 @@ public abstract class AbstractQueuedLongSynchronizer
      */
     private boolean doAcquireNanos(long arg, long nanosTimeout)
             throws InterruptedException {
-        if (nanosTimeout <= 0L)
+        if (nanosTimeout <= 0L) {
             return false;
+        }
         final long deadline = System.nanoTime() + nanosTimeout;
         final Node node = addWaiter(Node.EXCLUSIVE);
         boolean failed = true;
@@ -705,17 +725,21 @@ public abstract class AbstractQueuedLongSynchronizer
                     return true;
                 }
                 nanosTimeout = deadline - System.nanoTime();
-                if (nanosTimeout <= 0L)
+                if (nanosTimeout <= 0L) {
                     return false;
+                }
                 if (shouldParkAfterFailedAcquire(p, node) &&
-                    nanosTimeout > spinForTimeoutThreshold)
+                    nanosTimeout > spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanosTimeout);
-                if (Thread.interrupted())
+                }
+                if (Thread.interrupted()) {
                     throw new InterruptedException();
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -735,19 +759,22 @@ public abstract class AbstractQueuedLongSynchronizer
                     if (r >= 0) {
                         setHeadAndPropagate(node, r);
                         p.next = null; // help GC
-                        if (interrupted)
+                        if (interrupted) {
                             selfInterrupt();
+                        }
                         failed = false;
                         return;
                     }
                 }
                 if (shouldParkAfterFailedAcquire(p, node) &&
-                    parkAndCheckInterrupt())
+                    parkAndCheckInterrupt()) {
                     interrupted = true;
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -772,12 +799,14 @@ public abstract class AbstractQueuedLongSynchronizer
                     }
                 }
                 if (shouldParkAfterFailedAcquire(p, node) &&
-                    parkAndCheckInterrupt())
+                    parkAndCheckInterrupt()) {
                     throw new InterruptedException();
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -790,8 +819,9 @@ public abstract class AbstractQueuedLongSynchronizer
      */
     private boolean doAcquireSharedNanos(long arg, long nanosTimeout)
             throws InterruptedException {
-        if (nanosTimeout <= 0L)
+        if (nanosTimeout <= 0L) {
             return false;
+        }
         final long deadline = System.nanoTime() + nanosTimeout;
         final Node node = addWaiter(Node.SHARED);
         boolean failed = true;
@@ -808,17 +838,21 @@ public abstract class AbstractQueuedLongSynchronizer
                     }
                 }
                 nanosTimeout = deadline - System.nanoTime();
-                if (nanosTimeout <= 0L)
+                if (nanosTimeout <= 0L) {
                     return false;
+                }
                 if (shouldParkAfterFailedAcquire(p, node) &&
-                    nanosTimeout > spinForTimeoutThreshold)
+                    nanosTimeout > spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanosTimeout);
-                if (Thread.interrupted())
+                }
+                if (Thread.interrupted()) {
                     throw new InterruptedException();
+                }
             }
         } finally {
-            if (failed)
+            if (failed) {
                 cancelAcquire(node);
+            }
         }
     }
 
@@ -974,8 +1008,9 @@ public abstract class AbstractQueuedLongSynchronizer
      */
     public final void acquire(long arg) {
         if (!tryAcquire(arg) &&
-            acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
+            acquireQueued(addWaiter(Node.EXCLUSIVE), arg)) {
             selfInterrupt();
+        }
     }
 
     /**
@@ -994,10 +1029,12 @@ public abstract class AbstractQueuedLongSynchronizer
      */
     public final void acquireInterruptibly(long arg)
             throws InterruptedException {
-        if (Thread.interrupted())
+        if (Thread.interrupted()) {
             throw new InterruptedException();
-        if (!tryAcquire(arg))
+        }
+        if (!tryAcquire(arg)) {
             doAcquireInterruptibly(arg);
+        }
     }
 
     /**
@@ -1019,8 +1056,9 @@ public abstract class AbstractQueuedLongSynchronizer
      */
     public final boolean tryAcquireNanos(long arg, long nanosTimeout)
             throws InterruptedException {
-        if (Thread.interrupted())
+        if (Thread.interrupted()) {
             throw new InterruptedException();
+        }
         return tryAcquire(arg) ||
             doAcquireNanos(arg, nanosTimeout);
     }
@@ -1038,8 +1076,9 @@ public abstract class AbstractQueuedLongSynchronizer
     public final boolean release(long arg) {
         if (tryRelease(arg)) {
             Node h = head;
-            if (h != null && h.waitStatus != 0)
+            if (h != null && h.waitStatus != 0) {
                 unparkSuccessor(h);
+            }
             return true;
         }
         return false;
@@ -1057,8 +1096,9 @@ public abstract class AbstractQueuedLongSynchronizer
      *        and can represent anything you like.
      */
     public final void acquireShared(long arg) {
-        if (tryAcquireShared(arg) < 0)
+        if (tryAcquireShared(arg) < 0) {
             doAcquireShared(arg);
+        }
     }
 
     /**
@@ -1076,10 +1116,12 @@ public abstract class AbstractQueuedLongSynchronizer
      */
     public final void acquireSharedInterruptibly(long arg)
             throws InterruptedException {
-        if (Thread.interrupted())
+        if (Thread.interrupted()) {
             throw new InterruptedException();
-        if (tryAcquireShared(arg) < 0)
+        }
+        if (tryAcquireShared(arg) < 0) {
             doAcquireSharedInterruptibly(arg);
+        }
     }
 
     /**
@@ -1100,8 +1142,9 @@ public abstract class AbstractQueuedLongSynchronizer
      */
     public final boolean tryAcquireSharedNanos(long arg, long nanosTimeout)
             throws InterruptedException {
-        if (Thread.interrupted())
+        if (Thread.interrupted()) {
             throw new InterruptedException();
+        }
         return tryAcquireShared(arg) >= 0 ||
             doAcquireSharedNanos(arg, nanosTimeout);
     }
@@ -1186,8 +1229,9 @@ public abstract class AbstractQueuedLongSynchronizer
         if (((h = head) != null && (s = h.next) != null &&
              s.prev == head && (st = s.thread) != null) ||
             ((h = head) != null && (s = h.next) != null &&
-             s.prev == head && (st = s.thread) != null))
+             s.prev == head && (st = s.thread) != null)) {
             return st;
+        }
 
         /*
          * Head's next field might not have been set yet, or may have
@@ -1201,8 +1245,9 @@ public abstract class AbstractQueuedLongSynchronizer
         Thread firstThread = null;
         while (t != null && t != head) {
             Thread tt = t.thread;
-            if (tt != null)
+            if (tt != null) {
                 firstThread = tt;
+            }
             t = t.prev;
         }
         return firstThread;
@@ -1219,11 +1264,14 @@ public abstract class AbstractQueuedLongSynchronizer
      * @throws NullPointerException if the thread is null
      */
     public final boolean isQueued(Thread thread) {
-        if (thread == null)
+        if (thread == null) {
             throw new NullPointerException();
-        for (Node p = tail; p != null; p = p.prev)
-            if (p.thread == thread)
+        }
+        for (Node p = tail; p != null; p = p.prev) {
+            if (p.thread == thread) {
                 return true;
+            }
+        }
         return false;
     }
 
@@ -1314,8 +1362,9 @@ public abstract class AbstractQueuedLongSynchronizer
     public final int getQueueLength() {
         int n = 0;
         for (Node p = tail; p != null; p = p.prev) {
-            if (p.thread != null)
+            if (p.thread != null) {
                 ++n;
+            }
         }
         return n;
     }
@@ -1335,8 +1384,9 @@ public abstract class AbstractQueuedLongSynchronizer
         ArrayList<Thread> list = new ArrayList<Thread>();
         for (Node p = tail; p != null; p = p.prev) {
             Thread t = p.thread;
-            if (t != null)
+            if (t != null) {
                 list.add(t);
+            }
         }
         return list;
     }
@@ -1354,8 +1404,9 @@ public abstract class AbstractQueuedLongSynchronizer
         for (Node p = tail; p != null; p = p.prev) {
             if (!p.isShared()) {
                 Thread t = p.thread;
-                if (t != null)
+                if (t != null) {
                     list.add(t);
+                }
             }
         }
         return list;
@@ -1374,8 +1425,9 @@ public abstract class AbstractQueuedLongSynchronizer
         for (Node p = tail; p != null; p = p.prev) {
             if (p.isShared()) {
                 Thread t = p.thread;
-                if (t != null)
+                if (t != null) {
                     list.add(t);
+                }
             }
         }
         return list;
@@ -1407,10 +1459,13 @@ public abstract class AbstractQueuedLongSynchronizer
      * @return true if is reacquiring
      */
     final boolean isOnSyncQueue(Node node) {
-        if (node.waitStatus == Node.CONDITION || node.prev == null)
+        if (node.waitStatus == Node.CONDITION || node.prev == null) {
             return false;
+        }
         if (node.next != null) // If has successor, it must be on queue
+        {
             return true;
+        }
         /*
          * node.prev can be non-null, but not yet on queue because
          * the CAS to place it on queue can fail. So we have to
@@ -1430,10 +1485,12 @@ public abstract class AbstractQueuedLongSynchronizer
     private boolean findNodeFromTail(Node node) {
         Node t = tail;
         for (;;) {
-            if (t == node)
+            if (t == node) {
                 return true;
-            if (t == null)
+            }
+            if (t == null) {
                 return false;
+            }
             t = t.prev;
         }
     }
@@ -1449,8 +1506,9 @@ public abstract class AbstractQueuedLongSynchronizer
         /*
          * If cannot change waitStatus, the node has been cancelled.
          */
-        if (!compareAndSetWaitStatus(node, Node.CONDITION, 0))
+        if (!compareAndSetWaitStatus(node, Node.CONDITION, 0)) {
             return false;
+        }
 
         /*
          * Splice onto queue and try to set waitStatus of predecessor to
@@ -1460,8 +1518,9 @@ public abstract class AbstractQueuedLongSynchronizer
          */
         Node p = enq(node);
         int ws = p.waitStatus;
-        if (ws > 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL))
+        if (ws > 0 || !compareAndSetWaitStatus(p, ws, Node.SIGNAL)) {
             LockSupport.unpark(node.thread);
+        }
         return true;
     }
 
@@ -1483,8 +1542,9 @@ public abstract class AbstractQueuedLongSynchronizer
          * incomplete transfer is both rare and transient, so just
          * spin.
          */
-        while (!isOnSyncQueue(node))
+        while (!isOnSyncQueue(node)) {
             Thread.yield();
+        }
         return false;
     }
 
@@ -1505,8 +1565,9 @@ public abstract class AbstractQueuedLongSynchronizer
                 throw new IllegalMonitorStateException();
             }
         } finally {
-            if (failed)
+            if (failed) {
                 node.waitStatus = Node.CANCELLED;
+            }
         }
     }
 
@@ -1541,8 +1602,9 @@ public abstract class AbstractQueuedLongSynchronizer
      * @throws NullPointerException if the condition is null
      */
     public final boolean hasWaiters(ConditionObject condition) {
-        if (!owns(condition))
+        if (!owns(condition)) {
             throw new IllegalArgumentException("Not owner");
+        }
         return condition.hasWaiters();
     }
 
@@ -1563,8 +1625,9 @@ public abstract class AbstractQueuedLongSynchronizer
      * @throws NullPointerException if the condition is null
      */
     public final int getWaitQueueLength(ConditionObject condition) {
-        if (!owns(condition))
+        if (!owns(condition)) {
             throw new IllegalArgumentException("Not owner");
+        }
         return condition.getWaitQueueLength();
     }
 
@@ -1585,8 +1648,9 @@ public abstract class AbstractQueuedLongSynchronizer
      * @throws NullPointerException if the condition is null
      */
     public final Collection<Thread> getWaitingThreads(ConditionObject condition) {
-        if (!owns(condition))
+        if (!owns(condition)) {
             throw new IllegalArgumentException("Not owner");
+        }
         return condition.getWaitingThreads();
     }
 
@@ -1633,10 +1697,11 @@ public abstract class AbstractQueuedLongSynchronizer
                 t = lastWaiter;
             }
             Node node = new Node(Thread.currentThread(), Node.CONDITION);
-            if (t == null)
+            if (t == null) {
                 firstWaiter = node;
-            else
+            } else {
                 t.nextWaiter = node;
+            }
             lastWaiter = node;
             return node;
         }
@@ -1649,8 +1714,9 @@ public abstract class AbstractQueuedLongSynchronizer
          */
         private void doSignal(Node first) {
             do {
-                if ( (firstWaiter = first.nextWaiter) == null)
+                if ( (firstWaiter = first.nextWaiter) == null) {
                     lastWaiter = null;
+                }
                 first.nextWaiter = null;
             } while (!transferForSignal(first) &&
                      (first = firstWaiter) != null);
@@ -1691,15 +1757,18 @@ public abstract class AbstractQueuedLongSynchronizer
                 Node next = t.nextWaiter;
                 if (t.waitStatus != Node.CONDITION) {
                     t.nextWaiter = null;
-                    if (trail == null)
+                    if (trail == null) {
                         firstWaiter = next;
-                    else
+                    } else {
                         trail.nextWaiter = next;
-                    if (next == null)
+                    }
+                    if (next == null) {
                         lastWaiter = trail;
+                    }
                 }
-                else
+                else {
                     trail = t;
+                }
                 t = next;
             }
         }
@@ -1715,11 +1784,13 @@ public abstract class AbstractQueuedLongSynchronizer
          *         returns {@code false}
          */
         public final void signal() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
+            }
             Node first = firstWaiter;
-            if (first != null)
+            if (first != null) {
                 doSignal(first);
+            }
         }
 
         /**
@@ -1730,11 +1801,13 @@ public abstract class AbstractQueuedLongSynchronizer
          *         returns {@code false}
          */
         public final void signalAll() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
+            }
             Node first = firstWaiter;
-            if (first != null)
+            if (first != null) {
                 doSignalAll(first);
+            }
         }
 
         /**
@@ -1754,11 +1827,13 @@ public abstract class AbstractQueuedLongSynchronizer
             boolean interrupted = false;
             while (!isOnSyncQueue(node)) {
                 LockSupport.park(this);
-                if (Thread.interrupted())
+                if (Thread.interrupted()) {
                     interrupted = true;
+                }
             }
-            if (acquireQueued(node, savedState) || interrupted)
+            if (acquireQueued(node, savedState) || interrupted) {
                 selfInterrupt();
+            }
         }
 
         /*
@@ -1790,10 +1865,11 @@ public abstract class AbstractQueuedLongSynchronizer
          */
         private void reportInterruptAfterWait(int interruptMode)
             throws InterruptedException {
-            if (interruptMode == THROW_IE)
+            if (interruptMode == THROW_IE) {
                 throw new InterruptedException();
-            else if (interruptMode == REINTERRUPT)
+            } else if (interruptMode == REINTERRUPT) {
                 selfInterrupt();
+            }
         }
 
         /**
@@ -1810,22 +1886,28 @@ public abstract class AbstractQueuedLongSynchronizer
          * </ol>
          */
         public final void await() throws InterruptedException {
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
+            }
             Node node = addConditionWaiter();
             long savedState = fullyRelease(node);
             int interruptMode = 0;
             while (!isOnSyncQueue(node)) {
                 LockSupport.park(this);
-                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
                     break;
+                }
             }
-            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
                 interruptMode = REINTERRUPT;
+            }
             if (node.nextWaiter != null) // clean up if cancelled
+            {
                 unlinkCancelledWaiters();
-            if (interruptMode != 0)
+            }
+            if (interruptMode != 0) {
                 reportInterruptAfterWait(interruptMode);
+            }
         }
 
         /**
@@ -1843,8 +1925,9 @@ public abstract class AbstractQueuedLongSynchronizer
          */
         public final long awaitNanos(long nanosTimeout)
                 throws InterruptedException {
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
+            }
             Node node = addConditionWaiter();
             long savedState = fullyRelease(node);
             final long deadline = System.nanoTime() + nanosTimeout;
@@ -1854,18 +1937,23 @@ public abstract class AbstractQueuedLongSynchronizer
                     transferAfterCancelledWait(node);
                     break;
                 }
-                if (nanosTimeout >= spinForTimeoutThreshold)
+                if (nanosTimeout >= spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanosTimeout);
-                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                }
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
                     break;
+                }
                 nanosTimeout = deadline - System.nanoTime();
             }
-            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
                 interruptMode = REINTERRUPT;
-            if (node.nextWaiter != null)
+            }
+            if (node.nextWaiter != null) {
                 unlinkCancelledWaiters();
-            if (interruptMode != 0)
+            }
+            if (interruptMode != 0) {
                 reportInterruptAfterWait(interruptMode);
+            }
             return deadline - System.nanoTime();
         }
 
@@ -1886,8 +1974,9 @@ public abstract class AbstractQueuedLongSynchronizer
         public final boolean awaitUntil(Date deadline)
                 throws InterruptedException {
             long abstime = deadline.getTime();
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
+            }
             Node node = addConditionWaiter();
             long savedState = fullyRelease(node);
             boolean timedout = false;
@@ -1898,15 +1987,19 @@ public abstract class AbstractQueuedLongSynchronizer
                     break;
                 }
                 LockSupport.parkUntil(this, abstime);
-                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
                     break;
+                }
             }
-            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
                 interruptMode = REINTERRUPT;
-            if (node.nextWaiter != null)
+            }
+            if (node.nextWaiter != null) {
                 unlinkCancelledWaiters();
-            if (interruptMode != 0)
+            }
+            if (interruptMode != 0) {
                 reportInterruptAfterWait(interruptMode);
+            }
             return !timedout;
         }
 
@@ -1927,8 +2020,9 @@ public abstract class AbstractQueuedLongSynchronizer
         public final boolean await(long time, TimeUnit unit)
                 throws InterruptedException {
             long nanosTimeout = unit.toNanos(time);
-            if (Thread.interrupted())
+            if (Thread.interrupted()) {
                 throw new InterruptedException();
+            }
             Node node = addConditionWaiter();
             long savedState = fullyRelease(node);
             final long deadline = System.nanoTime() + nanosTimeout;
@@ -1939,18 +2033,23 @@ public abstract class AbstractQueuedLongSynchronizer
                     timedout = transferAfterCancelledWait(node);
                     break;
                 }
-                if (nanosTimeout >= spinForTimeoutThreshold)
+                if (nanosTimeout >= spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanosTimeout);
-                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0)
+                }
+                if ((interruptMode = checkInterruptWhileWaiting(node)) != 0) {
                     break;
+                }
                 nanosTimeout = deadline - System.nanoTime();
             }
-            if (acquireQueued(node, savedState) && interruptMode != THROW_IE)
+            if (acquireQueued(node, savedState) && interruptMode != THROW_IE) {
                 interruptMode = REINTERRUPT;
-            if (node.nextWaiter != null)
+            }
+            if (node.nextWaiter != null) {
                 unlinkCancelledWaiters();
-            if (interruptMode != 0)
+            }
+            if (interruptMode != 0) {
                 reportInterruptAfterWait(interruptMode);
+            }
             return !timedout;
         }
 
@@ -1975,11 +2074,13 @@ public abstract class AbstractQueuedLongSynchronizer
          *         returns {@code false}
          */
         protected final boolean hasWaiters() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
+            }
             for (Node w = firstWaiter; w != null; w = w.nextWaiter) {
-                if (w.waitStatus == Node.CONDITION)
+                if (w.waitStatus == Node.CONDITION) {
                     return true;
+                }
             }
             return false;
         }
@@ -1994,12 +2095,14 @@ public abstract class AbstractQueuedLongSynchronizer
          *         returns {@code false}
          */
         protected final int getWaitQueueLength() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
+            }
             int n = 0;
             for (Node w = firstWaiter; w != null; w = w.nextWaiter) {
-                if (w.waitStatus == Node.CONDITION)
+                if (w.waitStatus == Node.CONDITION) {
                     ++n;
+                }
             }
             return n;
         }
@@ -2014,14 +2117,16 @@ public abstract class AbstractQueuedLongSynchronizer
          *         returns {@code false}
          */
         protected final Collection<Thread> getWaitingThreads() {
-            if (!isHeldExclusively())
+            if (!isHeldExclusively()) {
                 throw new IllegalMonitorStateException();
+            }
             ArrayList<Thread> list = new ArrayList<Thread>();
             for (Node w = firstWaiter; w != null; w = w.nextWaiter) {
                 if (w.waitStatus == Node.CONDITION) {
                     Thread t = w.thread;
-                    if (t != null)
+                    if (t != null) {
                         list.add(t);
+                    }
                 }
             }
             return list;

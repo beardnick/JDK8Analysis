@@ -239,28 +239,31 @@ abstract class Striped64 extends Number {
                             } finally {
                                 cellsBusy = 0;
                             }
-                            if (created)
+                            if (created) {
                                 break;
+                            }
                             continue;           // Slot is now non-empty
                         }
                     }
                     collide = false;
                 }
                 else if (!wasUncontended)       // CAS already known to fail
+                {
                     wasUncontended = true;      // Continue after rehash
-                else if (a.cas(v = a.value, ((fn == null) ? v + x :
-                                             fn.applyAsLong(v, x))))
+                } else if (a.cas(v = a.value, ((fn == null) ? v + x :
+                                             fn.applyAsLong(v, x)))) {
                     break;
-                else if (n >= NCPU || cells != as)
+                } else if (n >= NCPU || cells != as) {
                     collide = false;            // At max size or stale
-                else if (!collide)
+                } else if (!collide) {
                     collide = true;
-                else if (cellsBusy == 0 && casCellsBusy()) {
+                } else if (cellsBusy == 0 && casCellsBusy()) {
                     try {
                         if (cells == as) {      // Expand table unless stale
                             Cell[] rs = new Cell[n << 1];
-                            for (int i = 0; i < n; ++i)
+                            for (int i = 0; i < n; ++i) {
                                 rs[i] = as[i];
+                            }
                             cells = rs;
                         }
                     } finally {
@@ -283,12 +286,14 @@ abstract class Striped64 extends Number {
                 } finally {
                     cellsBusy = 0;
                 }
-                if (init)
+                if (init) {
                     break;
+                }
             }
             else if (casBase(v = base, ((fn == null) ? v + x :
-                                        fn.applyAsLong(v, x))))
+                                        fn.applyAsLong(v, x)))) {
                 break;                          // Fall back on using base
+            }
         }
     }
 
@@ -326,33 +331,36 @@ abstract class Striped64 extends Number {
                             } finally {
                                 cellsBusy = 0;
                             }
-                            if (created)
+                            if (created) {
                                 break;
+                            }
                             continue;           // Slot is now non-empty
                         }
                     }
                     collide = false;
                 }
                 else if (!wasUncontended)       // CAS already known to fail
+                {
                     wasUncontended = true;      // Continue after rehash
-                else if (a.cas(v = a.value,
+                } else if (a.cas(v = a.value,
                                ((fn == null) ?
                                 Double.doubleToRawLongBits
                                 (Double.longBitsToDouble(v) + x) :
                                 Double.doubleToRawLongBits
                                 (fn.applyAsDouble
-                                 (Double.longBitsToDouble(v), x)))))
+                                 (Double.longBitsToDouble(v), x))))) {
                     break;
-                else if (n >= NCPU || cells != as)
+                } else if (n >= NCPU || cells != as) {
                     collide = false;            // At max size or stale
-                else if (!collide)
+                } else if (!collide) {
                     collide = true;
-                else if (cellsBusy == 0 && casCellsBusy()) {
+                } else if (cellsBusy == 0 && casCellsBusy()) {
                     try {
                         if (cells == as) {      // Expand table unless stale
                             Cell[] rs = new Cell[n << 1];
-                            for (int i = 0; i < n; ++i)
+                            for (int i = 0; i < n; ++i) {
                                 rs[i] = as[i];
+                            }
                             cells = rs;
                         }
                     } finally {
@@ -375,8 +383,9 @@ abstract class Striped64 extends Number {
                 } finally {
                     cellsBusy = 0;
                 }
-                if (init)
+                if (init) {
                     break;
+                }
             }
             else if (casBase(v = base,
                              ((fn == null) ?
@@ -384,8 +393,9 @@ abstract class Striped64 extends Number {
                               (Double.longBitsToDouble(v) + x) :
                               Double.doubleToRawLongBits
                               (fn.applyAsDouble
-                               (Double.longBitsToDouble(v), x)))))
+                               (Double.longBitsToDouble(v), x))))) {
                 break;                          // Fall back on using base
+            }
         }
     }
 

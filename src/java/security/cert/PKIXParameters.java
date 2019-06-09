@@ -141,17 +141,19 @@ public class PKIXParameters implements CertPathParameters {
     public PKIXParameters(KeyStore keystore)
         throws KeyStoreException, InvalidAlgorithmParameterException
     {
-        if (keystore == null)
+        if (keystore == null) {
             throw new NullPointerException("the keystore parameter must be " +
                 "non-null");
+        }
         Set<TrustAnchor> hashSet = new HashSet<TrustAnchor>();
         Enumeration<String> aliases = keystore.aliases();
         while (aliases.hasMoreElements()) {
             String alias = aliases.nextElement();
             if (keystore.isCertificateEntry(alias)) {
                 Certificate cert = keystore.getCertificate(alias);
-                if (cert instanceof X509Certificate)
+                if (cert instanceof X509Certificate) {
                     hashSet.add(new TrustAnchor((X509Certificate)cert, null));
+                }
             }
         }
         setTrustAnchors(hashSet);
@@ -251,14 +253,16 @@ public class PKIXParameters implements CertPathParameters {
         if (initialPolicies != null) {
             for (Iterator<String> i = initialPolicies.iterator();
                         i.hasNext();) {
-                if (!(i.next() instanceof String))
+                if (!(i.next() instanceof String)) {
                     throw new ClassCastException("all elements of set must be "
                         + "of type java.lang.String");
+                }
             }
             this.unmodInitialPolicies =
                 Collections.unmodifiableSet(new HashSet<String>(initialPolicies));
-        } else
+        } else {
             this.unmodInitialPolicies = Collections.<String>emptySet();
+        }
     }
 
     /**
@@ -482,10 +486,11 @@ public class PKIXParameters implements CertPathParameters {
      * @see #setDate
      */
     public Date getDate() {
-        if (date == null)
+        if (date == null) {
             return null;
-        else
+        } else {
             return (Date) this.date.clone();
+        }
     }
 
     /**
@@ -500,10 +505,11 @@ public class PKIXParameters implements CertPathParameters {
      * @see #getDate
      */
     public void setDate(Date date) {
-        if (date != null)
+        if (date != null) {
             this.date = (Date) date.clone();
-        else
+        } else {
             date = null;
+        }
     }
 
     /**
@@ -649,10 +655,11 @@ public class PKIXParameters implements CertPathParameters {
      * @see #getTargetCertConstraints
      */
     public void setTargetCertConstraints(CertSelector selector) {
-        if (selector != null)
+        if (selector != null) {
             certSelector = (CertSelector) selector.clone();
-        else
+        } else {
             certSelector = null;
+        }
     }
 
     /**
@@ -725,11 +732,13 @@ public class PKIXParameters implements CertPathParameters {
         sb.append("  Target Cert Constraints: " + String.valueOf(certSelector) + "\n");
 
         /* finally, append miscellaneous parameters */
-        if (certPathCheckers != null)
+        if (certPathCheckers != null) {
             sb.append("  Certification Path Checkers: ["
                 + certPathCheckers.toString() + "]\n");
-        if (certStores != null)
+        }
+        if (certStores != null) {
             sb.append("  CertStores: [" + certStores.toString() + "]\n");
+        }
         sb.append("]");
         return sb.toString();
     }

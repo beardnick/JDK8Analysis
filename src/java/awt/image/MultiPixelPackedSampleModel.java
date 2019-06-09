@@ -303,12 +303,13 @@ public class MultiPixelPackedSampleModel extends SampleModel
      *  @return the transfertype.
      */
     public int getTransferType() {
-        if (pixelBitStride > 16)
+        if (pixelBitStride > 16) {
             return DataBuffer.TYPE_INT;
-        else if (pixelBitStride > 8)
+        } else if (pixelBitStride > 8) {
             return DataBuffer.TYPE_USHORT;
-        else
+        } else {
             return DataBuffer.TYPE_BYTE;
+        }
     }
 
     /**
@@ -328,9 +329,10 @@ public class MultiPixelPackedSampleModel extends SampleModel
      */
     public SampleModel createSubsetSampleModel(int bands[]) {
         if (bands != null) {
-           if (bands.length != 1)
-            throw new RasterFormatException("MultiPixelPackedSampleModel has "
-                                            + "only one band.");
+           if (bands.length != 1) {
+               throw new RasterFormatException("MultiPixelPackedSampleModel has "
+                                               + "only one band.");
+           }
         }
         SampleModel sm = createCompatibleSampleModel(width, height);
         return sm;
@@ -467,10 +469,11 @@ public class MultiPixelPackedSampleModel extends SampleModel
 
             byte[] bdata;
 
-            if (obj == null)
+            if (obj == null) {
                 bdata = new byte[1];
-            else
+            } else {
                 bdata = (byte[])obj;
+            }
 
             element = data.getElem(y*scanlineStride +
                                     bitnum/dataElementSize);
@@ -483,10 +486,11 @@ public class MultiPixelPackedSampleModel extends SampleModel
 
             short[] sdata;
 
-            if (obj == null)
+            if (obj == null) {
                 sdata = new short[1];
-            else
+            } else {
                 sdata = (short[])obj;
+            }
 
             element = data.getElem(y*scanlineStride +
                                    bitnum/dataElementSize);
@@ -499,10 +503,11 @@ public class MultiPixelPackedSampleModel extends SampleModel
 
             int[] idata;
 
-            if (obj == null)
+            if (obj == null) {
                 idata = new int[1];
-            else
+            } else {
                 idata = (int[])obj;
+            }
 
             element = data.getElem(y*scanlineStride +
                                    bitnum/dataElementSize);

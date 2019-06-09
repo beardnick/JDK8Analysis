@@ -365,10 +365,12 @@ public class CopyOnWriteArraySet<E> extends AbstractSet<E>
      * @return {@code true} if the specified object is equal to this set
      */
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
-        if (!(o instanceof Set))
+        }
+        if (!(o instanceof Set)) {
             return false;
+        }
         Set<?> set = (Set<?>)(o);
         Iterator<?> it = set.iterator();
 
@@ -382,8 +384,9 @@ public class CopyOnWriteArraySet<E> extends AbstractSet<E>
         boolean[] matched = new boolean[len];
         int k = 0;
         outer: while (it.hasNext()) {
-            if (++k > len)
+            if (++k > len) {
                 return false;
+            }
             Object x = it.next();
             for (int i = 0; i < len; ++i) {
                 if (!matched[i] && eq(x, elements[i])) {

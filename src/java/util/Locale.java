@@ -965,14 +965,18 @@ public final class Locale implements Cloneable, Serializable {
      */
     public static synchronized void setDefault(Locale.Category category,
         Locale newLocale) {
-        if (category == null)
+        if (category == null) {
             throw new NullPointerException("Category cannot be NULL");
-        if (newLocale == null)
+        }
+        if (newLocale == null) {
             throw new NullPointerException("Can't set default locale to NULL");
+        }
 
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null) sm.checkPermission(new PropertyPermission
-                        ("user.language", "write"));
+        if (sm != null) {
+            sm.checkPermission(new PropertyPermission
+                            ("user.language", "write"));
+        }
         switch (category) {
         case DISPLAY:
             defaultDisplayLocale = newLocale;
@@ -1808,8 +1812,9 @@ public final class Locale implements Cloneable, Serializable {
      * @exception NullPointerException if <code>inLocale</code> is <code>null</code>
      */
     public String getDisplayVariant(Locale inLocale) {
-        if (baseLocale.getVariant().length() == 0)
+        if (baseLocale.getVariant().length() == 0) {
             return "";
+        }
 
         LocaleResources lr = LocaleProviderAdapter.forJRE().getLocaleResources(inLocale);
 
@@ -1996,9 +2001,12 @@ public final class Locale implements Cloneable, Serializable {
     @Override
     public boolean equals(Object obj) {
         if (this == obj)                      // quick check
+        {
             return true;
-        if (!(obj instanceof Locale))
+        }
+        if (!(obj instanceof Locale)) {
             return false;
+        }
         BaseLocale otherBase = ((Locale)obj).baseLocale;
         if (!baseLocale.equals(otherBase)) {
             return false;
@@ -2096,7 +2104,9 @@ public final class Locale implements Cloneable, Serializable {
      * otherwise, a new list of three elements.
      */
     private static String[] composeList(MessageFormat format, String[] list) {
-        if (list.length <= 3) return list;
+        if (list.length <= 3) {
+            return list;
+        }
 
         // Use the given format to compose the first two elements into one
         String[] listItems = { list[0], list[1] };

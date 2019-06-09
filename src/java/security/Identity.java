@@ -264,11 +264,14 @@ public abstract class Identity implements Principal, Serializable {
     private boolean keyEquals(PublicKey aKey, PublicKey anotherKey) {
         String aKeyFormat = aKey.getFormat();
         String anotherKeyFormat = anotherKey.getFormat();
-        if ((aKeyFormat == null) ^ (anotherKeyFormat == null))
+        if ((aKeyFormat == null) ^ (anotherKeyFormat == null)) {
             return false;
-        if (aKeyFormat != null && anotherKeyFormat != null)
-            if (!aKeyFormat.equalsIgnoreCase(anotherKeyFormat))
+        }
+        if (aKeyFormat != null && anotherKeyFormat != null) {
+            if (!aKeyFormat.equalsIgnoreCase(anotherKeyFormat)) {
                 return false;
+            }
+        }
         return java.util.Arrays.equals(aKey.getEncoded(),
                                      anotherKey.getEncoded());
     }
@@ -361,15 +364,19 @@ public abstract class Identity implements Principal, Serializable {
      * @see #equals
      */
     protected boolean identityEquals(Identity identity) {
-        if (!name.equalsIgnoreCase(identity.name))
+        if (!name.equalsIgnoreCase(identity.name)) {
             return false;
+        }
 
-        if ((publicKey == null) ^ (identity.publicKey == null))
+        if ((publicKey == null) ^ (identity.publicKey == null)) {
             return false;
+        }
 
-        if (publicKey != null && identity.publicKey != null)
-            if (!publicKey.equals(identity.publicKey))
+        if (publicKey != null && identity.publicKey != null) {
+            if (!publicKey.equals(identity.publicKey)) {
                 return false;
+            }
+        }
 
         return true;
 

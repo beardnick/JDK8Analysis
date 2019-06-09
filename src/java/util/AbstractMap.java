@@ -113,14 +113,16 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
         if (value==null) {
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
-                if (e.getValue()==null)
+                if (e.getValue()==null) {
                     return true;
+                }
             }
         } else {
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
-                if (value.equals(e.getValue()))
+                if (value.equals(e.getValue())) {
                     return true;
+                }
             }
         }
         return false;
@@ -145,14 +147,16 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
         if (key==null) {
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
-                if (e.getKey()==null)
+                if (e.getKey()==null) {
                     return true;
+                }
             }
         } else {
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
-                if (key.equals(e.getKey()))
+                if (key.equals(e.getKey())) {
                     return true;
+                }
             }
         }
         return false;
@@ -177,14 +181,16 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
         if (key==null) {
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
-                if (e.getKey()==null)
+                if (e.getKey()==null) {
                     return e.getValue();
+                }
             }
         } else {
             while (i.hasNext()) {
                 Entry<K,V> e = i.next();
-                if (key.equals(e.getKey()))
+                if (key.equals(e.getKey())) {
                     return e.getValue();
+                }
             }
         }
         return null;
@@ -237,14 +243,16 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
         if (key==null) {
             while (correctEntry==null && i.hasNext()) {
                 Entry<K,V> e = i.next();
-                if (e.getKey()==null)
+                if (e.getKey()==null) {
                     correctEntry = e;
+                }
             }
         } else {
             while (correctEntry==null && i.hasNext()) {
                 Entry<K,V> e = i.next();
-                if (key.equals(e.getKey()))
+                if (key.equals(e.getKey())) {
                     correctEntry = e;
+                }
             }
         }
 
@@ -277,8 +285,9 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     public void putAll(Map<? extends K, ? extends V> m) {
-        for (Map.Entry<? extends K, ? extends V> e : m.entrySet())
+        for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
             put(e.getKey(), e.getValue());
+        }
     }
 
     /**
@@ -450,14 +459,17 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      * @return <tt>true</tt> if the specified object is equal to this map
      */
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
+        }
 
-        if (!(o instanceof Map))
+        if (!(o instanceof Map)) {
             return false;
+        }
         Map<?,?> m = (Map<?,?>) o;
-        if (m.size() != size())
+        if (m.size() != size()) {
             return false;
+        }
 
         try {
             Iterator<Entry<K,V>> i = entrySet().iterator();
@@ -466,11 +478,13 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
                 K key = e.getKey();
                 V value = e.getValue();
                 if (value == null) {
-                    if (!(m.get(key)==null && m.containsKey(key)))
+                    if (!(m.get(key)==null && m.containsKey(key))) {
                         return false;
+                    }
                 } else {
-                    if (!value.equals(m.get(key)))
+                    if (!value.equals(m.get(key))) {
                         return false;
+                    }
                 }
             }
         } catch (ClassCastException unused) {
@@ -503,8 +517,9 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
     public int hashCode() {
         int h = 0;
         Iterator<Entry<K,V>> i = entrySet().iterator();
-        while (i.hasNext())
+        while (i.hasNext()) {
             h += i.next().hashCode();
+        }
         return h;
     }
 
@@ -522,8 +537,9 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
      */
     public String toString() {
         Iterator<Entry<K,V>> i = entrySet().iterator();
-        if (! i.hasNext())
+        if (! i.hasNext()) {
             return "{}";
+        }
 
         StringBuilder sb = new StringBuilder();
         sb.append('{');
@@ -534,8 +550,9 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
             sb.append(key   == this ? "(this Map)" : key);
             sb.append('=');
             sb.append(value == this ? "(this Map)" : value);
-            if (! i.hasNext())
+            if (! i.hasNext()) {
                 return sb.append('}').toString();
+            }
             sb.append(',').append(' ');
         }
     }
@@ -665,8 +682,9 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          * @see    #hashCode
          */
         public boolean equals(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> e = (Map.Entry<?,?>)o;
             return eq(key, e.getKey()) && eq(value, e.getValue());
         }
@@ -796,8 +814,9 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
          * @see    #hashCode
          */
         public boolean equals(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> e = (Map.Entry<?,?>)o;
             return eq(key, e.getKey()) && eq(value, e.getValue());
         }

@@ -256,9 +256,11 @@ public abstract class Provider extends Properties {
         checkInitialized();
         if (entrySet == null) {
             if (entrySetCallCount++ == 0)  // Initial call
+            {
                 entrySet = Collections.unmodifiableMap(this).entrySet();
-            else
+            } else {
                 return super.entrySet();   // Recursive call
+            }
         }
 
         // This exception will be thrown if the implementation of
@@ -266,8 +268,9 @@ public abstract class Provider extends Properties {
         // no longer calls entrySet() on the backing Map.  (Provider's
         // entrySet implementation depends on this "implementation detail",
         // which is unlikely to change.
-        if (entrySetCallCount != 2)
+        if (entrySetCallCount != 2) {
             throw new RuntimeException("Internal error.");
+        }
 
         return entrySet;
     }

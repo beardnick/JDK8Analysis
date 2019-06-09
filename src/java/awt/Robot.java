@@ -139,7 +139,9 @@ public class Robot {
     }
 
     private static synchronized void initLegalButtonMask() {
-        if (LEGAL_BUTTON_MASK != 0) return;
+        if (LEGAL_BUTTON_MASK != 0) {
+            return;
+        }
 
         int tmpMask = 0;
         if (Toolkit.getDefaultToolkit().areExtraMouseButtonsEnabled()){

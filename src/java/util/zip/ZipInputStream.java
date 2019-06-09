@@ -100,8 +100,9 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
         if(in == null) {
             throw new NullPointerException("in is null");
         }
-        if (charset == null)
+        if (charset == null) {
             throw new NullPointerException("charset is null");
+        }
         this.zc = ZipCoder.get(charset);
     }
 
@@ -137,7 +138,9 @@ class ZipInputStream extends InflaterInputStream implements ZipConstants {
      */
     public void closeEntry() throws IOException {
         ensureOpen();
-        while (read(tmpbuf, 0, tmpbuf.length) != -1) ;
+        while (read(tmpbuf, 0, tmpbuf.length) != -1) {
+            ;
+        }
         entryEOF = true;
     }
 

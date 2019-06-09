@@ -168,7 +168,9 @@ public abstract class Reference<T> {
                 }
 
                 ReferenceQueue<Object> q = r.queue;
-                if (q != ReferenceQueue.NULL) q.enqueue(r);
+                if (q != ReferenceQueue.NULL) {
+                    q.enqueue(r);
+                }
             }
         }
     }
@@ -177,7 +179,9 @@ public abstract class Reference<T> {
         ThreadGroup tg = Thread.currentThread().getThreadGroup();
         for (ThreadGroup tgn = tg;
              tgn != null;
-             tg = tgn, tgn = tg.getParent());
+             tg = tgn, tgn = tg.getParent()) {
+            ;
+        }
         Thread handler = new ReferenceHandler(tg, "Reference Handler");
         /* If there were a special system-only priority greater than
          * MAX_PRIORITY, it would be used here

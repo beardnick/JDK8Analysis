@@ -65,8 +65,9 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
                 (AtomicReferenceArray.class.getDeclaredField("array"));
             base = unsafe.arrayBaseOffset(Object[].class);
             int scale = unsafe.arrayIndexScale(Object[].class);
-            if ((scale & (scale - 1)) != 0)
+            if ((scale & (scale - 1)) != 0) {
                 throw new Error("data type scale not a power of two");
+            }
             shift = 31 - Integer.numberOfLeadingZeros(scale);
         } catch (Exception e) {
             throw new Error(e);
@@ -74,8 +75,9 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
     }
 
     private long checkedByteOffset(int i) {
-        if (i < 0 || i >= array.length)
+        if (i < 0 || i >= array.length) {
             throw new IndexOutOfBoundsException("index " + i);
+        }
 
         return byteOffset(i);
     }
@@ -299,15 +301,17 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      */
     public String toString() {
         int iMax = array.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
+        }
 
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(getRaw(byteOffset(i)));
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(',').append(' ');
         }
     }
@@ -320,10 +324,12 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
         java.io.InvalidObjectException {
         // Note: This must be changed if any additional fields are defined
         Object a = s.readFields().get("array", null);
-        if (a == null || !a.getClass().isArray())
+        if (a == null || !a.getClass().isArray()) {
             throw new java.io.InvalidObjectException("Not array type");
-        if (a.getClass() != Object[].class)
+        }
+        if (a.getClass() != Object[].class) {
             a = Arrays.copyOf((Object[])a, Array.getLength(a), Object[].class);
+        }
         unsafe.putObjectVolatile(this, arrayFieldOffset, a);
     }
 

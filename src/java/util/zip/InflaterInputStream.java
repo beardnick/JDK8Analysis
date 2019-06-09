@@ -222,8 +222,9 @@ class InflaterInputStream extends FilterInputStream {
      */
     public void close() throws IOException {
         if (!closed) {
-            if (usesDefaultInflater)
+            if (usesDefaultInflater) {
                 inf.end();
+            }
             in.close();
             closed = true;
         }

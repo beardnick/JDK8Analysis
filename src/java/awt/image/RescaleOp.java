@@ -103,7 +103,9 @@ public class RescaleOp implements BufferedImageOp, RasterOp {
     public RescaleOp (float[] scaleFactors, float[] offsets,
                       RenderingHints hints) {
         length = scaleFactors.length;
-        if (length > offsets.length) length = offsets.length;
+        if (length > offsets.length) {
+            length = offsets.length;
+        }
 
         this.scaleFactors = new float[length];
         this.offsets      = new float[length];

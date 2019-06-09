@@ -1285,8 +1285,9 @@ public final class Math {
      * @return  the larger of {@code a} and {@code b}.
      */
     public static float max(float a, float b) {
-        if (a != a)
+        if (a != a) {
             return a;   // a is NaN
+        }
         if ((a == 0.0f) &&
             (b == 0.0f) &&
             (Float.floatToRawIntBits(a) == negativeZeroFloatBits)) {
@@ -1311,8 +1312,9 @@ public final class Math {
      * @return  the larger of {@code a} and {@code b}.
      */
     public static double max(double a, double b) {
-        if (a != a)
+        if (a != a) {
             return a;   // a is NaN
+        }
         if ((a == 0.0d) &&
             (b == 0.0d) &&
             (Double.doubleToRawLongBits(a) == negativeZeroDoubleBits)) {
@@ -1365,8 +1367,9 @@ public final class Math {
      * @return  the smaller of {@code a} and {@code b}.
      */
     public static float min(float a, float b) {
-        if (a != a)
+        if (a != a) {
             return a;   // a is NaN
+        }
         if ((a == 0.0f) &&
             (b == 0.0f) &&
             (Float.floatToRawIntBits(b) == negativeZeroFloatBits)) {
@@ -1391,8 +1394,9 @@ public final class Math {
      * @return  the smaller of {@code a} and {@code b}.
      */
     public static double min(double a, double b) {
-        if (a != a)
+        if (a != a) {
             return a;   // a is NaN
+        }
         if ((a == 0.0d) &&
             (b == 0.0d) &&
             (Double.doubleToRawLongBits(b) == negativeZeroDoubleBits)) {
@@ -1920,11 +1924,12 @@ public final class Math {
                 transducer = transducer + (transducer >= 0L ? 1L:-1L);
             } else  { // Calculate next lesser value
                 assert direction < start;
-                if (transducer > 0L)
+                if (transducer > 0L) {
                     --transducer;
-                else
-                    if (transducer < 0L )
+                } else
+                    if (transducer < 0L ) {
                         ++transducer;
+                    }
                     /*
                      * transducer==0, the result is -MIN_VALUE
                      *
@@ -1933,8 +1938,9 @@ public final class Math {
                      * signed magnitude value must be done
                      * explicitly.
                      */
-                    else
+                    else {
                         transducer = DoubleConsts.SIGN_BIT_MASK | 1L;
+                    }
             }
 
             return Double.longBitsToDouble(transducer);
@@ -2019,11 +2025,12 @@ public final class Math {
                 transducer = transducer + (transducer >= 0 ? 1:-1);
             } else  { // Calculate next lesser value
                 assert direction < start;
-                if (transducer > 0)
+                if (transducer > 0) {
                     --transducer;
-                else
-                    if (transducer < 0 )
+                } else
+                    if (transducer < 0 ) {
                         ++transducer;
+                    }
                     /*
                      * transducer==0, the result is -MIN_VALUE
                      *
@@ -2032,8 +2039,9 @@ public final class Math {
                      * signed magnitude value must be done
                      * explicitly.
                      */
-                    else
+                    else {
                         transducer = FloatConsts.SIGN_BIT_MASK | 1;
+                    }
             }
 
             return Float.intBitsToFloat(transducer);
@@ -2066,9 +2074,9 @@ public final class Math {
      * @since 1.6
      */
     public static double nextUp(double d) {
-        if( Double.isNaN(d) || d == Double.POSITIVE_INFINITY)
+        if( Double.isNaN(d) || d == Double.POSITIVE_INFINITY) {
             return d;
-        else {
+        } else {
             d += 0.0d;
             return Double.longBitsToDouble(Double.doubleToRawLongBits(d) +
                                            ((d >= 0.0d)?+1L:-1L));
@@ -2101,9 +2109,9 @@ public final class Math {
      * @since 1.6
      */
     public static float nextUp(float f) {
-        if( Float.isNaN(f) || f == FloatConsts.POSITIVE_INFINITY)
+        if( Float.isNaN(f) || f == FloatConsts.POSITIVE_INFINITY) {
             return f;
-        else {
+        } else {
             f += 0.0f;
             return Float.intBitsToFloat(Float.floatToRawIntBits(f) +
                                         ((f >= 0.0f)?+1:-1));
@@ -2136,14 +2144,15 @@ public final class Math {
      * @since 1.8
      */
     public static double nextDown(double d) {
-        if (Double.isNaN(d) || d == Double.NEGATIVE_INFINITY)
+        if (Double.isNaN(d) || d == Double.NEGATIVE_INFINITY) {
             return d;
-        else {
-            if (d == 0.0)
+        } else {
+            if (d == 0.0) {
                 return -Double.MIN_VALUE;
-            else
+            } else {
                 return Double.longBitsToDouble(Double.doubleToRawLongBits(d) +
                                                ((d > 0.0d)?-1L:+1L));
+            }
         }
     }
 
@@ -2173,14 +2182,15 @@ public final class Math {
      * @since 1.8
      */
     public static float nextDown(float f) {
-        if (Float.isNaN(f) || f == Float.NEGATIVE_INFINITY)
+        if (Float.isNaN(f) || f == Float.NEGATIVE_INFINITY) {
             return f;
-        else {
-            if (f == 0.0f)
+        } else {
+            if (f == 0.0f) {
                 return -Float.MIN_VALUE;
-            else
+            } else {
                 return Float.intBitsToFloat(Float.floatToRawIntBits(f) +
                                             ((f > 0.0f)?-1:+1));
+            }
         }
     }
 

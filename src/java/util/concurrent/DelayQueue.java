@@ -185,10 +185,11 @@ public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
         lock.lock();
         try {
             E first = q.peek();
-            if (first == null || first.getDelay(NANOSECONDS) > 0)
+            if (first == null || first.getDelay(NANOSECONDS) > 0) {
                 return null;
-            else
+            } else {
                 return q.poll();
+            }
         } finally {
             lock.unlock();
         }
@@ -207,30 +208,33 @@ public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
         try {
             for (;;) {
                 E first = q.peek();
-                if (first == null)
+                if (first == null) {
                     available.await();
-                else {
+                } else {
                     long delay = first.getDelay(NANOSECONDS);
-                    if (delay <= 0)
+                    if (delay <= 0) {
                         return q.poll();
+                    }
                     first = null; // don't retain ref while waiting
-                    if (leader != null)
+                    if (leader != null) {
                         available.await();
-                    else {
+                    } else {
                         Thread thisThread = Thread.currentThread();
                         leader = thisThread;
                         try {
                             available.awaitNanos(delay);
                         } finally {
-                            if (leader == thisThread)
+                            if (leader == thisThread) {
                                 leader = null;
+                            }
                         }
                     }
                 }
             }
         } finally {
-            if (leader == null && q.peek() != null)
+            if (leader == null && q.peek() != null) {
                 available.signal();
+            }
             lock.unlock();
         }
     }
@@ -253,35 +257,40 @@ public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
             for (;;) {
                 E first = q.peek();
                 if (first == null) {
-                    if (nanos <= 0)
+                    if (nanos <= 0) {
                         return null;
-                    else
+                    } else {
                         nanos = available.awaitNanos(nanos);
+                    }
                 } else {
                     long delay = first.getDelay(NANOSECONDS);
-                    if (delay <= 0)
+                    if (delay <= 0) {
                         return q.poll();
-                    if (nanos <= 0)
+                    }
+                    if (nanos <= 0) {
                         return null;
+                    }
                     first = null; // don't retain ref while waiting
-                    if (nanos < delay || leader != null)
+                    if (nanos < delay || leader != null) {
                         nanos = available.awaitNanos(nanos);
-                    else {
+                    } else {
                         Thread thisThread = Thread.currentThread();
                         leader = thisThread;
                         try {
                             long timeLeft = available.awaitNanos(delay);
                             nanos -= delay - timeLeft;
                         } finally {
-                            if (leader == thisThread)
+                            if (leader == thisThread) {
                                 leader = null;
+                            }
                         }
                     }
                 }
             }
         } finally {
-            if (leader == null && q.peek() != null)
+            if (leader == null && q.peek() != null) {
                 available.signal();
+            }
             lock.unlock();
         }
     }
@@ -334,10 +343,12 @@ public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     public int drainTo(Collection<? super E> c) {
-        if (c == null)
+        if (c == null) {
             throw new NullPointerException();
-        if (c == this)
+        }
+        if (c == this) {
             throw new IllegalArgumentException();
+        }
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -360,12 +371,15 @@ public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     public int drainTo(Collection<? super E> c, int maxElements) {
-        if (c == null)
+        if (c == null) {
             throw new NullPointerException();
-        if (c == this)
+        }
+        if (c == this) {
             throw new IllegalArgumentException();
-        if (maxElements <= 0)
+        }
+        if (maxElements <= 0) {
             return 0;
+        }
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -540,15 +554,17 @@ public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
 
         @SuppressWarnings("unchecked")
         public E next() {
-            if (cursor >= array.length)
+            if (cursor >= array.length) {
                 throw new NoSuchElementException();
+            }
             lastRet = cursor;
             return (E)array[cursor++];
         }
 
         public void remove() {
-            if (lastRet < 0)
+            if (lastRet < 0) {
                 throw new IllegalStateException();
+            }
             removeEQ(array[lastRet]);
             lastRet = -1;
         }

@@ -94,8 +94,12 @@ public class ECPoint {
      * ECPoint and the affine coordinates match, false otherwise.
      */
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (this == POINT_INFINITY) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (this == POINT_INFINITY) {
+            return false;
+        }
         if (obj instanceof ECPoint) {
             return ((x.equals(((ECPoint)obj).x)) &&
                     (y.equals(((ECPoint)obj).y)));
@@ -108,7 +112,9 @@ public class ECPoint {
      * @return a hash code value.
      */
     public int hashCode() {
-        if (this == POINT_INFINITY) return 0;
+        if (this == POINT_INFINITY) {
+            return 0;
+        }
         return x.hashCode() << 5 + y.hashCode();
     }
 }

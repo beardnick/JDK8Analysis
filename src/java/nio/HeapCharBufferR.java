@@ -576,8 +576,9 @@ class HeapCharBufferR
     public CharBuffer subSequence(int start, int end) {
         if ((start < 0)
             || (end > length())
-            || (start > end))
+            || (start > end)) {
             throw new IndexOutOfBoundsException();
+        }
         int pos = position();
         return new HeapCharBufferR(hb,
                                       -1,

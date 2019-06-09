@@ -224,8 +224,9 @@ public final class ActivationDesc implements Serializable {
                           MarshalledObject<?> data,
                           boolean restart)
     {
-        if (groupID == null)
+        if (groupID == null) {
             throw new IllegalArgumentException("groupID can't be null");
+        }
         this.groupID = groupID;
         this.className = className;
         this.location = location;

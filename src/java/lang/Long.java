@@ -118,10 +118,12 @@ public final class Long extends Number implements Comparable<Long> {
      * @see     java.lang.Character#MIN_RADIX
      */
     public static String toString(long i, int radix) {
-        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
+        if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
             radix = 10;
-        if (radix == 10)
+        }
+        if (radix == 10) {
             return toString(i);
+        }
         char[] buf = new char[65];
         int charPos = 64;
         boolean negative = (i < 0);
@@ -170,9 +172,9 @@ public final class Long extends Number implements Comparable<Long> {
      * @since 1.8
      */
     public static String toUnsignedString(long i, int radix) {
-        if (i >= 0)
+        if (i >= 0) {
             return toString(i, radix);
-        else {
+        } else {
             switch (radix) {
             case 2:
                 return toBinaryString(i);
@@ -213,9 +215,9 @@ public final class Long extends Number implements Comparable<Long> {
      * argument.
      */
     private static BigInteger toUnsignedBigInteger(long i) {
-        if (i >= 0L)
+        if (i >= 0L) {
             return BigInteger.valueOf(i);
-        else {
+        } else {
             int upper = (int) (i >>> 32);
             int lower = (int) i;
 
@@ -391,8 +393,9 @@ public final class Long extends Number implements Comparable<Long> {
      * @return  a string representation of the argument in base&nbsp;10.
      */
     public static String toString(long i) {
-        if (i == Long.MIN_VALUE)
+        if (i == Long.MIN_VALUE) {
             return "-9223372036854775808";
+        }
         int size = (i < 0) ? stringSize(-i) + 1 : stringSize(i);
         char[] buf = new char[size];
         getChars(i, size, buf);
@@ -466,7 +469,9 @@ public final class Long extends Number implements Comparable<Long> {
             r = i2 - ((q2 << 3) + (q2 << 1));  // r = i2-(q2*10) ...
             buf[--charPos] = Integer.digits[r];
             i2 = q2;
-            if (i2 == 0) break;
+            if (i2 == 0) {
+                break;
+            }
         }
         if (sign != 0) {
             buf[--charPos] = sign;
@@ -477,8 +482,9 @@ public final class Long extends Number implements Comparable<Long> {
     static int stringSize(long x) {
         long p = 10;
         for (int i=1; i<19; i++) {
-            if (x < p)
+            if (x < p) {
                 return i;
+            }
             p = 10*p;
         }
         return 19;
@@ -574,11 +580,14 @@ public final class Long extends Number implements Comparable<Long> {
                 if (firstChar == '-') {
                     negative = true;
                     limit = Long.MIN_VALUE;
-                } else if (firstChar != '+')
+                } else if (firstChar != '+') {
                     throw NumberFormatException.forInputString(s);
+                }
 
                 if (len == 1) // Cannot have lone "+" or "-"
+                {
                     throw NumberFormatException.forInputString(s);
+                }
                 i++;
             }
             multmin = limit / radix;
@@ -809,8 +818,9 @@ public final class Long extends Number implements Comparable<Long> {
         static final Long cache[] = new Long[-(-128) + 127 + 1];
 
         static {
-            for(int i = 0; i < cache.length; i++)
+            for(int i = 0; i < cache.length; i++) {
                 cache[i] = new Long(i - 128);
+            }
         }
     }
 
@@ -889,15 +899,17 @@ public final class Long extends Number implements Comparable<Long> {
         boolean negative = false;
         Long result;
 
-        if (nm.length() == 0)
+        if (nm.length() == 0) {
             throw new NumberFormatException("Zero length string");
+        }
         char firstChar = nm.charAt(0);
         // Handle sign, if present
         if (firstChar == '-') {
             negative = true;
             index++;
-        } else if (firstChar == '+')
+        } else if (firstChar == '+') {
             index++;
+        }
 
         // Handle radix specifier, if present
         if (nm.startsWith("0x", index) || nm.startsWith("0X", index)) {
@@ -913,8 +925,9 @@ public final class Long extends Number implements Comparable<Long> {
             radix = 8;
         }
 
-        if (nm.startsWith("-", index) || nm.startsWith("+", index))
+        if (nm.startsWith("-", index) || nm.startsWith("+", index)) {
             throw new NumberFormatException("Sign character in wrong position");
+        }
 
         try {
             result = Long.valueOf(nm.substring(index), radix);
@@ -1295,8 +1308,9 @@ public final class Long extends Number implements Comparable<Long> {
         }
 
         if (dividend > 0) //  Both inputs non-negative
+        {
             return dividend/divisor;
-        else {
+        } else {
             /*
              * For simple code, leveraging BigInteger.  Longer and faster
              * code written directly in terms of operations on longs is
@@ -1325,10 +1339,12 @@ public final class Long extends Number implements Comparable<Long> {
             return dividend % divisor;
         } else {
             if (compareUnsigned(dividend, divisor) < 0) // Avoid explicit check for 0 divisor
+            {
                 return dividend;
-            else
+            } else {
                 return toUnsignedBigInteger(dividend).
                     remainder(toUnsignedBigInteger(divisor)).longValue();
+            }
         }
     }
 
@@ -1415,8 +1431,9 @@ public final class Long extends Number implements Comparable<Long> {
      */
     public static int numberOfLeadingZeros(long i) {
         // HD, Figure 5-6
-         if (i == 0)
-            return 64;
+         if (i == 0) {
+             return 64;
+         }
         int n = 1;
         int x = (int)(i >>> 32);
         if (x == 0) { n += 32; x = (int)i; }
@@ -1445,9 +1462,13 @@ public final class Long extends Number implements Comparable<Long> {
     public static int numberOfTrailingZeros(long i) {
         // HD, Figure 5-14
         int x, y;
-        if (i == 0) return 64;
+        if (i == 0) {
+            return 64;
+        }
         int n = 63;
-        y = (int)i; if (y != 0) { n = n -32; x = y; } else x = (int)(i>>>32);
+        y = (int)i; if (y != 0) { n = n -32; x = y; } else {
+            x = (int)(i>>>32);
+        }
         y = x <<16; if (y != 0) { n = n -16; x = y; }
         y = x << 8; if (y != 0) { n = n - 8; x = y; }
         y = x << 4; if (y != 0) { n = n - 4; x = y; }

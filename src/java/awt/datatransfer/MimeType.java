@@ -266,8 +266,9 @@ MimeTypeParameterList(rawdata.substring(semIndex));
      *    <code>false</code>
      */
     public boolean match(MimeType type) {
-        if (type == null)
+        if (type == null) {
             return false;
+        }
         return primaryType.equals(type.getPrimaryType())
                     && (subType.equals("*")
                             || type.getSubType().equals("*")
@@ -288,8 +289,9 @@ MimeTypeParameterList(rawdata.substring(semIndex));
      *    <code>null</code>, returns <code>false</code>
      */
     public boolean match(String rawdata) throws MimeTypeParseException {
-        if (rawdata == null)
+        if (rawdata == null) {
             return false;
+        }
         return match(new MimeType(rawdata));
     }
 

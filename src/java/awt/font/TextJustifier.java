@@ -89,8 +89,9 @@ class TextJustifier {
 
         boolean grow = delta > 0;
 
-        if (DEBUG)
+        if (DEBUG) {
             System.out.println("delta: " + delta);
+        }
 
         // make separate passes through glyphs in order of decreasing priority
         // until justifyDelta is zero or we run out of priorities.
@@ -101,8 +102,9 @@ class TextJustifier {
              * highest priority
              */
             boolean lastPass = p > MAX_PRIORITY;
-            if (lastPass)
+            if (lastPass) {
                 p = fallbackPriority;
+            }
 
             // pass through glyphs, first collecting weights and limits
             float weight = 0;

@@ -304,8 +304,9 @@ final class MatchOps {
         @Override
         protected Boolean doLeaf() {
             boolean b = helper.wrapAndCopyInto(op.sinkSupplier.get(), spliterator).getAndClearState();
-            if (b == op.matchKind.shortCircuitResult)
+            if (b == op.matchKind.shortCircuitResult) {
                 shortCircuit(b);
+            }
             return null;
         }
 

@@ -384,7 +384,9 @@ public class Manifest implements Cloneable {
                 }
                 int tpos = pos;
                 int maxpos = tpos + n;
-                while (tpos < maxpos && tbuf[tpos++] != '\n') ;
+                while (tpos < maxpos && tbuf[tpos++] != '\n') {
+                    ;
+                }
                 n = tpos - pos;
                 System.arraycopy(tbuf, pos, b, off, n);
                 off += n;
@@ -398,10 +400,12 @@ public class Manifest implements Cloneable {
         }
 
         public byte peek() throws IOException {
-            if (pos == count)
+            if (pos == count) {
                 fill();
-            if (pos == count)
+            }
+            if (pos == count) {
                 return -1; // nothing left in buffer
+            }
             return buf[pos];
         }
 

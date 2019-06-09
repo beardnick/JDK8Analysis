@@ -320,8 +320,9 @@ public class SQLException extends java.lang.Exception
            Throwable cause = firstException.getCause();
 
            public boolean hasNext() {
-               if(firstException != null || nextException != null || cause != null)
+               if(firstException != null || nextException != null || cause != null) {
                    return true;
+               }
                return false;
            }
 
@@ -340,8 +341,9 @@ public class SQLException extends java.lang.Exception
                    cause = nextException.getCause();
                    nextException = nextException.getNextException();
                }
-               else
+               else {
                    throw new NoSuchElementException();
+               }
                return throwable;
            }
 

@@ -132,8 +132,9 @@ class ArrayPrefixHelpers {
         public final void compute() {
             final BinaryOperator<T> fn;
             final T[] a;
-            if ((fn = this.function) == null || (a = this.array) == null)
+            if ((fn = this.function) == null || (a = this.array) == null) {
                 throw new NullPointerException();    // hoist checks
+            }
             int th = threshold, org = origin, fnc = fence, l, h;
             CumulateTask<T> t = this;
             outer: while ((l = t.lo) >= 0 && (h = t.hi) <= a.length) {
@@ -155,8 +156,9 @@ class ArrayPrefixHelpers {
                             rt.in = (l == org ? lout :
                                      fn.apply(pin, lout));
                             for (int c;;) {
-                                if (((c = rt.getPendingCount()) & CUMULATE) != 0)
+                                if (((c = rt.getPendingCount()) & CUMULATE) != 0) {
                                     break;
+                                }
                                 if (rt.compareAndSetPendingCount(c, c|CUMULATE)){
                                     t = rt;
                                     break;
@@ -164,30 +166,36 @@ class ArrayPrefixHelpers {
                             }
                         }
                         for (int c;;) {
-                            if (((c = lt.getPendingCount()) & CUMULATE) != 0)
+                            if (((c = lt.getPendingCount()) & CUMULATE) != 0) {
                                 break;
+                            }
                             if (lt.compareAndSetPendingCount(c, c|CUMULATE)) {
-                                if (t != null)
+                                if (t != null) {
                                     f = t;
+                                }
                                 t = lt;
                                 break;
                             }
                         }
-                        if (t == null)
+                        if (t == null) {
                             break;
+                        }
                     }
-                    if (f != null)
+                    if (f != null) {
                         f.fork();
+                    }
                 }
                 else {
                     int state; // Transition to sum, cumulate, or both
                     for (int b;;) {
-                        if (((b = t.getPendingCount()) & FINISHED) != 0)
+                        if (((b = t.getPendingCount()) & FINISHED) != 0) {
                             break outer;                      // already done
+                        }
                         state = ((b & CUMULATE) != 0? FINISHED :
                                  (l > org) ? SUMMED : (SUMMED|FINISHED));
-                        if (t.compareAndSetPendingCount(b, b|state))
+                        if (t.compareAndSetPendingCount(b, b|state)) {
                             break;
+                        }
                     }
 
                     T sum;
@@ -202,26 +210,33 @@ class ArrayPrefixHelpers {
                             first = l;
                         }
                         for (int i = first; i < h; ++i)       // cumulate
+                        {
                             a[i] = sum = fn.apply(sum, a[i]);
+                        }
                     }
                     else if (h < fnc) {                       // skip rightmost
                         sum = a[l];
                         for (int i = l + 1; i < h; ++i)       // sum only
+                        {
                             sum = fn.apply(sum, a[i]);
+                        }
                     }
-                    else
+                    else {
                         sum = t.in;
+                    }
                     t.out = sum;
                     for (CumulateTask<T> par;;) {             // propagate
                         if ((par = (CumulateTask<T>)t.getCompleter()) == null) {
                             if ((state & FINISHED) != 0)      // enable join
+                            {
                                 t.quietlyComplete();
+                            }
                             break outer;
                         }
                         int b = par.getPendingCount();
-                        if ((b & state & FINISHED) != 0)
+                        if ((b & state & FINISHED) != 0) {
                             t = par;                          // both done
-                        else if ((b & state & SUMMED) != 0) { // both summed
+                        } else if ((b & state & SUMMED) != 0) { // both summed
                             int nextState; CumulateTask<T> lt, rt;
                             if ((lt = par.left) != null &&
                                 (rt = par.right) != null) {
@@ -235,12 +250,14 @@ class ArrayPrefixHelpers {
                                 par.compareAndSetPendingCount(b, nextState)) {
                                 state = SUMMED;               // drop finished
                                 t = par;
-                                if (refork != 0)
+                                if (refork != 0) {
                                     par.fork();
+                                }
                             }
                         }
-                        else if (par.compareAndSetPendingCount(b, b|state))
+                        else if (par.compareAndSetPendingCount(b, b|state)) {
                             break outer;                      // sib not ready
+                        }
                     }
                 }
             }
@@ -281,8 +298,9 @@ class ArrayPrefixHelpers {
         public final void compute() {
             final LongBinaryOperator fn;
             final long[] a;
-            if ((fn = this.function) == null || (a = this.array) == null)
+            if ((fn = this.function) == null || (a = this.array) == null) {
                 throw new NullPointerException();    // hoist checks
+            }
             int th = threshold, org = origin, fnc = fence, l, h;
             LongCumulateTask t = this;
             outer: while ((l = t.lo) >= 0 && (h = t.hi) <= a.length) {
@@ -304,8 +322,9 @@ class ArrayPrefixHelpers {
                             rt.in = (l == org ? lout :
                                      fn.applyAsLong(pin, lout));
                             for (int c;;) {
-                                if (((c = rt.getPendingCount()) & CUMULATE) != 0)
+                                if (((c = rt.getPendingCount()) & CUMULATE) != 0) {
                                     break;
+                                }
                                 if (rt.compareAndSetPendingCount(c, c|CUMULATE)){
                                     t = rt;
                                     break;
@@ -313,30 +332,36 @@ class ArrayPrefixHelpers {
                             }
                         }
                         for (int c;;) {
-                            if (((c = lt.getPendingCount()) & CUMULATE) != 0)
+                            if (((c = lt.getPendingCount()) & CUMULATE) != 0) {
                                 break;
+                            }
                             if (lt.compareAndSetPendingCount(c, c|CUMULATE)) {
-                                if (t != null)
+                                if (t != null) {
                                     f = t;
+                                }
                                 t = lt;
                                 break;
                             }
                         }
-                        if (t == null)
+                        if (t == null) {
                             break;
+                        }
                     }
-                    if (f != null)
+                    if (f != null) {
                         f.fork();
+                    }
                 }
                 else {
                     int state; // Transition to sum, cumulate, or both
                     for (int b;;) {
-                        if (((b = t.getPendingCount()) & FINISHED) != 0)
+                        if (((b = t.getPendingCount()) & FINISHED) != 0) {
                             break outer;                      // already done
+                        }
                         state = ((b & CUMULATE) != 0? FINISHED :
                                  (l > org) ? SUMMED : (SUMMED|FINISHED));
-                        if (t.compareAndSetPendingCount(b, b|state))
+                        if (t.compareAndSetPendingCount(b, b|state)) {
                             break;
+                        }
                     }
 
                     long sum;
@@ -351,26 +376,33 @@ class ArrayPrefixHelpers {
                             first = l;
                         }
                         for (int i = first; i < h; ++i)       // cumulate
+                        {
                             a[i] = sum = fn.applyAsLong(sum, a[i]);
+                        }
                     }
                     else if (h < fnc) {                       // skip rightmost
                         sum = a[l];
                         for (int i = l + 1; i < h; ++i)       // sum only
+                        {
                             sum = fn.applyAsLong(sum, a[i]);
+                        }
                     }
-                    else
+                    else {
                         sum = t.in;
+                    }
                     t.out = sum;
                     for (LongCumulateTask par;;) {            // propagate
                         if ((par = (LongCumulateTask)t.getCompleter()) == null) {
                             if ((state & FINISHED) != 0)      // enable join
+                            {
                                 t.quietlyComplete();
+                            }
                             break outer;
                         }
                         int b = par.getPendingCount();
-                        if ((b & state & FINISHED) != 0)
+                        if ((b & state & FINISHED) != 0) {
                             t = par;                          // both done
-                        else if ((b & state & SUMMED) != 0) { // both summed
+                        } else if ((b & state & SUMMED) != 0) { // both summed
                             int nextState; LongCumulateTask lt, rt;
                             if ((lt = par.left) != null &&
                                 (rt = par.right) != null) {
@@ -384,12 +416,14 @@ class ArrayPrefixHelpers {
                                 par.compareAndSetPendingCount(b, nextState)) {
                                 state = SUMMED;               // drop finished
                                 t = par;
-                                if (refork != 0)
+                                if (refork != 0) {
                                     par.fork();
+                                }
                             }
                         }
-                        else if (par.compareAndSetPendingCount(b, b|state))
+                        else if (par.compareAndSetPendingCount(b, b|state)) {
                             break outer;                      // sib not ready
+                        }
                     }
                 }
             }
@@ -430,8 +464,9 @@ class ArrayPrefixHelpers {
         public final void compute() {
             final DoubleBinaryOperator fn;
             final double[] a;
-            if ((fn = this.function) == null || (a = this.array) == null)
+            if ((fn = this.function) == null || (a = this.array) == null) {
                 throw new NullPointerException();    // hoist checks
+            }
             int th = threshold, org = origin, fnc = fence, l, h;
             DoubleCumulateTask t = this;
             outer: while ((l = t.lo) >= 0 && (h = t.hi) <= a.length) {
@@ -453,8 +488,9 @@ class ArrayPrefixHelpers {
                             rt.in = (l == org ? lout :
                                      fn.applyAsDouble(pin, lout));
                             for (int c;;) {
-                                if (((c = rt.getPendingCount()) & CUMULATE) != 0)
+                                if (((c = rt.getPendingCount()) & CUMULATE) != 0) {
                                     break;
+                                }
                                 if (rt.compareAndSetPendingCount(c, c|CUMULATE)){
                                     t = rt;
                                     break;
@@ -462,30 +498,36 @@ class ArrayPrefixHelpers {
                             }
                         }
                         for (int c;;) {
-                            if (((c = lt.getPendingCount()) & CUMULATE) != 0)
+                            if (((c = lt.getPendingCount()) & CUMULATE) != 0) {
                                 break;
+                            }
                             if (lt.compareAndSetPendingCount(c, c|CUMULATE)) {
-                                if (t != null)
+                                if (t != null) {
                                     f = t;
+                                }
                                 t = lt;
                                 break;
                             }
                         }
-                        if (t == null)
+                        if (t == null) {
                             break;
+                        }
                     }
-                    if (f != null)
+                    if (f != null) {
                         f.fork();
+                    }
                 }
                 else {
                     int state; // Transition to sum, cumulate, or both
                     for (int b;;) {
-                        if (((b = t.getPendingCount()) & FINISHED) != 0)
+                        if (((b = t.getPendingCount()) & FINISHED) != 0) {
                             break outer;                      // already done
+                        }
                         state = ((b & CUMULATE) != 0? FINISHED :
                                  (l > org) ? SUMMED : (SUMMED|FINISHED));
-                        if (t.compareAndSetPendingCount(b, b|state))
+                        if (t.compareAndSetPendingCount(b, b|state)) {
                             break;
+                        }
                     }
 
                     double sum;
@@ -500,26 +542,33 @@ class ArrayPrefixHelpers {
                             first = l;
                         }
                         for (int i = first; i < h; ++i)       // cumulate
+                        {
                             a[i] = sum = fn.applyAsDouble(sum, a[i]);
+                        }
                     }
                     else if (h < fnc) {                       // skip rightmost
                         sum = a[l];
                         for (int i = l + 1; i < h; ++i)       // sum only
+                        {
                             sum = fn.applyAsDouble(sum, a[i]);
+                        }
                     }
-                    else
+                    else {
                         sum = t.in;
+                    }
                     t.out = sum;
                     for (DoubleCumulateTask par;;) {            // propagate
                         if ((par = (DoubleCumulateTask)t.getCompleter()) == null) {
                             if ((state & FINISHED) != 0)      // enable join
+                            {
                                 t.quietlyComplete();
+                            }
                             break outer;
                         }
                         int b = par.getPendingCount();
-                        if ((b & state & FINISHED) != 0)
+                        if ((b & state & FINISHED) != 0) {
                             t = par;                          // both done
-                        else if ((b & state & SUMMED) != 0) { // both summed
+                        } else if ((b & state & SUMMED) != 0) { // both summed
                             int nextState; DoubleCumulateTask lt, rt;
                             if ((lt = par.left) != null &&
                                 (rt = par.right) != null) {
@@ -533,12 +582,14 @@ class ArrayPrefixHelpers {
                                 par.compareAndSetPendingCount(b, nextState)) {
                                 state = SUMMED;               // drop finished
                                 t = par;
-                                if (refork != 0)
+                                if (refork != 0) {
                                     par.fork();
+                                }
                             }
                         }
-                        else if (par.compareAndSetPendingCount(b, b|state))
+                        else if (par.compareAndSetPendingCount(b, b|state)) {
                             break outer;                      // sib not ready
+                        }
                     }
                 }
             }
@@ -579,8 +630,9 @@ class ArrayPrefixHelpers {
         public final void compute() {
             final IntBinaryOperator fn;
             final int[] a;
-            if ((fn = this.function) == null || (a = this.array) == null)
+            if ((fn = this.function) == null || (a = this.array) == null) {
                 throw new NullPointerException();    // hoist checks
+            }
             int th = threshold, org = origin, fnc = fence, l, h;
             IntCumulateTask t = this;
             outer: while ((l = t.lo) >= 0 && (h = t.hi) <= a.length) {
@@ -602,8 +654,9 @@ class ArrayPrefixHelpers {
                             rt.in = (l == org ? lout :
                                      fn.applyAsInt(pin, lout));
                             for (int c;;) {
-                                if (((c = rt.getPendingCount()) & CUMULATE) != 0)
+                                if (((c = rt.getPendingCount()) & CUMULATE) != 0) {
                                     break;
+                                }
                                 if (rt.compareAndSetPendingCount(c, c|CUMULATE)){
                                     t = rt;
                                     break;
@@ -611,30 +664,36 @@ class ArrayPrefixHelpers {
                             }
                         }
                         for (int c;;) {
-                            if (((c = lt.getPendingCount()) & CUMULATE) != 0)
+                            if (((c = lt.getPendingCount()) & CUMULATE) != 0) {
                                 break;
+                            }
                             if (lt.compareAndSetPendingCount(c, c|CUMULATE)) {
-                                if (t != null)
+                                if (t != null) {
                                     f = t;
+                                }
                                 t = lt;
                                 break;
                             }
                         }
-                        if (t == null)
+                        if (t == null) {
                             break;
+                        }
                     }
-                    if (f != null)
+                    if (f != null) {
                         f.fork();
+                    }
                 }
                 else {
                     int state; // Transition to sum, cumulate, or both
                     for (int b;;) {
-                        if (((b = t.getPendingCount()) & FINISHED) != 0)
+                        if (((b = t.getPendingCount()) & FINISHED) != 0) {
                             break outer;                      // already done
+                        }
                         state = ((b & CUMULATE) != 0? FINISHED :
                                  (l > org) ? SUMMED : (SUMMED|FINISHED));
-                        if (t.compareAndSetPendingCount(b, b|state))
+                        if (t.compareAndSetPendingCount(b, b|state)) {
                             break;
+                        }
                     }
 
                     int sum;
@@ -649,26 +708,33 @@ class ArrayPrefixHelpers {
                             first = l;
                         }
                         for (int i = first; i < h; ++i)       // cumulate
+                        {
                             a[i] = sum = fn.applyAsInt(sum, a[i]);
+                        }
                     }
                     else if (h < fnc) {                       // skip rightmost
                         sum = a[l];
                         for (int i = l + 1; i < h; ++i)       // sum only
+                        {
                             sum = fn.applyAsInt(sum, a[i]);
+                        }
                     }
-                    else
+                    else {
                         sum = t.in;
+                    }
                     t.out = sum;
                     for (IntCumulateTask par;;) {            // propagate
                         if ((par = (IntCumulateTask)t.getCompleter()) == null) {
                             if ((state & FINISHED) != 0)      // enable join
+                            {
                                 t.quietlyComplete();
+                            }
                             break outer;
                         }
                         int b = par.getPendingCount();
-                        if ((b & state & FINISHED) != 0)
+                        if ((b & state & FINISHED) != 0) {
                             t = par;                          // both done
-                        else if ((b & state & SUMMED) != 0) { // both summed
+                        } else if ((b & state & SUMMED) != 0) { // both summed
                             int nextState; IntCumulateTask lt, rt;
                             if ((lt = par.left) != null &&
                                 (rt = par.right) != null) {
@@ -682,12 +748,14 @@ class ArrayPrefixHelpers {
                                 par.compareAndSetPendingCount(b, nextState)) {
                                 state = SUMMED;               // drop finished
                                 t = par;
-                                if (refork != 0)
+                                if (refork != 0) {
                                     par.fork();
+                                }
                             }
                         }
-                        else if (par.compareAndSetPendingCount(b, b|state))
+                        else if (par.compareAndSetPendingCount(b, b|state)) {
                             break outer;                      // sib not ready
+                        }
                     }
                 }
             }

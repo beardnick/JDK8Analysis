@@ -118,8 +118,9 @@ class InvokerBytecodeGenerator {
         localTypes[localTypes.length - 1] = V_TYPE;
         for (int i = 0; i < localsMap.length; i++) {
             localsMap[i] = invokerType.parameterSlotCount() - invokerType.parameterSlotDepth(i);
-            if (i < invokerType.parameterCount())
+            if (i < invokerType.parameterCount()) {
                 localTypes[i] = basicType(invokerType.parameterType(i));
+            }
         }
     }
 
@@ -192,12 +193,15 @@ class InvokerBytecodeGenerator {
         Integer ctr;
         synchronized (DUMP_CLASS_FILES_COUNTERS) {
             ctr = DUMP_CLASS_FILES_COUNTERS.get(className);
-            if (ctr == null)  ctr = 0;
+            if (ctr == null) {
+                ctr = 0;
+            }
             DUMP_CLASS_FILES_COUNTERS.put(className, ctr+1);
         }
         String sfx = ctr.toString();
-        while (sfx.length() < 3)
+        while (sfx.length() < 3) {
             sfx = "0"+sfx;
+        }
         className += sfx;
         return className;
     }
@@ -222,7 +226,9 @@ class InvokerBytecodeGenerator {
 
     String constantPlaceholder(Object arg) {
         String cpPlaceholder = "CONSTANT_PLACEHOLDER_" + cph++;
-        if (DUMP_CLASS_FILES) cpPlaceholder += " <<" + debugString(arg) + ">>";  // debugging aid
+        if (DUMP_CLASS_FILES) {
+            cpPlaceholder += " <<" + debugString(arg) + ">>";  // debugging aid
+        }
         if (cpPatches.containsKey(cpPlaceholder)) {
             throw new InternalError("observed CP placeholder twice: " + cpPlaceholder);
         }
@@ -236,8 +242,9 @@ class InvokerBytecodeGenerator {
         int size = getConstantPoolSize(classFile);
         Object[] res = new Object[size];
         for (CpPatch p : cpPatches.values()) {
-            if (p.index >= size)
+            if (p.index >= size) {
                 throw new InternalError("in cpool["+size+"]: "+p+"\n"+Arrays.toString(Arrays.copyOf(classFile, 20)));
+            }
             res[p.index] = p.value;
         }
         return res;
@@ -247,8 +254,9 @@ class InvokerBytecodeGenerator {
         if (arg instanceof MethodHandle) {
             MethodHandle mh = (MethodHandle) arg;
             MemberName member = mh.internalMemberName();
-            if (member != null)
+            if (member != null) {
                 return member.toString();
+            }
             return mh.debugString();
         }
         return arg.toString();
@@ -465,7 +473,9 @@ class InvokerBytecodeGenerator {
 
     private void freeFrameLocal(int oldFrameLocal) {
         int i = indexForFrameLocal(oldFrameLocal);
-        if (i < 0)  return;
+        if (i < 0) {
+            return;
+        }
         BasicType type = localTypes[i];
         int newFrameLocal = makeLocalTemp(type);
         mv.visitVarInsn(loadInsnOpcode(type), oldFrameLocal);
@@ -476,8 +486,9 @@ class InvokerBytecodeGenerator {
     }
     private int indexForFrameLocal(int frameLocal) {
         for (int i = 0; i < localsMap.length; i++) {
-            if (localsMap[i] == frameLocal && localTypes[i] != V_TYPE)
+            if (localsMap[i] == frameLocal && localTypes[i] != V_TYPE) {
                 return i;
+            }
         }
         return -1;
     }
@@ -522,20 +533,23 @@ class InvokerBytecodeGenerator {
      */
     private void emitImplicitConversion(BasicType ptype, Class<?> pclass, Object arg) {
         assert(basicType(pclass) == ptype);  // boxing/unboxing handled by caller
-        if (pclass == ptype.basicTypeClass() && ptype != L_TYPE)
+        if (pclass == ptype.basicTypeClass() && ptype != L_TYPE) {
             return;   // nothing to do
+        }
         switch (ptype) {
             case L_TYPE:
                 if (VerifyType.isNullConversion(Object.class, pclass, false)) {
-                    if (PROFILE_LEVEL > 0)
+                    if (PROFILE_LEVEL > 0) {
                         emitReferenceCast(Object.class, arg);
+                    }
                     return;
                 }
                 emitReferenceCast(pclass, arg);
                 return;
             case I_TYPE:
-                if (!VerifyType.isNullConversion(int.class, pclass, false))
+                if (!VerifyType.isNullConversion(int.class, pclass, false)) {
                     emitPrimCast(ptype.basicTypeWrapper(), Wrapper.forPrimitiveType(pclass));
+                }
                 return;
         }
         throw newInternalError("bad implicit conversion: tc="+ptype+": "+pclass);
@@ -557,8 +571,9 @@ class InvokerBytecodeGenerator {
         Name writeBack = null;  // local to write back result
         if (arg instanceof Name) {
             Name n = (Name) arg;
-            if (assertStaticType(cls, n))
+            if (assertStaticType(cls, n)) {
                 return;  // this cast was already performed
+            }
             if (lambdaForm.useCount(n) > 1) {
                 // This guy gets used more than once.
                 writeBack = n;
@@ -572,10 +587,11 @@ class InvokerBytecodeGenerator {
             mv.visitTypeInsn(Opcodes.CHECKCAST, CLS);
             mv.visitInsn(Opcodes.SWAP);
             mv.visitMethodInsn(Opcodes.INVOKESTATIC, MHI, "castReference", CLL_SIG, false);
-            if (Object[].class.isAssignableFrom(cls))
+            if (Object[].class.isAssignableFrom(cls)) {
                 mv.visitTypeInsn(Opcodes.CHECKCAST, OBJARY);
-            else if (PROFILE_LEVEL > 0)
+            } else if (PROFILE_LEVEL > 0) {
                 mv.visitTypeInsn(Opcodes.CHECKCAST, OBJ);
+            }
         }
         if (writeBack != null) {
             mv.visitInsn(Opcodes.DUP);
@@ -602,10 +618,15 @@ class InvokerBytecodeGenerator {
     }
 
     private static String getInternalName(Class<?> c) {
-        if (c == Object.class)             return OBJ;
-        else if (c == Object[].class)      return OBJARY;
-        else if (c == Class.class)         return CLS;
-        else if (c == MethodHandle.class)  return MH;
+        if (c == Object.class) {
+            return OBJ;
+        } else if (c == Object[].class) {
+            return OBJARY;
+        } else if (c == Class.class) {
+            return CLS;
+        } else if (c == MethodHandle.class) {
+            return MH;
+        }
         assert(VerifyAccess.isTypeVisible(c, Object.class)) : c.getName();
         return c.getName().replace('.', '/');
     }
@@ -785,49 +806,72 @@ class InvokerBytecodeGenerator {
     }
 
     static boolean isStaticallyInvocable(MemberName member) {
-        if (member == null)  return false;
-        if (member.isConstructor())  return false;
+        if (member == null) {
+            return false;
+        }
+        if (member.isConstructor()) {
+            return false;
+        }
         Class<?> cls = member.getDeclaringClass();
-        if (cls.isArray() || cls.isPrimitive())
+        if (cls.isArray() || cls.isPrimitive()) {
             return false;  // FIXME
-        if (cls.isAnonymousClass() || cls.isLocalClass())
+        }
+        if (cls.isAnonymousClass() || cls.isLocalClass()) {
             return false;  // inner class of some sort
-        if (cls.getClassLoader() != MethodHandle.class.getClassLoader())
+        }
+        if (cls.getClassLoader() != MethodHandle.class.getClassLoader()) {
             return false;  // not on BCP
+        }
         if (ReflectUtil.isVMAnonymousClass(cls)) // FIXME: switch to supported API once it is added
+        {
             return false;
+        }
         MethodType mtype = member.getMethodOrFieldType();
-        if (!isStaticallyNameable(mtype.returnType()))
+        if (!isStaticallyNameable(mtype.returnType())) {
             return false;
-        for (Class<?> ptype : mtype.parameterArray())
-            if (!isStaticallyNameable(ptype))
+        }
+        for (Class<?> ptype : mtype.parameterArray()) {
+            if (!isStaticallyNameable(ptype)) {
                 return false;
-        if (!member.isPrivate() && VerifyAccess.isSamePackage(MethodHandle.class, cls))
+            }
+        }
+        if (!member.isPrivate() && VerifyAccess.isSamePackage(MethodHandle.class, cls)) {
             return true;   // in java.lang.invoke package
-        if (member.isPublic() && isStaticallyNameable(cls))
+        }
+        if (member.isPublic() && isStaticallyNameable(cls)) {
             return true;
+        }
         return false;
     }
 
     static boolean isStaticallyNameable(Class<?> cls) {
-        if (cls == Object.class)
+        if (cls == Object.class) {
             return true;
-        while (cls.isArray())
+        }
+        while (cls.isArray()) {
             cls = cls.getComponentType();
-        if (cls.isPrimitive())
+        }
+        if (cls.isPrimitive()) {
             return true;  // int[].class, for example
+        }
         if (ReflectUtil.isVMAnonymousClass(cls)) // FIXME: switch to supported API once it is added
+        {
             return false;
+        }
         // could use VerifyAccess.isClassAccessible but the following is a safe approximation
-        if (cls.getClassLoader() != Object.class.getClassLoader())
+        if (cls.getClassLoader() != Object.class.getClassLoader()) {
             return false;
-        if (VerifyAccess.isSamePackage(MethodHandle.class, cls))
+        }
+        if (VerifyAccess.isSamePackage(MethodHandle.class, cls)) {
             return true;
-        if (!Modifier.isPublic(cls.getModifiers()))
+        }
+        if (!Modifier.isPublic(cls.getModifiers())) {
             return false;
+        }
         for (Class<?> pkgcls : STATICALLY_INVOCABLE_PACKAGES) {
-            if (VerifyAccess.isSamePackage(pkgcls, cls))
+            if (VerifyAccess.isSamePackage(pkgcls, cls)) {
                 return true;
+            }
         }
         return false;
     }
@@ -948,10 +992,12 @@ class InvokerBytecodeGenerator {
      * Check if MemberName is a call to MethodHandle.invokeBasic.
      */
     private boolean isInvokeBasic(Name name) {
-        if (name.function == null)
+        if (name.function == null) {
             return false;
-        if (name.arguments.length < 1)
+        }
+        if (name.arguments.length < 1) {
             return false;  // must have MH argument
+        }
         MemberName member = name.function.member();
         return memberRefersTo(member, MethodHandle.class, "invokeBasic") &&
                !member.isPublic() && !member.isStatic();
@@ -961,10 +1007,12 @@ class InvokerBytecodeGenerator {
      * Check if MemberName is a call to MethodHandle.linkToStatic, etc.
      */
     private boolean isLinkerMethodInvoke(Name name) {
-        if (name.function == null)
+        if (name.function == null) {
             return false;
-        if (name.arguments.length < 1)
+        }
+        if (name.arguments.length < 1) {
             return false;  // must have MH argument
+        }
         MemberName member = name.function.member();
         return member != null &&
                member.getDeclaringClass() == MethodHandle.class &&
@@ -979,7 +1027,9 @@ class InvokerBytecodeGenerator {
         // selectAlternative idiom:
         //   t_{n}:L=MethodHandleImpl.selectAlternative(...)
         //   t_{n+1}:?=MethodHandle.invokeBasic(t_{n}, ...)
-        if (pos+1 >= lambdaForm.names.length)  return false;
+        if (pos+1 >= lambdaForm.names.length) {
+            return false;
+        }
         Name name0 = lambdaForm.names[pos];
         Name name1 = lambdaForm.names[pos+1];
         return nameRefersTo(name0, MethodHandleImpl.class, "selectAlternative") &&
@@ -996,7 +1046,9 @@ class InvokerBytecodeGenerator {
         //   t_{n}:L=MethodHandle.invokeBasic(...)
         //   t_{n+1}:L=MethodHandleImpl.guardWithCatch(*, *, *, t_{n});
         //   t_{n+2}:?=MethodHandle.invokeBasic(t_{n+1})
-        if (pos+2 >= lambdaForm.names.length)  return false;
+        if (pos+2 >= lambdaForm.names.length) {
+            return false;
+        }
         Name name0 = lambdaForm.names[pos];
         Name name1 = lambdaForm.names[pos+1];
         Name name2 = lambdaForm.names[pos+2];

@@ -206,7 +206,9 @@ public class RSAMultiPrimePrivateCrtKeySpec extends RSAPrivateKeySpec {
      * time this method is called.
      */
     public RSAOtherPrimeInfo[] getOtherPrimeInfo() {
-        if (otherPrimeInfo == null) return null;
+        if (otherPrimeInfo == null) {
+            return null;
+        }
         return otherPrimeInfo.clone();
     }
 }

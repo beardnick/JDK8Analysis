@@ -301,13 +301,14 @@ public abstract class DateFormat extends Format {
     public final StringBuffer format(Object obj, StringBuffer toAppendTo,
                                      FieldPosition fieldPosition)
     {
-        if (obj instanceof Date)
+        if (obj instanceof Date) {
             return format( (Date)obj, toAppendTo, fieldPosition );
-        else if (obj instanceof Number)
+        } else if (obj instanceof Number) {
             return format( new Date(((Number)obj).longValue()),
                           toAppendTo, fieldPosition );
-        else
+        } else {
             throw new IllegalArgumentException("Cannot format given Object as a Date");
+        }
     }
 
     /**
@@ -362,9 +363,10 @@ public abstract class DateFormat extends Format {
     {
         ParsePosition pos = new ParsePosition(0);
         Date result = parse(source, pos);
-        if (pos.index == 0)
+        if (pos.index == 0) {
             throw new ParseException("Unparseable date: \"" + source + "\"" ,
                 pos.errorIndex);
+        }
         return result;
     }
 
@@ -744,8 +746,12 @@ public abstract class DateFormat extends Format {
      * Overrides equals
      */
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
         DateFormat other = (DateFormat) obj;
         return (// calendar.equivalentTo(other.calendar) // THIS API DOESN'T EXIST YET!
                 calendar.getFirstDayOfWeek() == other.calendar.getFirstDayOfWeek() &&

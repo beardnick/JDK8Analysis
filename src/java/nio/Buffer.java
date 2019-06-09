@@ -195,15 +195,17 @@ public abstract class Buffer {
     // after checking invariants.
     //
     Buffer(int mark, int pos, int lim, int cap) {       // package-private
-        if (cap < 0)
+        if (cap < 0) {
             throw new IllegalArgumentException("Negative capacity: " + cap);
+        }
         this.capacity = cap;
         limit(lim);
         position(pos);
         if (mark >= 0) {
-            if (mark > pos)
+            if (mark > pos) {
                 throw new IllegalArgumentException("mark > position: ("
                                                    + mark + " > " + pos + ")");
+            }
             this.mark = mark;
         }
     }
@@ -240,10 +242,13 @@ public abstract class Buffer {
      *          If the preconditions on <tt>newPosition</tt> do not hold
      */
     public final Buffer position(int newPosition) {
-        if ((newPosition > limit) || (newPosition < 0))
+        if ((newPosition > limit) || (newPosition < 0)) {
             throw new IllegalArgumentException();
+        }
         position = newPosition;
-        if (mark > position) mark = -1;
+        if (mark > position) {
+            mark = -1;
+        }
         return this;
     }
 
@@ -271,11 +276,16 @@ public abstract class Buffer {
      *          If the preconditions on <tt>newLimit</tt> do not hold
      */
     public final Buffer limit(int newLimit) {
-        if ((newLimit > capacity) || (newLimit < 0))
+        if ((newLimit > capacity) || (newLimit < 0)) {
             throw new IllegalArgumentException();
+        }
         limit = newLimit;
-        if (position > limit) position = limit;
-        if (mark > limit) mark = -1;
+        if (position > limit) {
+            position = limit;
+        }
+        if (mark > limit) {
+            mark = -1;
+        }
         return this;
     }
 
@@ -302,8 +312,9 @@ public abstract class Buffer {
      */
     public final Buffer reset() {
         int m = mark;
-        if (m < 0)
+        if (m < 0) {
             throw new InvalidMarkException();
+        }
         position = m;
         return this;
     }
@@ -496,14 +507,16 @@ public abstract class Buffer {
      * @return  The current position value, before it is incremented
      */
     final int nextGetIndex() {                          // package-private
-        if (position >= limit)
+        if (position >= limit) {
             throw new BufferUnderflowException();
+        }
         return position++;
     }
 
     final int nextGetIndex(int nb) {                    // package-private
-        if (limit - position < nb)
+        if (limit - position < nb) {
             throw new BufferUnderflowException();
+        }
         int p = position;
         position += nb;
         return p;
@@ -517,14 +530,16 @@ public abstract class Buffer {
      * @return  The current position value, before it is incremented
      */
     final int nextPutIndex() {                          // package-private
-        if (position >= limit)
+        if (position >= limit) {
             throw new BufferOverflowException();
+        }
         return position++;
     }
 
     final int nextPutIndex(int nb) {                    // package-private
-        if (limit - position < nb)
+        if (limit - position < nb) {
             throw new BufferOverflowException();
+        }
         int p = position;
         position += nb;
         return p;
@@ -536,14 +551,16 @@ public abstract class Buffer {
      * or is smaller than zero.
      */
     final int checkIndex(int i) {                       // package-private
-        if ((i < 0) || (i >= limit))
+        if ((i < 0) || (i >= limit)) {
             throw new IndexOutOfBoundsException();
+        }
         return i;
     }
 
     final int checkIndex(int i, int nb) {               // package-private
-        if ((i < 0) || (nb > limit - i))
+        if ((i < 0) || (nb > limit - i)) {
             throw new IndexOutOfBoundsException();
+        }
         return i;
     }
 
@@ -563,8 +580,9 @@ public abstract class Buffer {
     }
 
     static void checkBounds(int off, int len, int size) { // package-private
-        if ((off | len | (off + len) | (size - (off + len))) < 0)
+        if ((off | len | (off + len) | (size - (off + len))) < 0) {
             throw new IndexOutOfBoundsException();
+        }
     }
 
 }

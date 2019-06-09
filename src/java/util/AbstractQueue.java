@@ -92,10 +92,11 @@ public abstract class AbstractQueue<E>
      *         prevents it from being added to this queue
      */
     public boolean add(E e) {
-        if (offer(e))
+        if (offer(e)) {
             return true;
-        else
+        } else {
             throw new IllegalStateException("Queue full");
+        }
     }
 
     /**
@@ -111,10 +112,11 @@ public abstract class AbstractQueue<E>
      */
     public E remove() {
         E x = poll();
-        if (x != null)
+        if (x != null) {
             return x;
-        else
+        } else {
             throw new NoSuchElementException();
+        }
     }
 
     /**
@@ -130,10 +132,11 @@ public abstract class AbstractQueue<E>
      */
     public E element() {
         E x = peek();
-        if (x != null)
+        if (x != null) {
             return x;
-        else
+        } else {
             throw new NoSuchElementException();
+        }
     }
 
     /**
@@ -144,8 +147,9 @@ public abstract class AbstractQueue<E>
      * returns <tt>null</tt>.
      */
     public void clear() {
-        while (poll() != null)
+        while (poll() != null) {
             ;
+        }
     }
 
     /**
@@ -178,14 +182,18 @@ public abstract class AbstractQueue<E>
      * @see #add(Object)
      */
     public boolean addAll(Collection<? extends E> c) {
-        if (c == null)
+        if (c == null) {
             throw new NullPointerException();
-        if (c == this)
+        }
+        if (c == this) {
             throw new IllegalArgumentException();
+        }
         boolean modified = false;
-        for (E e : c)
-            if (add(e))
+        for (E e : c) {
+            if (add(e)) {
                 modified = true;
+            }
+        }
         return modified;
     }
 

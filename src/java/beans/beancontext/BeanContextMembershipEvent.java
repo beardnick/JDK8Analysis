@@ -69,8 +69,10 @@ public class BeanContextMembershipEvent extends BeanContextEvent {
     public BeanContextMembershipEvent(BeanContext bc, Collection changes) {
         super(bc);
 
-        if (changes == null) throw new NullPointerException(
-            "BeanContextMembershipEvent constructor:  changes is null.");
+        if (changes == null) {
+            throw new NullPointerException(
+                "BeanContextMembershipEvent constructor:  changes is null.");
+        }
 
         children = changes;
     }
@@ -87,8 +89,10 @@ public class BeanContextMembershipEvent extends BeanContextEvent {
     public BeanContextMembershipEvent(BeanContext bc, Object[] changes) {
         super(bc);
 
-        if (changes == null) throw new NullPointerException(
-            "BeanContextMembershipEvent:  changes is null.");
+        if (changes == null) {
+            throw new NullPointerException(
+                "BeanContextMembershipEvent:  changes is null.");
+        }
 
         children = Arrays.asList(changes);
     }

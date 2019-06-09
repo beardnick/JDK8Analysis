@@ -232,8 +232,9 @@ public class MenuItem extends MenuComponent implements Accessible {
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = Toolkit.getDefaultToolkit().createMenuItem(this);
+            }
         }
     }
 
@@ -748,11 +749,12 @@ public class MenuItem extends MenuComponent implements Accessible {
       while(null != (keyOrNull = s.readObject())) {
         String key = ((String)keyOrNull).intern();
 
-        if (actionListenerK == key)
-          addActionListener((ActionListener)(s.readObject()));
-
-        else // skip value for unrecognized key
-          s.readObject();
+        if (actionListenerK == key) {
+            addActionListener((ActionListener)(s.readObject()));
+        } else // skip value for unrecognized key
+        {
+            s.readObject();
+        }
       }
     }
 

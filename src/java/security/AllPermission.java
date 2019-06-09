@@ -184,11 +184,13 @@ final class AllPermissionCollection
      */
 
     public void add(Permission permission) {
-        if (! (permission instanceof AllPermission))
+        if (! (permission instanceof AllPermission)) {
             throw new IllegalArgumentException("invalid permission: "+
                                                permission);
-        if (isReadOnly())
+        }
+        if (isReadOnly()) {
             throw new SecurityException("attempt to add a Permission to a readonly PermissionCollection");
+        }
 
         all_allowed = true; // No sync; staleness OK
     }

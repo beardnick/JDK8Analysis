@@ -670,9 +670,10 @@ public interface Spliterator<T> {
                 return tryAdvance((IntConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfInt.tryAdvance((IntConsumer) action::accept)");
+                }
                 return tryAdvance((IntConsumer) action::accept);
             }
         }
@@ -693,9 +694,10 @@ public interface Spliterator<T> {
                 forEachRemaining((IntConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfInt.forEachRemaining((IntConsumer) action::accept)");
+                }
                 forEachRemaining((IntConsumer) action::accept);
             }
         }
@@ -734,9 +736,10 @@ public interface Spliterator<T> {
                 return tryAdvance((LongConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfLong.tryAdvance((LongConsumer) action::accept)");
+                }
                 return tryAdvance((LongConsumer) action::accept);
             }
         }
@@ -757,9 +760,10 @@ public interface Spliterator<T> {
                 forEachRemaining((LongConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfLong.forEachRemaining((LongConsumer) action::accept)");
+                }
                 forEachRemaining((LongConsumer) action::accept);
             }
         }
@@ -798,9 +802,10 @@ public interface Spliterator<T> {
                 return tryAdvance((DoubleConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfDouble.tryAdvance((DoubleConsumer) action::accept)");
+                }
                 return tryAdvance((DoubleConsumer) action::accept);
             }
         }
@@ -822,9 +827,10 @@ public interface Spliterator<T> {
                 forEachRemaining((DoubleConsumer) action);
             }
             else {
-                if (Tripwire.ENABLED)
+                if (Tripwire.ENABLED) {
                     Tripwire.trip(getClass(),
                                   "{0} calling Spliterator.OfDouble.forEachRemaining((DoubleConsumer) action::accept)");
+                }
                 forEachRemaining((DoubleConsumer) action::accept);
             }
         }

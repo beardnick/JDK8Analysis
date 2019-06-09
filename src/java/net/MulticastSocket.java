@@ -171,8 +171,9 @@ class MulticastSocket extends DatagramSocket {
             try {
                 bind(bindaddr);
             } finally {
-                if (!isBound())
+                if (!isBound()) {
                     close();
+                }
             }
         }
     }
@@ -212,8 +213,9 @@ class MulticastSocket extends DatagramSocket {
      */
     @Deprecated
     public void setTTL(byte ttl) throws IOException {
-        if (isClosed())
+        if (isClosed()) {
             throw new SocketException("Socket is closed");
+        }
         getImpl().setTTL(ttl);
     }
 
@@ -240,8 +242,9 @@ class MulticastSocket extends DatagramSocket {
         if (ttl < 0 || ttl > 255) {
             throw new IllegalArgumentException("ttl out of range");
         }
-        if (isClosed())
+        if (isClosed()) {
             throw new SocketException("Socket is closed");
+        }
         getImpl().setTimeToLive(ttl);
     }
 
@@ -258,8 +261,9 @@ class MulticastSocket extends DatagramSocket {
      */
     @Deprecated
     public byte getTTL() throws IOException {
-        if (isClosed())
+        if (isClosed()) {
             throw new SocketException("Socket is closed");
+        }
         return getImpl().getTTL();
     }
 
@@ -272,8 +276,9 @@ class MulticastSocket extends DatagramSocket {
      * @see #setTimeToLive(int)
      */
     public int getTimeToLive() throws IOException {
-        if (isClosed())
+        if (isClosed()) {
             throw new SocketException("Socket is closed");
+        }
         return getImpl().getTimeToLive();
     }
 
@@ -384,14 +389,17 @@ class MulticastSocket extends DatagramSocket {
      */
     public void joinGroup(SocketAddress mcastaddr, NetworkInterface netIf)
         throws IOException {
-        if (isClosed())
+        if (isClosed()) {
             throw new SocketException("Socket is closed");
+        }
 
-        if (mcastaddr == null || !(mcastaddr instanceof InetSocketAddress))
+        if (mcastaddr == null || !(mcastaddr instanceof InetSocketAddress)) {
             throw new IllegalArgumentException("Unsupported address type");
+        }
 
-        if (oldImpl)
+        if (oldImpl) {
             throw new UnsupportedOperationException();
+        }
 
         checkAddress(((InetSocketAddress)mcastaddr).getAddress(), "joinGroup");
         SecurityManager security = System.getSecurityManager();
@@ -431,14 +439,17 @@ class MulticastSocket extends DatagramSocket {
      */
     public void leaveGroup(SocketAddress mcastaddr, NetworkInterface netIf)
         throws IOException {
-        if (isClosed())
+        if (isClosed()) {
             throw new SocketException("Socket is closed");
+        }
 
-        if (mcastaddr == null || !(mcastaddr instanceof InetSocketAddress))
+        if (mcastaddr == null || !(mcastaddr instanceof InetSocketAddress)) {
             throw new IllegalArgumentException("Unsupported address type");
+        }
 
-        if (oldImpl)
+        if (oldImpl) {
             throw new UnsupportedOperationException();
+        }
 
         checkAddress(((InetSocketAddress)mcastaddr).getAddress(), "leaveGroup");
         SecurityManager security = System.getSecurityManager();
@@ -658,8 +669,9 @@ class MulticastSocket extends DatagramSocket {
     @Deprecated
     public void send(DatagramPacket p, byte ttl)
         throws IOException {
-            if (isClosed())
+            if (isClosed()) {
                 throw new SocketException("Socket is closed");
+            }
             checkAddress(p.getAddress(), "send");
             synchronized(ttlLock) {
                 synchronized(p) {

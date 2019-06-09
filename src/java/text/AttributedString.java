@@ -148,8 +148,9 @@ public class AttributedString {
         this.text = text;
 
         if (text.length() == 0) {
-            if (attributes.isEmpty())
+            if (attributes.isEmpty()) {
                 return;
+            }
             throw new IllegalArgumentException("Can't add attribute to 0-length text");
         }
 
@@ -239,30 +240,35 @@ public class AttributedString {
         // Validate the given subrange
         int textBeginIndex = text.getBeginIndex();
         int textEndIndex = text.getEndIndex();
-        if (beginIndex < textBeginIndex || endIndex > textEndIndex || beginIndex > endIndex)
+        if (beginIndex < textBeginIndex || endIndex > textEndIndex || beginIndex > endIndex) {
             throw new IllegalArgumentException("Invalid substring range");
+        }
 
         // Copy the given string
         StringBuffer textBuffer = new StringBuffer();
         text.setIndex(beginIndex);
-        for (char c = text.current(); text.getIndex() < endIndex; c = text.next())
+        for (char c = text.current(); text.getIndex() < endIndex; c = text.next()) {
             textBuffer.append(c);
+        }
         this.text = textBuffer.toString();
 
-        if (beginIndex == endIndex)
+        if (beginIndex == endIndex) {
             return;
+        }
 
         // Select attribute keys to be taken care of
         HashSet<Attribute> keys = new HashSet<>();
         if (attributes == null) {
             keys.addAll(text.getAllAttributeKeys());
         } else {
-            for (int i = 0; i < attributes.length; i++)
+            for (int i = 0; i < attributes.length; i++) {
                 keys.add(attributes[i]);
+            }
             keys.retainAll(text.getAllAttributeKeys());
         }
-        if (keys.isEmpty())
+        if (keys.isEmpty()) {
             return;
+        }
 
         // Get and set attribute runs for each attribute name. Need to
         // scan from the top of the text so that we can discard any
@@ -281,20 +287,24 @@ public class AttributedString {
                         if (start >= beginIndex && limit <= endIndex) {
                             addAttribute(attributeKey, value, start - beginIndex, limit - beginIndex);
                         } else {
-                            if (limit > endIndex)
+                            if (limit > endIndex) {
                                 break;
+                            }
                         }
                     } else {
                         // if the run is beyond the given (subset) range, we
                         // don't need to process further.
-                        if (start >= endIndex)
+                        if (start >= endIndex) {
                             break;
+                        }
                         if (limit > beginIndex) {
                             // attribute is applied to any subrange
-                            if (start < beginIndex)
+                            if (start < beginIndex) {
                                 start = beginIndex;
-                            if (limit > endIndex)
+                            }
+                            if (limit > endIndex) {
                                 limit = endIndex;
+                            }
                             if (start != limit) {
                                 addAttribute(attributeKey, value, start - beginIndex, limit - beginIndex);
                             }
@@ -377,8 +387,9 @@ public class AttributedString {
             throw new IllegalArgumentException("Invalid substring range");
         }
         if (beginIndex == endIndex) {
-            if (attributes.isEmpty())
+            if (attributes.isEmpty()) {
                 return;
+            }
             throw new IllegalArgumentException("Can't add attribute to 0-length text");
         }
 
@@ -789,10 +800,12 @@ public class AttributedString {
 
             AttributedStringIterator that = (AttributedStringIterator) obj;
 
-            if (AttributedString.this != that.getString())
+            if (AttributedString.this != that.getString()) {
                 return false;
-            if (currentIndex != that.currentIndex || beginIndex != that.beginIndex || endIndex != that.endIndex)
+            }
+            if (currentIndex != that.currentIndex || beginIndex != that.beginIndex || endIndex != that.endIndex) {
                 return false;
+            }
             return true;
         }
 
@@ -851,8 +864,9 @@ public class AttributedString {
         }
 
         public char setIndex(int position) {
-            if (position < beginIndex || position > endIndex)
+            if (position < beginIndex || position > endIndex) {
                 throw new IllegalArgumentException("Invalid index");
+            }
             return internalSetIndex(position);
         }
 
@@ -1025,21 +1039,24 @@ public class AttributedString {
             } else {
                 synchronized (AttributedString.this) {
                     int runIndex = -1;
-                    while (runIndex < runCount - 1 && runStarts[runIndex + 1] <= currentIndex)
+                    while (runIndex < runCount - 1 && runStarts[runIndex + 1] <= currentIndex) {
                         runIndex++;
+                    }
                     currentRunIndex = runIndex;
                     if (runIndex >= 0) {
                         currentRunStart = runStarts[runIndex];
-                        if (currentRunStart < beginIndex)
+                        if (currentRunStart < beginIndex) {
                             currentRunStart = beginIndex;
+                        }
                     }
                     else {
                         currentRunStart = beginIndex;
                     }
                     if (runIndex < runCount - 1) {
                         currentRunLimit = runStarts[runIndex + 1];
-                        if (currentRunLimit > endIndex)
+                        if (currentRunLimit > endIndex) {
                             currentRunLimit = endIndex;
+                        }
                     }
                     else {
                         currentRunLimit = endIndex;

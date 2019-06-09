@@ -98,8 +98,9 @@ public class Canvas extends Component implements Accessible {
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = getToolkit().createCanvas(this);
+            }
             super.addNotify();
         }
     }

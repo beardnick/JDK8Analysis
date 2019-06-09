@@ -62,10 +62,12 @@ class Inet4AddressImpl implements InetAddressImpl {
           java.util.Enumeration<InetAddress> it = netif.getInetAddresses();
           InetAddress inetaddr = null;
           while (!(inetaddr instanceof Inet4Address) &&
-                 it.hasMoreElements())
+                 it.hasMoreElements()) {
               inetaddr = it.nextElement();
-          if (inetaddr instanceof Inet4Address)
+          }
+          if (inetaddr instanceof Inet4Address) {
               ifaddr = inetaddr.getAddress();
+          }
       }
       return isReachable0(addr.getAddress(), timeout, ifaddr, ttl);
   }

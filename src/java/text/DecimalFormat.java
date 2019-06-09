@@ -525,9 +525,9 @@ public class DecimalFormat extends NumberFormat {
         // If fieldPosition is a DontCareFieldPosition instance we can
         // try to go to fast-path code.
         boolean tryFastPath = false;
-        if (fieldPosition == DontCareFieldPosition.INSTANCE)
+        if (fieldPosition == DontCareFieldPosition.INSTANCE) {
             tryFastPath = true;
-        else {
+        } else {
             fieldPosition.setBeginIndex(0);
             fieldPosition.setEndIndex(0);
         }
@@ -989,21 +989,25 @@ public class DecimalFormat extends NumberFormat {
             if (isFastPath) {
                 if (isCurrencyFormat) {
                     if ((minimumFractionDigits != 2) ||
-                        (maximumFractionDigits != 2))
+                        (maximumFractionDigits != 2)) {
                         isFastPath = false;
+                    }
                 } else if ((minimumFractionDigits != 0) ||
-                           (maximumFractionDigits != 3))
+                           (maximumFractionDigits != 3)) {
                     isFastPath = false;
+                }
             }
-        } else
+        } else {
             isFastPath = false;
+        }
 
         // Since some instance properties may have changed while still falling
         // in the fast-path case, we need to reinitialize fastPathData anyway.
         if (isFastPath) {
             // We need to instantiate fastPathData if not already done.
-            if (fastPathData == null)
+            if (fastPathData == null) {
                 fastPathData = new FastPathData();
+            }
 
             // Sets up the locale specific constants used when formatting.
             // '0' is our default representation of zero.
@@ -1256,8 +1260,9 @@ public class DecimalFormat extends NumberFormat {
         digitsBuffer[index] = DigitArrays.DigitOnes1000[number];
         if (number > 9) {
             digitsBuffer[--index]  = DigitArrays.DigitTens1000[number];
-            if (number > 99)
+            if (number > 99) {
                 digitsBuffer[--index]   = DigitArrays.DigitHundreds1000[number];
+            }
         }
 
         fastPathData.firstUsedIndex = index;
@@ -1296,13 +1301,16 @@ public class DecimalFormat extends NumberFormat {
             if (digitOnes != '0') {
                 digitsBuffer[index++] = digitTens;
                 digitsBuffer[index++] = digitOnes;
-            } else if (digitTens != '0')
+            } else if (digitTens != '0') {
                 digitsBuffer[index++] = digitTens;
+            }
 
         } else
             // This is decimal pattern and fractional part is zero.
             // We must remove decimal point from result.
+        {
             index--;
+        }
 
         fastPathData.lastFreeIndex = index;
     }
@@ -1323,8 +1331,12 @@ public class DecimalFormat extends NumberFormat {
         // We add affixes only if needed (affix length > 0).
         int pl = prefix.length;
         int sl = suffix.length;
-        if (pl != 0) prependPrefix(prefix, pl, container);
-        if (sl != 0) appendSuffix(suffix, sl, container);
+        if (pl != 0) {
+            prependPrefix(prefix, pl, container);
+        }
+        if (sl != 0) {
+            appendSuffix(suffix, sl, container);
+        }
 
     }
 
@@ -1348,21 +1360,24 @@ public class DecimalFormat extends NumberFormat {
         // If prefix is less or equal 4, we use a dedicated algorithm that
         //  has shown to run faster than System.arraycopy.
         // If more than 4, we use System.arraycopy.
-        if (len == 1)
+        if (len == 1) {
             container[startIndex] = prefix[0];
-        else if (len <= 4) {
+        } else if (len <= 4) {
             int dstLower = startIndex;
             int dstUpper = dstLower + len - 1;
             int srcUpper = len - 1;
             container[dstLower] = prefix[0];
             container[dstUpper] = prefix[srcUpper];
 
-            if (len > 2)
+            if (len > 2) {
                 container[++dstLower] = prefix[1];
-            if (len == 4)
+            }
+            if (len == 4) {
                 container[--dstUpper] = prefix[2];
-        } else
+            }
+        } else {
             System.arraycopy(prefix, 0, container, startIndex, len);
+        }
     }
 
     /**
@@ -1384,21 +1399,24 @@ public class DecimalFormat extends NumberFormat {
         // If suffix is less or equal 4, we use a dedicated algorithm that
         //  has shown to run faster than System.arraycopy.
         // If more than 4, we use System.arraycopy.
-        if (len == 1)
+        if (len == 1) {
             container[startIndex] = suffix[0];
-        else if (len <= 4) {
+        } else if (len <= 4) {
             int dstLower = startIndex;
             int dstUpper = dstLower + len - 1;
             int srcUpper = len - 1;
             container[dstLower] = suffix[0];
             container[dstUpper] = suffix[srcUpper];
 
-            if (len > 2)
+            if (len > 2) {
                 container[++dstLower] = suffix[1];
-            if (len == 4)
+            }
+            if (len == 4) {
                 container[--dstUpper] = suffix[2];
-        } else
+            }
+        } else {
             System.arraycopy(suffix, 0, container, startIndex, len);
+        }
 
         fastPathData.lastFreeIndex += len;
     }
@@ -1424,8 +1442,9 @@ public class DecimalFormat extends NumberFormat {
             fastPathData.lastFreeIndex - fastPathData.fractionalFirstIndex;
 
         // The case when there is no fractional digits.
-        if (digitsCounter < 0)
+        if (digitsCounter < 0) {
             digitsCounter = groupingSize;
+        }
 
         // Only the digits remains to localize.
         for (int cursor = fastPathData.lastFreeIndex - 1;
@@ -1501,9 +1520,11 @@ public class DecimalFormat extends NumberFormat {
         if (scaledFractional >= 0.5d) {
             if (scaledFractional == 0.5d)
                 // Rounding need fine-grained decision.
+            {
                 roundItUp = exactRoundUp(exactFractionalPart, fractionalPartAsInt);
-            else
+            } else {
                 roundItUp = true;
+            }
 
             if (roundItUp) {
                 // Rounds up both fractional part (and also integral if needed).
@@ -1524,19 +1545,22 @@ public class DecimalFormat extends NumberFormat {
                               fastPathData.integralLastIndex);
 
         // Localizing digits.
-        if (fastPathData.zeroDelta != 0)
+        if (fastPathData.zeroDelta != 0) {
             localizeDigits(container);
+        }
 
         // Adding prefix and suffix.
         if (negative) {
-            if (fastPathData.negativeAffixesRequired)
+            if (fastPathData.negativeAffixesRequired) {
                 addAffixes(container,
                            fastPathData.charsNegativePrefix,
                            fastPathData.charsNegativeSuffix);
-        } else if (fastPathData.positiveAffixesRequired)
+            }
+        } else if (fastPathData.positiveAffixesRequired) {
             addAffixes(container,
                        fastPathData.charsPositivePrefix,
                        fastPathData.charsPositiveSuffix);
+        }
     }
 
     /**
@@ -1555,16 +1579,21 @@ public class DecimalFormat extends NumberFormat {
      */
     String fastFormat(double d) {
         // (Re-)Evaluates fast-path status if needed.
-        if (fastPathCheckNeeded)
+        if (fastPathCheckNeeded) {
             checkAndSetFastPathStatus();
+        }
 
         if (!isFastPath )
             // DecimalFormat instance is not in a fast-path state.
+        {
             return null;
+        }
 
         if (!Double.isFinite(d))
             // Should not use fast-path for Infinity and NaN.
+        {
             return null;
+        }
 
         // Extracts and records sign of double value, possibly changing it
         // to a positive one, before calling fastDoubleFormat().
@@ -1579,9 +1608,11 @@ public class DecimalFormat extends NumberFormat {
 
         if (d > MAX_INT_AS_DOUBLE)
             // Filters out values that are outside expected fast-path range
+        {
             return null;
-        else
+        } else {
             fastDoubleFormat(d, negative);
+        }
 
         // Returns a new string from updated fastPathContainer.
         return new String(fastPathData.fastPathContainer,
@@ -2699,10 +2730,12 @@ public class DecimalFormat extends NumberFormat {
     @Override
     public boolean equals(Object obj)
     {
-        if (obj == null)
+        if (obj == null) {
             return false;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false; // super does class check
+        }
         DecimalFormat other = (DecimalFormat) obj;
         return ((posPrefixPattern == other.posPrefixPattern &&
                  positivePrefix.equals(other.positivePrefix))
@@ -3005,16 +3038,23 @@ public class DecimalFormat extends NumberFormat {
                 || affix.indexOf(PATTERN_MINUS) >= 0
                 || affix.indexOf(CURRENCY_SIGN) >= 0;
         }
-        if (needQuote) buffer.append('\'');
-        if (affix.indexOf('\'') < 0) buffer.append(affix);
-        else {
+        if (needQuote) {
+            buffer.append('\'');
+        }
+        if (affix.indexOf('\'') < 0) {
+            buffer.append(affix);
+        } else {
             for (int j=0; j<affix.length(); ++j) {
                 char c = affix.charAt(j);
                 buffer.append(c);
-                if (c == '\'') buffer.append(c);
+                if (c == '\'') {
+                    buffer.append(c);
+                }
             }
         }
-        if (needQuote) buffer.append('\'');
+        if (needQuote) {
+            buffer.append('\'');
+        }
     }
 
     /**
@@ -3022,9 +3062,11 @@ public class DecimalFormat extends NumberFormat {
     private String toPattern(boolean localized) {
         StringBuffer result = new StringBuffer();
         for (int j = 1; j >= 0; --j) {
-            if (j == 1)
+            if (j == 1) {
                 appendAffix(result, posPrefixPattern, positivePrefix, localized);
-            else appendAffix(result, negPrefixPattern, negativePrefix, localized);
+            } else {
+                appendAffix(result, negPrefixPattern, negativePrefix, localized);
+            }
             int i;
             int digitCount = useExponentialNotation
                         ? getMaximumIntegerDigits()
@@ -3039,9 +3081,10 @@ public class DecimalFormat extends NumberFormat {
                     ? (localized ? symbols.getZeroDigit() : PATTERN_ZERO_DIGIT)
                     : (localized ? symbols.getDigit() : PATTERN_DIGIT));
             }
-            if (getMaximumFractionDigits() > 0 || decimalSeparatorAlwaysShown)
+            if (getMaximumFractionDigits() > 0 || decimalSeparatorAlwaysShown) {
                 result.append(localized ? symbols.getDecimalSeparator() :
                               PATTERN_DECIMAL_SEPARATOR);
+            }
             for (i = 0; i < getMaximumFractionDigits(); ++i) {
                 if (i < getMinimumFractionDigits()) {
                     result.append(localized ? symbols.getZeroDigit() :
@@ -3055,9 +3098,10 @@ public class DecimalFormat extends NumberFormat {
         {
             result.append(localized ? symbols.getExponentSeparator() :
                   PATTERN_EXPONENT);
-        for (i=0; i<minExponentDigits; ++i)
-                    result.append(localized ? symbols.getZeroDigit() :
-                                  PATTERN_ZERO_DIGIT);
+        for (i=0; i<minExponentDigits; ++i) {
+            result.append(localized ? symbols.getZeroDigit() :
+                          PATTERN_ZERO_DIGIT);
+        }
         }
             if (j == 1) {
                 appendAffix(result, posSuffixPattern, positiveSuffix, localized);
@@ -3068,12 +3112,15 @@ public class DecimalFormat extends NumberFormat {
                     if ((negPrefixPattern != null && posPrefixPattern != null &&
                          negPrefixPattern.equals("'-" + posPrefixPattern)) ||
                         (negPrefixPattern == posPrefixPattern && // n == p == null
-                         negativePrefix.equals(symbols.getMinusSign() + positivePrefix)))
+                         negativePrefix.equals(symbols.getMinusSign() + positivePrefix))) {
                         break;
+                    }
                 }
                 result.append(localized ? symbols.getPatternSeparator() :
                               PATTERN_SEPARATOR);
-            } else appendAffix(result, negSuffixPattern, negativeSuffix, localized);
+            } else {
+                appendAffix(result, negSuffixPattern, negativeSuffix, localized);
+            }
         }
         return result.toString();
     }
@@ -4127,18 +4174,20 @@ public class DecimalFormat extends NumberFormat {
             for (int i = 0;  i < 1000; i++ ) {
 
                 DigitOnes1000[i] = digitOne;
-                if (digitOne == '9')
+                if (digitOne == '9') {
                     digitOne = '0';
-                else
+                } else {
                     digitOne++;
+                }
 
                 DigitTens1000[i] = digitTen;
                 if (i == (tenIndex + 9)) {
                     tenIndex += 10;
-                    if (digitTen == '9')
+                    if (digitTen == '9') {
                         digitTen = '0';
-                    else
+                    } else {
                         digitTen++;
+                    }
                 }
 
                 DigitHundreds1000[i] = digitHundred;

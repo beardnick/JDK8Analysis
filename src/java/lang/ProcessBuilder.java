@@ -196,8 +196,9 @@ public final class ProcessBuilder
      * @throws NullPointerException if the argument is null
      */
     public ProcessBuilder(List<String> command) {
-        if (command == null)
+        if (command == null) {
             throw new NullPointerException();
+        }
         this.command = command;
     }
 
@@ -214,8 +215,9 @@ public final class ProcessBuilder
      */
     public ProcessBuilder(String... command) {
         this.command = new ArrayList<>(command.length);
-        for (String arg : command)
+        for (String arg : command) {
             this.command.add(arg);
+        }
     }
 
     /**
@@ -232,8 +234,9 @@ public final class ProcessBuilder
      * @throws NullPointerException if the argument is null
      */
     public ProcessBuilder command(List<String> command) {
-        if (command == null)
+        if (command == null) {
             throw new NullPointerException();
+        }
         this.command = command;
         return this;
     }
@@ -251,8 +254,9 @@ public final class ProcessBuilder
      */
     public ProcessBuilder command(String... command) {
         this.command = new ArrayList<>(command.length);
-        for (String arg : command)
+        for (String arg : command) {
             this.command.add(arg);
+        }
         return this;
     }
 
@@ -338,11 +342,13 @@ public final class ProcessBuilder
      */
     public Map<String,String> environment() {
         SecurityManager security = System.getSecurityManager();
-        if (security != null)
+        if (security != null) {
             security.checkPermission(new RuntimePermission("getenv.*"));
+        }
 
-        if (environment == null)
+        if (environment == null) {
             environment = ProcessEnvironment.environment();
+        }
 
         assert environment != null;
 
@@ -363,15 +369,17 @@ public final class ProcessBuilder
                 // for compatibility with old broken code.
 
                 // Silently discard any trailing junk.
-                if (envstring.indexOf((int) '\u0000') != -1)
+                if (envstring.indexOf((int) '\u0000') != -1) {
                     envstring = envstring.replaceFirst("\u0000.*", "");
+                }
 
                 int eqlsign =
                     envstring.indexOf('=', ProcessEnvironment.MIN_NAME_LENGTH);
                 // Silently ignore envstrings lacking the required `='.
-                if (eqlsign != -1)
+                if (eqlsign != -1) {
                     environment.put(envstring.substring(0,eqlsign),
                                     envstring.substring(eqlsign+1));
+                }
             }
         }
         return this;
@@ -558,8 +566,9 @@ public final class ProcessBuilder
          * @return a redirect to read from the specified file
          */
         public static Redirect from(final File file) {
-            if (file == null)
+            if (file == null) {
                 throw new NullPointerException();
+            }
             return new Redirect() {
                     public Type type() { return Type.READ; }
                     public File file() { return file; }
@@ -585,8 +594,9 @@ public final class ProcessBuilder
          * @return a redirect to write to the specified file
          */
         public static Redirect to(final File file) {
-            if (file == null)
+            if (file == null) {
                 throw new NullPointerException();
+            }
             return new Redirect() {
                     public Type type() { return Type.WRITE; }
                     public File file() { return file; }
@@ -616,8 +626,9 @@ public final class ProcessBuilder
          * @return a redirect to append to the specified file
          */
         public static Redirect appendTo(final File file) {
-            if (file == null)
+            if (file == null) {
                 throw new NullPointerException();
+            }
             return new Redirect() {
                     public Type type() { return Type.APPEND; }
                     public File file() { return file; }
@@ -636,13 +647,16 @@ public final class ProcessBuilder
          * {@code File} instances.
          */
         public boolean equals(Object obj) {
-            if (obj == this)
+            if (obj == this) {
                 return true;
-            if (! (obj instanceof Redirect))
+            }
+            if (! (obj instanceof Redirect)) {
                 return false;
+            }
             Redirect r = (Redirect) obj;
-            if (r.type() != this.type())
+            if (r.type() != this.type()) {
                 return false;
+            }
             assert this.file() != null;
             return this.file().equals(r.file());
         }
@@ -653,10 +667,11 @@ public final class ProcessBuilder
          */
         public int hashCode() {
             File file = file();
-            if (file == null)
+            if (file == null) {
                 return super.hashCode();
-            else
+            } else {
                 return file.hashCode();
+            }
         }
 
         /**
@@ -667,10 +682,11 @@ public final class ProcessBuilder
     }
 
     private Redirect[] redirects() {
-        if (redirects == null)
+        if (redirects == null) {
             redirects = new Redirect[] {
                 Redirect.PIPE, Redirect.PIPE, Redirect.PIPE
             };
+        }
         return redirects;
     }
 
@@ -699,9 +715,10 @@ public final class ProcessBuilder
      */
     public ProcessBuilder redirectInput(Redirect source) {
         if (source.type() == Redirect.Type.WRITE ||
-            source.type() == Redirect.Type.APPEND)
+            source.type() == Redirect.Type.APPEND) {
             throw new IllegalArgumentException(
                 "Redirect invalid for reading: " + source);
+        }
         redirects()[0] = source;
         return this;
     }
@@ -729,9 +746,10 @@ public final class ProcessBuilder
      * @since  1.7
      */
     public ProcessBuilder redirectOutput(Redirect destination) {
-        if (destination.type() == Redirect.Type.READ)
+        if (destination.type() == Redirect.Type.READ) {
             throw new IllegalArgumentException(
                 "Redirect invalid for writing: " + destination);
+        }
         redirects()[1] = destination;
         return this;
     }
@@ -763,9 +781,10 @@ public final class ProcessBuilder
      * @since  1.7
      */
     public ProcessBuilder redirectError(Redirect destination) {
-        if (destination.type() == Redirect.Type.READ)
+        if (destination.type() == Redirect.Type.READ) {
             throw new IllegalArgumentException(
                 "Redirect invalid for writing: " + destination);
+        }
         redirects()[2] = destination;
         return this;
     }
@@ -1007,15 +1026,18 @@ public final class ProcessBuilder
         String[] cmdarray = command.toArray(new String[command.size()]);
         cmdarray = cmdarray.clone();
 
-        for (String arg : cmdarray)
-            if (arg == null)
+        for (String arg : cmdarray) {
+            if (arg == null) {
                 throw new NullPointerException();
+            }
+        }
         // Throws IndexOutOfBoundsException if command is empty
         String prog = cmdarray[0];
 
         SecurityManager security = System.getSecurityManager();
-        if (security != null)
+        if (security != null) {
             security.checkExec(prog);
+        }
 
         String dir = directory == null ? null : directory.toString();
 

@@ -88,15 +88,18 @@ public final class StringCharacterIterator implements CharacterIterator
      * @param  pos    Initial iterator position
      */
     public StringCharacterIterator(String text, int begin, int end, int pos) {
-        if (text == null)
+        if (text == null) {
             throw new NullPointerException();
+        }
         this.text = text;
 
-        if (begin < 0 || begin > end || end > text.length())
+        if (begin < 0 || begin > end || end > text.length()) {
             throw new IllegalArgumentException("Invalid substring range");
+        }
 
-        if (pos < begin || pos > end)
+        if (pos < begin || pos > end) {
             throw new IllegalArgumentException("Invalid position");
+        }
 
         this.begin = begin;
         this.end = end;
@@ -113,8 +116,9 @@ public final class StringCharacterIterator implements CharacterIterator
      * @since 1.2
      */
     public void setText(String text) {
-        if (text == null)
+        if (text == null) {
             throw new NullPointerException();
+        }
         this.text = text;
         this.begin = 0;
         this.end = text.length();
@@ -151,8 +155,9 @@ public final class StringCharacterIterator implements CharacterIterator
      */
     public char setIndex(int p)
     {
-    if (p < begin || p > end)
-            throw new IllegalArgumentException("Invalid index");
+    if (p < begin || p > end) {
+        throw new IllegalArgumentException("Invalid index");
+    }
         pos = p;
         return current();
     }
@@ -237,19 +242,24 @@ public final class StringCharacterIterator implements CharacterIterator
      */
     public boolean equals(Object obj)
     {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!(obj instanceof StringCharacterIterator))
+        }
+        if (!(obj instanceof StringCharacterIterator)) {
             return false;
+        }
 
         StringCharacterIterator that = (StringCharacterIterator) obj;
 
-        if (hashCode() != that.hashCode())
+        if (hashCode() != that.hashCode()) {
             return false;
-        if (!text.equals(that.text))
+        }
+        if (!text.equals(that.text)) {
             return false;
-        if (pos != that.pos || begin != that.begin || end != that.end)
+        }
+        if (pos != that.pos || begin != that.begin || end != that.end) {
             return false;
+        }
         return true;
     }
 

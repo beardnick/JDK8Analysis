@@ -106,7 +106,9 @@ public abstract class ClassValue<T> {
             // invariant:  No false positive matches.  False negatives are OK if rare.
             // The key fact that makes this work: if this.version == e.version,
             // then this thread has a right to observe (final) e.value.
+        {
             return e.value();
+        }
         // The fast path can fail for any of these reasons:
         // 1. no entry has been computed yet
         // 2. hash code collision (before or after reduction mod cache.length)
@@ -187,7 +189,9 @@ public abstract class ClassValue<T> {
     private static Entry<?>[] getCacheCarefully(Class<?> type) {
         // racing type.classValueMap{.cacheArray} : null => new Entry[X] <=> new Entry[Y]
         ClassValueMap map = type.classValueMap;
-        if (map == null)  return EMPTY_CACHE;
+        if (map == null) {
+            return EMPTY_CACHE;
+        }
         Entry<?>[] cache = map.getCache();
         return cache;
         // invariant:  returned value is safe to dereference and check for an Entry
@@ -204,8 +208,9 @@ public abstract class ClassValue<T> {
      */
     private T getFromBackup(Entry<?>[] cache, Class<?> type) {
         Entry<T> e = probeBackupLocations(cache, this);
-        if (e != null)
+        if (e != null) {
             return e.value();
+        }
         return getFromHashMap(type);
     }
 
@@ -220,8 +225,9 @@ public abstract class ClassValue<T> {
         ClassValueMap map = getMap(type);
         for (;;) {
             Entry<T> e = map.startEntry(this);
-            if (!e.isPromise())
+            if (!e.isPromise()) {
                 return e.value();
+            }
             try {
                 // Try to make a real entry for the promised version.
                 e = makeEntry(e.version(), computeValue(type));
@@ -230,8 +236,9 @@ public abstract class ClassValue<T> {
                 // be sure to remove the empty entry.
                 e = map.finishEntry(this, e);
             }
-            if (e != null)
+            if (e != null) {
                 return e.value();
+            }
             // else try again, in case a racing thread called remove (so e == null)
         }
     }
@@ -343,8 +350,12 @@ public abstract class ClassValue<T> {
         }
         boolean isLive() {
             Version<T> v = version();
-            if (v == null)  return false;
-            if (v.isLive())  return true;
+            if (v == null) {
+                return false;
+            }
+            if (v.isLive()) {
+                return true;
+            }
             clear();
             return false;
         }
@@ -365,7 +376,9 @@ public abstract class ClassValue<T> {
         // if a null is observed, a map is created (lazily, synchronously, uniquely)
         // all further access to that map is synchronized
         ClassValueMap map = type.classValueMap;
-        if (map != null)  return map;
+        if (map != null) {
+            return map;
+        }
         return initializeMap(type);
     }
 
@@ -374,8 +387,9 @@ public abstract class ClassValue<T> {
         ClassValueMap map;
         synchronized (CRITICAL_SECTION) {  // private object to avoid deadlocks
             // happens about once per type
-            if ((map = type.classValueMap) == null)
+            if ((map = type.classValueMap) == null) {
                 type.classValueMap = map = new ClassValueMap(type);
+            }
         }
             return map;
         }
@@ -473,8 +487,9 @@ public abstract class ClassValue<T> {
                 // If e0 matches the intended entry, there has not been a remove call
                 // between the previous startEntry and now.  So now overwrite e0.
                 Version<T> v = classValue.version();
-                if (e.version() != v)
+                if (e.version() != v) {
                     e = e.refreshVersion(v);
+                }
                 put(classValue.identity, e);
                 // Add to the cache, to enable the fast path, next time.
                 checkCacheLoad();
@@ -514,7 +529,9 @@ public abstract class ClassValue<T> {
             if (e0 != null) {
                 if (e0.version() == version && e0.value() == value)
                     // no value change => no version change needed
+                {
                     return;
+                }
                 classValue.bumpVersion();
                 removeStaleEntries(classValue);
             }
@@ -546,7 +563,9 @@ public abstract class ClassValue<T> {
 
         /** Given that first probe was a collision, retry at nearby locations. */
         static <T> Entry<T> probeBackupLocations(Entry<?>[] cache, ClassValue<T> classValue) {
-            if (PROBE_LIMIT <= 0)  return null;
+            if (PROBE_LIMIT <= 0) {
+                return null;
+            }
             // Probe the cache carefully, in a range of slots.
             int mask = (cache.length-1);
             int home = (classValue.hashCodeForCache & mask);
@@ -575,7 +594,9 @@ public abstract class ClassValue<T> {
                     return classValue.castEntry(e);
                 }
                 // Remember first empty slot, if any:
-                if (!e.isLive() && pos2 < 0)  pos2 = i;
+                if (!e.isLive() && pos2 < 0) {
+                    pos2 = i;
+                }
             }
             return null;
         }
@@ -583,7 +604,9 @@ public abstract class ClassValue<T> {
         /** How far out of place is e? */
         private static int entryDislocation(Entry<?>[] cache, int pos, Entry<?> e) {
             ClassValue<?> cv = e.classValueOrNull();
-            if (cv == null)  return 0;  // entry is not live!
+            if (cv == null) {
+                return 0;  // entry is not live!
+            }
             int mask = (cache.length-1);
             return (pos - cv.hashCodeForCache) & mask;
         }
@@ -607,11 +630,13 @@ public abstract class ClassValue<T> {
         }
         private void reduceCacheLoad() {
             removeStaleEntries();
-            if (cacheLoad < cacheLoadLimit)
+            if (cacheLoad < cacheLoadLimit) {
                 return;  // win
+            }
             Entry<?>[] oldCache = getCache();
-            if (oldCache.length > HASH_MASK)
+            if (oldCache.length > HASH_MASK) {
                 return;  // lose
+            }
             sizeCache(oldCache.length * 2);
             for (Entry<?> e : oldCache) {
                 if (e != null && e.isLive()) {
@@ -624,20 +649,25 @@ public abstract class ClassValue<T> {
          *  Should be executed under a Map lock.
          */
         private void removeStaleEntries(Entry<?>[] cache, int begin, int count) {
-            if (PROBE_LIMIT <= 0)  return;
+            if (PROBE_LIMIT <= 0) {
+                return;
+            }
             int mask = (cache.length-1);
             int removed = 0;
             for (int i = begin; i < begin + count; i++) {
                 Entry<?> e = cache[i & mask];
-                if (e == null || e.isLive())
+                if (e == null || e.isLive()) {
                     continue;  // skip null and live entries
+                }
                 Entry<?> replacement = null;
                 if (PROBE_LIMIT > 1) {
                     // avoid breaking up a non-null run
                     replacement = findReplacement(cache, i);
                 }
                 cache[i & mask] = replacement;
-                if (replacement == null)  removed += 1;
+                if (replacement == null) {
+                    removed += 1;
+                }
             }
             cacheLoad = Math.max(0, cacheLoad - removed);
         }
@@ -653,10 +683,16 @@ public abstract class ClassValue<T> {
             int mask = (cache.length-1);
             for (int i2 = home1 + 1; i2 < home1 + PROBE_LIMIT; i2++) {
                 Entry<?> e2 = cache[i2 & mask];
-                if (e2 == null)  break;  // End of non-null run.
-                if (!e2.isLive())  continue;  // Doomed anyway.
+                if (e2 == null) {
+                    break;  // End of non-null run.
+                }
+                if (!e2.isLive()) {
+                    continue;  // Doomed anyway.
+                }
                 int dis2 = entryDislocation(cache, i2, e2);
-                if (dis2 == 0)  continue;  // e2 already optimally placed
+                if (dis2 == 0) {
+                    continue;  // e2 already optimally placed
+                }
                 int home2 = i2 - dis2;
                 if (home2 <= home1) {
                     // e2 can replace entry at cache[home1]
@@ -699,19 +735,24 @@ public abstract class ClassValue<T> {
         /** Add the given entry to the cache, in its home location, unless it is out of date. */
         private <T> void addToCache(Entry<T> e) {
             ClassValue<T> classValue = e.classValueOrNull();
-            if (classValue != null)
+            if (classValue != null) {
                 addToCache(classValue, e);
+            }
         }
 
         /** Add the given entry to the cache, in its home location. */
         private <T> void addToCache(ClassValue<T> classValue, Entry<T> e) {
-            if (PROBE_LIMIT <= 0)  return;  // do not fill cache
+            if (PROBE_LIMIT <= 0) {
+                return;  // do not fill cache
+            }
             // Add e to the cache.
             Entry<?>[] cache = getCache();
             int mask = (cache.length-1);
             int home = classValue.hashCodeForCache & mask;
             Entry<?> e2 = placeInCache(cache, home, e, false);
-            if (e2 == null)  return;  // done
+            if (e2 == null) {
+                return;  // done
+            }
             if (PROBE_LIMIT > 1) {
                 // try to move e2 somewhere else in his probe range
                 int dis2 = entryDislocation(cache, home, e2);
@@ -746,8 +787,11 @@ public abstract class ClassValue<T> {
          *  in its place.
          */
         private <T> Entry<T> overwrittenEntry(Entry<T> e2) {
-            if (e2 == null)  cacheLoad += 1;
-            else if (e2.isLive())  return e2;
+            if (e2 == null) {
+                cacheLoad += 1;
+            } else if (e2.isLive()) {
+                return e2;
+            }
             return null;
         }
 

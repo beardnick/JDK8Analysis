@@ -220,9 +220,10 @@ public class IdentityHashMap<K,V>
      * @throws IllegalArgumentException if <tt>expectedMaxSize</tt> is negative
      */
     public IdentityHashMap(int expectedMaxSize) {
-        if (expectedMaxSize < 0)
+        if (expectedMaxSize < 0) {
             throw new IllegalArgumentException("expectedMaxSize is negative: "
                                                + expectedMaxSize);
+        }
         init(capacity(expectedMaxSize));
     }
 
@@ -328,10 +329,12 @@ public class IdentityHashMap<K,V>
         int i = hash(k, len);
         while (true) {
             Object item = tab[i];
-            if (item == k)
+            if (item == k) {
                 return (V) tab[i + 1];
-            if (item == null)
+            }
+            if (item == null) {
                 return null;
+            }
             i = nextKeyIndex(i, len);
         }
     }
@@ -352,10 +355,12 @@ public class IdentityHashMap<K,V>
         int i = hash(k, len);
         while (true) {
             Object item = tab[i];
-            if (item == k)
+            if (item == k) {
                 return true;
-            if (item == null)
+            }
+            if (item == null) {
                 return false;
+            }
             i = nextKeyIndex(i, len);
         }
     }
@@ -371,9 +376,11 @@ public class IdentityHashMap<K,V>
      */
     public boolean containsValue(Object value) {
         Object[] tab = table;
-        for (int i = 1; i < tab.length; i += 2)
-            if (tab[i] == value && tab[i - 1] != null)
+        for (int i = 1; i < tab.length; i += 2) {
+            if (tab[i] == value && tab[i - 1] != null) {
                 return true;
+            }
+        }
 
         return false;
     }
@@ -393,10 +400,12 @@ public class IdentityHashMap<K,V>
         int i = hash(k, len);
         while (true) {
             Object item = tab[i];
-            if (item == k)
+            if (item == k) {
                 return tab[i + 1] == value;
-            if (item == null)
+            }
+            if (item == null) {
                 return false;
+            }
             i = nextKeyIndex(i, len);
         }
     }
@@ -437,8 +446,9 @@ public class IdentityHashMap<K,V>
             final int s = size + 1;
             // Use optimized form of 3 * s.
             // Next capacity is len, 2 * current capacity.
-            if (s + (s << 1) > len && resize(len))
+            if (s + (s << 1) > len && resize(len)) {
                 continue retryAfterResize;
+            }
 
             modCount++;
             tab[i] = k;
@@ -461,12 +471,14 @@ public class IdentityHashMap<K,V>
         Object[] oldTable = table;
         int oldLength = oldTable.length;
         if (oldLength == 2 * MAXIMUM_CAPACITY) { // can't expand any further
-            if (size == MAXIMUM_CAPACITY - 1)
+            if (size == MAXIMUM_CAPACITY - 1) {
                 throw new IllegalStateException("Capacity exhausted.");
+            }
             return false;
         }
-        if (oldLength >= newLength)
+        if (oldLength >= newLength) {
             return false;
+        }
 
         Object[] newTable = new Object[newLength];
 
@@ -477,8 +489,9 @@ public class IdentityHashMap<K,V>
                 oldTable[j] = null;
                 oldTable[j+1] = null;
                 int i = hash(key, newLength);
-                while (newTable[i] != null)
+                while (newTable[i] != null) {
                     i = nextKeyIndex(i, newLength);
+                }
                 newTable[i] = key;
                 newTable[i + 1] = value;
             }
@@ -497,13 +510,16 @@ public class IdentityHashMap<K,V>
      */
     public void putAll(Map<? extends K, ? extends V> m) {
         int n = m.size();
-        if (n == 0)
+        if (n == 0) {
             return;
-        if (n > size)
+        }
+        if (n > size) {
             resize(capacity(n)); // conservatively pre-expand
+        }
 
-        for (Entry<? extends K, ? extends V> e : m.entrySet())
+        for (Entry<? extends K, ? extends V> e : m.entrySet()) {
             put(e.getKey(), e.getValue());
+        }
     }
 
     /**
@@ -533,8 +549,9 @@ public class IdentityHashMap<K,V>
                 closeDeletion(i);
                 return oldValue;
             }
-            if (item == null)
+            if (item == null) {
                 return null;
+            }
             i = nextKeyIndex(i, len);
         }
     }
@@ -556,8 +573,9 @@ public class IdentityHashMap<K,V>
         while (true) {
             Object item = tab[i];
             if (item == k) {
-                if (tab[i + 1] != value)
+                if (tab[i + 1] != value) {
                     return false;
+                }
                 modCount++;
                 size--;
                 tab[i] = null;
@@ -565,8 +583,9 @@ public class IdentityHashMap<K,V>
                 closeDeletion(i);
                 return true;
             }
-            if (item == null)
+            if (item == null) {
                 return false;
+            }
             i = nextKeyIndex(i, len);
         }
     }
@@ -614,8 +633,9 @@ public class IdentityHashMap<K,V>
     public void clear() {
         modCount++;
         Object[] tab = table;
-        for (int i = 0; i < tab.length; i++)
+        for (int i = 0; i < tab.length; i++) {
             tab[i] = null;
+        }
         size = 0;
     }
 
@@ -641,14 +661,16 @@ public class IdentityHashMap<K,V>
             return true;
         } else if (o instanceof IdentityHashMap) {
             IdentityHashMap<?,?> m = (IdentityHashMap<?,?>) o;
-            if (m.size() != size)
+            if (m.size() != size) {
                 return false;
+            }
 
             Object[] tab = m.table;
             for (int i = 0; i < tab.length; i+=2) {
                 Object k = tab[i];
-                if (k != null && !containsMapping(k, tab[i + 1]))
+                if (k != null && !containsMapping(k, tab[i + 1])) {
                     return false;
+                }
             }
             return true;
         } else if (o instanceof Map) {
@@ -730,10 +752,12 @@ public class IdentityHashMap<K,V>
         }
 
         protected int nextIndex() {
-            if (modCount != expectedModCount)
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
-            if (!indexValid && !hasNext())
+            }
+            if (!indexValid && !hasNext()) {
                 throw new NoSuchElementException();
+            }
 
             indexValid = false;
             lastReturnedIndex = index;
@@ -742,10 +766,12 @@ public class IdentityHashMap<K,V>
         }
 
         public void remove() {
-            if (lastReturnedIndex == -1)
+            if (lastReturnedIndex == -1) {
                 throw new IllegalStateException();
-            if (modCount != expectedModCount)
+            }
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
+            }
 
             expectedModCount = ++modCount;
             int deletedSlot = lastReturnedIndex;
@@ -876,41 +902,47 @@ public class IdentityHashMap<K,V>
                 V oldValue = (V) traversalTable[index+1];
                 traversalTable[index+1] = value;
                 // if shadowing, force into main table
-                if (traversalTable != IdentityHashMap.this.table)
+                if (traversalTable != IdentityHashMap.this.table) {
                     put((K) traversalTable[index], value);
+                }
                 return oldValue;
             }
 
             public boolean equals(Object o) {
-                if (index < 0)
+                if (index < 0) {
                     return super.equals(o);
+                }
 
-                if (!(o instanceof Map.Entry))
+                if (!(o instanceof Map.Entry)) {
                     return false;
+                }
                 Map.Entry<?,?> e = (Map.Entry<?,?>)o;
                 return (e.getKey() == unmaskNull(traversalTable[index]) &&
                        e.getValue() == traversalTable[index+1]);
             }
 
             public int hashCode() {
-                if (lastReturnedIndex < 0)
+                if (lastReturnedIndex < 0) {
                     return super.hashCode();
+                }
 
                 return (System.identityHashCode(unmaskNull(traversalTable[index])) ^
                        System.identityHashCode(traversalTable[index+1]));
             }
 
             public String toString() {
-                if (index < 0)
+                if (index < 0) {
                     return super.toString();
+                }
 
                 return (unmaskNull(traversalTable[index]) + "="
                         + traversalTable[index+1]);
             }
 
             private void checkIndexForEntryUse() {
-                if (index < 0)
+                if (index < 0) {
                     throw new IllegalStateException("Entry was removed");
+                }
             }
         }
     }
@@ -964,10 +996,11 @@ public class IdentityHashMap<K,V>
      */
     public Set<K> keySet() {
         Set<K> ks = keySet;
-        if (ks != null)
+        if (ks != null) {
             return ks;
-        else
+        } else {
             return keySet = new KeySet();
+        }
     }
 
     private class KeySet extends AbstractSet<K> {
@@ -1006,8 +1039,9 @@ public class IdentityHashMap<K,V>
         }
         public int hashCode() {
             int result = 0;
-            for (K key : this)
+            for (K key : this) {
                 result += System.identityHashCode(key);
+            }
             return result;
         }
         public Object[] toArray() {
@@ -1017,8 +1051,9 @@ public class IdentityHashMap<K,V>
         public <T> T[] toArray(T[] a) {
             int expectedModCount = modCount;
             int size = size();
-            if (a.length < size)
+            if (a.length < size) {
                 a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+            }
             Object[] tab = table;
             int ti = 0;
             for (int si = 0; si < tab.length; si += 2) {
@@ -1069,10 +1104,11 @@ public class IdentityHashMap<K,V>
      */
     public Collection<V> values() {
         Collection<V> vs = values;
-        if (vs != null)
+        if (vs != null) {
             return vs;
-        else
+        } else {
             return values = new Values();
+        }
     }
 
     private class Values extends AbstractCollection<V> {
@@ -1104,8 +1140,9 @@ public class IdentityHashMap<K,V>
         public <T> T[] toArray(T[] a) {
             int expectedModCount = modCount;
             int size = size();
-            if (a.length < size)
+            if (a.length < size) {
                 a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+            }
             Object[] tab = table;
             int ti = 0;
             for (int si = 0; si < tab.length; si += 2) {
@@ -1173,10 +1210,11 @@ public class IdentityHashMap<K,V>
      */
     public Set<Map.Entry<K,V>> entrySet() {
         Set<Map.Entry<K,V>> es = entrySet;
-        if (es != null)
+        if (es != null) {
             return es;
-        else
+        } else {
             return entrySet = new EntrySet();
+        }
     }
 
     private class EntrySet extends AbstractSet<Map.Entry<K,V>> {
@@ -1184,14 +1222,16 @@ public class IdentityHashMap<K,V>
             return new EntryIterator();
         }
         public boolean contains(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> entry = (Map.Entry<?,?>)o;
             return containsMapping(entry.getKey(), entry.getValue());
         }
         public boolean remove(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> entry = (Map.Entry<?,?>)o;
             return removeMapping(entry.getKey(), entry.getValue());
         }
@@ -1226,8 +1266,9 @@ public class IdentityHashMap<K,V>
         public <T> T[] toArray(T[] a) {
             int expectedModCount = modCount;
             int size = size();
-            if (a.length < size)
+            if (a.length < size) {
                 a = (T[]) Array.newInstance(a.getClass().getComponentType(), size);
+            }
             Object[] tab = table;
             int ti = 0;
             for (int si = 0; si < tab.length; si += 2) {
@@ -1299,9 +1340,10 @@ public class IdentityHashMap<K,V>
 
         // Read in size (number of Mappings)
         int size = s.readInt();
-        if (size < 0)
+        if (size < 0) {
             throw new java.io.StreamCorruptedException
                 ("Illegal mappings count: " + size);
+        }
         init(capacity(size));
 
         // Read the keys and values, and put the mappings in the table
@@ -1328,8 +1370,9 @@ public class IdentityHashMap<K,V>
 
         Object item;
         while ( (item = tab[i]) != null) {
-            if (item == k)
+            if (item == k) {
                 throw new java.io.StreamCorruptedException();
+            }
             i = nextKeyIndex(i, len);
         }
         tab[i] = k;
@@ -1427,26 +1470,30 @@ public class IdentityHashMap<K,V>
 
         @SuppressWarnings("unchecked")
         public void forEachRemaining(Consumer<? super K> action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             int i, hi, mc; Object key;
             IdentityHashMap<K,V> m; Object[] a;
             if ((m = map) != null && (a = m.table) != null &&
                 (i = index) >= 0 && (index = hi = getFence()) <= a.length) {
                 for (; i < hi; i += 2) {
-                    if ((key = a[i]) != null)
+                    if ((key = a[i]) != null) {
                         action.accept((K)unmaskNull(key));
+                    }
                 }
-                if (m.modCount == expectedModCount)
+                if (m.modCount == expectedModCount) {
                     return;
+                }
             }
             throw new ConcurrentModificationException();
         }
 
         @SuppressWarnings("unchecked")
         public boolean tryAdvance(Consumer<? super K> action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             Object[] a = map.table;
             int hi = getFence();
             while (index < hi) {
@@ -1454,8 +1501,9 @@ public class IdentityHashMap<K,V>
                 index += 2;
                 if (key != null) {
                     action.accept((K)unmaskNull(key));
-                    if (map.modCount != expectedModCount)
+                    if (map.modCount != expectedModCount) {
                         throw new ConcurrentModificationException();
+                    }
                     return true;
                 }
             }
@@ -1483,8 +1531,9 @@ public class IdentityHashMap<K,V>
         }
 
         public void forEachRemaining(Consumer<? super V> action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             int i, hi, mc;
             IdentityHashMap<K,V> m; Object[] a;
             if ((m = map) != null && (a = m.table) != null &&
@@ -1495,15 +1544,17 @@ public class IdentityHashMap<K,V>
                         action.accept(v);
                     }
                 }
-                if (m.modCount == expectedModCount)
+                if (m.modCount == expectedModCount) {
                     return;
+                }
             }
             throw new ConcurrentModificationException();
         }
 
         public boolean tryAdvance(Consumer<? super V> action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             Object[] a = map.table;
             int hi = getFence();
             while (index < hi) {
@@ -1512,8 +1563,9 @@ public class IdentityHashMap<K,V>
                 index += 2;
                 if (key != null) {
                     action.accept(v);
-                    if (map.modCount != expectedModCount)
+                    if (map.modCount != expectedModCount) {
                         throw new ConcurrentModificationException();
+                    }
                     return true;
                 }
             }
@@ -1542,8 +1594,9 @@ public class IdentityHashMap<K,V>
         }
 
         public void forEachRemaining(Consumer<? super Map.Entry<K, V>> action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             int i, hi, mc;
             IdentityHashMap<K,V> m; Object[] a;
             if ((m = map) != null && (a = m.table) != null &&
@@ -1559,15 +1612,17 @@ public class IdentityHashMap<K,V>
 
                     }
                 }
-                if (m.modCount == expectedModCount)
+                if (m.modCount == expectedModCount) {
                     return;
+                }
             }
             throw new ConcurrentModificationException();
         }
 
         public boolean tryAdvance(Consumer<? super Map.Entry<K,V>> action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             Object[] a = map.table;
             int hi = getFence();
             while (index < hi) {
@@ -1579,8 +1634,9 @@ public class IdentityHashMap<K,V>
                         (K)unmaskNull(key);
                     action.accept
                         (new AbstractMap.SimpleImmutableEntry<K,V>(k, v));
-                    if (map.modCount != expectedModCount)
+                    if (map.modCount != expectedModCount) {
                         throw new ConcurrentModificationException();
+                    }
                     return true;
                 }
             }

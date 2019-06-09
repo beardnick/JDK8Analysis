@@ -73,9 +73,10 @@ implements java.io.Serializable
 
     public void add(Permission permission)
     {
-        if (! (permission instanceof UnresolvedPermission))
+        if (! (permission instanceof UnresolvedPermission)) {
             throw new IllegalArgumentException("invalid permission: "+
                                                permission);
+        }
         UnresolvedPermission up = (UnresolvedPermission) permission;
 
         List<UnresolvedPermission> v;

@@ -154,10 +154,12 @@ public final class MathContext implements Serializable {
      */
     public MathContext(int setPrecision,
                        RoundingMode setRoundingMode) {
-        if (setPrecision < MIN_DIGITS)
+        if (setPrecision < MIN_DIGITS) {
             throw new IllegalArgumentException("Digits < 0");
-        if (setRoundingMode == null)
+        }
+        if (setRoundingMode == null) {
             throw new NullPointerException("null RoundingMode");
+        }
 
         precision = setPrecision;
         roundingMode = setRoundingMode;
@@ -182,16 +184,20 @@ public final class MathContext implements Serializable {
     public MathContext(String val) {
         boolean bad = false;
         int setPrecision;
-        if (val == null)
+        if (val == null) {
             throw new NullPointerException("null String");
+        }
         try { // any error here is a string format problem
-            if (!val.startsWith("precision=")) throw new RuntimeException();
+            if (!val.startsWith("precision=")) {
+                throw new RuntimeException();
+            }
             int fence = val.indexOf(' ');    // could be -1
             int off = 10;                     // where value starts
             setPrecision = Integer.parseInt(val.substring(10, fence));
 
-            if (!val.startsWith("roundingMode=", fence+1))
+            if (!val.startsWith("roundingMode=", fence+1)) {
                 throw new RuntimeException();
+            }
             off = fence + 1 + 13;
             String str = val.substring(off, val.length());
             roundingMode = RoundingMode.valueOf(str);
@@ -199,8 +205,9 @@ public final class MathContext implements Serializable {
             throw new IllegalArgumentException("bad string format");
         }
 
-        if (setPrecision < MIN_DIGITS)
+        if (setPrecision < MIN_DIGITS) {
             throw new IllegalArgumentException("Digits < 0");
+        }
         // the other parameters cannot be invalid if we got here
         precision = setPrecision;
     }
@@ -248,8 +255,9 @@ public final class MathContext implements Serializable {
      */
     public boolean equals(Object x){
         MathContext mc;
-        if (!(x instanceof MathContext))
+        if (!(x instanceof MathContext)) {
             return false;
+        }
         mc = (MathContext) x;
         return mc.precision == this.precision
             && mc.roundingMode == this.roundingMode; // no need for .equals()

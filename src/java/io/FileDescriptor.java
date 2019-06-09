@@ -218,12 +218,14 @@ public final class FileDescriptor {
                  * If releaser close() throws IOException
                  * add other exceptions as suppressed.
                  */
-                if (ioe != null)
+                if (ioe != null) {
                     ex.addSuppressed(ioe);
+                }
                 ioe = ex;
             } finally {
-                if (ioe != null)
+                if (ioe != null) {
                     throw ioe;
+                }
             }
         }
     }

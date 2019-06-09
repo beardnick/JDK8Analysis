@@ -50,7 +50,9 @@ class DirectMethodHandle extends MethodHandle {
     // Constructors and factory methods in this class *must* be package scoped or private.
     private DirectMethodHandle(MethodType mtype, LambdaForm form, MemberName member) {
         super(mtype, form);
-        if (!member.isResolved())  throw new InternalError();
+        if (!member.isResolved()) {
+            throw new InternalError();
+        }
 
         if (member.getDeclaringClass().isInterface() &&
                 member.isMethod() && !member.isAbstract()) {
@@ -70,8 +72,9 @@ class DirectMethodHandle extends MethodHandle {
     static DirectMethodHandle make(byte refKind, Class<?> receiver, MemberName member) {
         MethodType mtype = member.getMethodOrFieldType();
         if (!member.isStatic()) {
-            if (!member.getDeclaringClass().isAssignableFrom(receiver) || member.isConstructor())
+            if (!member.getDeclaringClass().isAssignableFrom(receiver) || member.isConstructor()) {
                 throw new InternalError(member.toString());
+            }
             mtype = mtype.insertParameterTypes(0, receiver);
         }
         if (!member.isField()) {
@@ -98,13 +101,15 @@ class DirectMethodHandle extends MethodHandle {
     }
     static DirectMethodHandle make(Class<?> receiver, MemberName member) {
         byte refKind = member.getReferenceKind();
-        if (refKind == REF_invokeSpecial)
+        if (refKind == REF_invokeSpecial) {
             refKind =  REF_invokeVirtual;
+        }
         return make(refKind, receiver, member);
     }
     static DirectMethodHandle make(MemberName member) {
-        if (member.isConstructor())
+        if (member.isConstructor()) {
             return makeAllocator(member);
+        }
         return make(member.getDeclaringClass(), member);
     }
     static DirectMethodHandle make(Method method) {
@@ -183,7 +188,9 @@ class DirectMethodHandle extends MethodHandle {
 
     private static LambdaForm preparedLambdaForm(MethodType mtype, int which) {
         LambdaForm lform = mtype.form().cachedLambdaForm(which);
-        if (lform != null)  return lform;
+        if (lform != null) {
+            return lform;
+        }
         lform = makePreparedLambdaForm(mtype, which);
         return mtype.form().setCachedLambdaForm(which, lform);
     }
@@ -202,10 +209,11 @@ class DirectMethodHandle extends MethodHandle {
         default:  throw new InternalError("which="+which);
         }
         MethodType mtypeWithArg = mtype.appendParameterTypes(MemberName.class);
-        if (doesAlloc)
+        if (doesAlloc) {
             mtypeWithArg = mtypeWithArg
                     .insertParameterTypes(0, Object.class)  // insert newly allocated obj
                     .changeReturnType(void.class);          // <init> returns void
+        }
         MemberName linker = new MemberName(MethodHandle.class, linkerName, mtypeWithArg, REF_invokeStatic);
         try {
             linker = IMPL_NAMES.resolveOrFail(REF_invokeStatic, linker, null, NoSuchMethodException.class);
@@ -261,7 +269,9 @@ class DirectMethodHandle extends MethodHandle {
     private static void maybeCompile(LambdaForm lform, MemberName m) {
         if (VerifyAccess.isSamePackage(m.getDeclaringClass(), MethodHandle.class))
             // Help along bootstrapping...
+        {
             lform.compileToBytecode();
+        }
     }
 
     /** Static wrapper for DirectMethodHandle.internalMemberName. */
@@ -318,7 +328,9 @@ class DirectMethodHandle extends MethodHandle {
             if (UNSAFE.shouldBeInitialized(type))
                 // If the previous call didn't block, this can happen.
                 // We are executing inside <clinit>.
+            {
                 return new WeakReference<>(Thread.currentThread());
+            }
             return null;
         }
         static final EnsureInitialized INSTANCE = new EnsureInitialized();
@@ -327,10 +339,11 @@ class DirectMethodHandle extends MethodHandle {
     private void ensureInitialized() {
         if (checkInitialized(member)) {
             // The coast is clear.  Delete the <clinit> barrier.
-            if (member.isField())
+            if (member.isField()) {
                 updateForm(preparedFieldLambdaForm(member));
-            else
+            } else {
                 updateForm(preparedLambdaForm(member));
+            }
         }
     }
     private static boolean checkInitialized(MemberName member) {
@@ -345,7 +358,9 @@ class DirectMethodHandle extends MethodHandle {
             // If anybody is running defc.<clinit>, it is this thread.
             if (UNSAFE.shouldBeInitialized(defc))
                 // Yes, we are running it; keep the barrier for now.
+            {
                 return false;
+            }
         } else {
             // We are in a random thread.  Block.
             UNSAFE.ensureClassInitialized(defc);
@@ -515,12 +530,13 @@ class DirectMethodHandle extends MethodHandle {
     private static final LambdaForm[] ACCESSOR_FORMS
             = new LambdaForm[afIndex(AF_LIMIT, false, 0)];
     private static int ftypeKind(Class<?> ftype) {
-        if (ftype.isPrimitive())
+        if (ftype.isPrimitive()) {
             return Wrapper.forPrimitiveType(ftype).ordinal();
-        else if (VerifyType.isNullReferenceConversion(Object.class, ftype))
+        } else if (VerifyType.isNullReferenceConversion(Object.class, ftype)) {
             return FT_UNCHECKED_REF;
-        else
+        } else {
             return FT_CHECKED_REF;
+        }
     }
 
     /**
@@ -556,7 +572,9 @@ class DirectMethodHandle extends MethodHandle {
     private static LambdaForm preparedFieldLambdaForm(byte formOp, boolean isVolatile, Class<?> ftype) {
         int afIndex = afIndex(formOp, isVolatile, ftypeKind(ftype));
         LambdaForm lform = ACCESSOR_FORMS[afIndex];
-        if (lform != null)  return lform;
+        if (lform != null) {
+            return lform;
+        }
         lform = makePreparedFieldLambdaForm(formOp, isVolatile, ftypeKind(ftype));
         ACCESSOR_FORMS[afIndex] = lform;  // don't bother with a CAS
         return lform;
@@ -572,14 +590,17 @@ class DirectMethodHandle extends MethodHandle {
         assert(ftypeKind(needsCast ? String.class : ft) == ftypeKind);
         String tname  = fw.primitiveSimpleName();
         String ctname = Character.toUpperCase(tname.charAt(0)) + tname.substring(1);
-        if (isVolatile)  ctname += "Volatile";
+        if (isVolatile) {
+            ctname += "Volatile";
+        }
         String getOrPut = (isGetter ? "get" : "put");
         String linkerName = (getOrPut + ctname);  // getObject, putIntVolatile, etc.
         MethodType linkerType;
-        if (isGetter)
+        if (isGetter) {
             linkerType = MethodType.methodType(ft, Object.class, long.class);
-        else
+        } else {
             linkerType = MethodType.methodType(void.class, Object.class, long.class, ft);
+        }
         MemberName linker = new MemberName(Unsafe.class, linkerName, linkerType, REF_invokeVirtual);
         try {
             linker = IMPL_NAMES.resolveOrFail(REF_invokeVirtual, linker, null, NoSuchMethodException.class);
@@ -589,13 +610,15 @@ class DirectMethodHandle extends MethodHandle {
 
         // What is the external type of the lambda form?
         MethodType mtype;
-        if (isGetter)
+        if (isGetter) {
             mtype = MethodType.methodType(ft);
-        else
+        } else {
             mtype = MethodType.methodType(void.class, ft);
+        }
         mtype = mtype.basicType();  // erase short to int, etc.
-        if (!isStatic)
+        if (!isStatic) {
             mtype = mtype.insertParameterTypes(0, Object.class);
+        }
         final int DMH_THIS  = 0;
         final int ARG_BASE  = 1;
         final int ARG_LIMIT = ARG_BASE + mtype.parameterCount();
@@ -613,10 +636,12 @@ class DirectMethodHandle extends MethodHandle {
         final int POST_CAST = (needsCast && isGetter ? nameCursor++ : -1);
         final int RESULT    = nameCursor-1;  // either the call or the cast
         Name[] names = arguments(nameCursor - ARG_LIMIT, mtype.invokerType());
-        if (needsInit)
+        if (needsInit) {
             names[INIT_BAR] = new Name(Lazy.NF_ensureInitialized, names[DMH_THIS]);
-        if (needsCast && !isGetter)
+        }
+        if (needsCast && !isGetter) {
             names[PRE_CAST] = new Name(Lazy.NF_checkCast, names[DMH_THIS], names[SET_VALUE]);
+        }
         Object[] outArgs = new Object[1 + linkerType.parameterCount()];
         assert(outArgs.length == (isGetter ? 3 : 4));
         outArgs[0] = UNSAFE;
@@ -630,15 +655,24 @@ class DirectMethodHandle extends MethodHandle {
         if (!isGetter) {
             outArgs[3] = (needsCast ? names[PRE_CAST] : names[SET_VALUE]);
         }
-        for (Object a : outArgs)  assert(a != null);
+        for (Object a : outArgs) {
+            assert(a != null);
+        }
         names[LINKER_CALL] = new Name(linker, outArgs);
-        if (needsCast && isGetter)
+        if (needsCast && isGetter) {
             names[POST_CAST] = new Name(Lazy.NF_checkCast, names[DMH_THIS], names[LINKER_CALL]);
-        for (Name n : names)  assert(n != null);
+        }
+        for (Name n : names) {
+            assert(n != null);
+        }
         String fieldOrStatic = (isStatic ? "Static" : "Field");
         String lambdaName = (linkerName + fieldOrStatic);  // significant only for debugging
-        if (needsCast)  lambdaName += "Cast";
-        if (needsInit)  lambdaName += "Init";
+        if (needsCast) {
+            lambdaName += "Cast";
+        }
+        if (needsInit) {
+            lambdaName += "Init";
+        }
         return new LambdaForm(lambdaName, ARG_LIMIT, names, RESULT);
     }
 

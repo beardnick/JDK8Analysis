@@ -68,8 +68,9 @@ public class LDAPCertStoreParameters implements CertStoreParameters {
      * {@code null}
      */
     public LDAPCertStoreParameters(String serverName, int port) {
-        if (serverName == null)
+        if (serverName == null) {
             throw new NullPointerException();
+        }
         this.serverName = serverName;
         this.port = port;
     }

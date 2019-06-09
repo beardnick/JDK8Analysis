@@ -108,10 +108,13 @@ class SequenceInputStream extends InputStream {
 
         if (e.hasMoreElements()) {
             in = (InputStream) e.nextElement();
-            if (in == null)
+            if (in == null) {
                 throw new NullPointerException();
+            }
         }
-        else in = null;
+        else {
+            in = null;
+        }
 
     }
 

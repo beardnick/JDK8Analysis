@@ -400,11 +400,13 @@ public abstract class AtomicIntegerFieldUpdater<T> {
             }
 
             Class<?> fieldt = field.getType();
-            if (fieldt != int.class)
+            if (fieldt != int.class) {
                 throw new IllegalArgumentException("Must be integer type");
+            }
 
-            if (!Modifier.isVolatile(modifiers))
+            if (!Modifier.isVolatile(modifiers)) {
                 throw new IllegalArgumentException("Must be volatile type");
+            }
 
             this.cclass = (Modifier.isProtected(modifiers) &&
                            caller != tclass) ? caller : null;
@@ -429,39 +431,53 @@ public abstract class AtomicIntegerFieldUpdater<T> {
         }
 
         private void fullCheck(T obj) {
-            if (!tclass.isInstance(obj))
+            if (!tclass.isInstance(obj)) {
                 throw new ClassCastException();
-            if (cclass != null)
+            }
+            if (cclass != null) {
                 ensureProtectedAccess(obj);
+            }
         }
 
         public boolean compareAndSet(T obj, int expect, int update) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             return unsafe.compareAndSwapInt(obj, offset, expect, update);
         }
 
         public boolean weakCompareAndSet(T obj, int expect, int update) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             return unsafe.compareAndSwapInt(obj, offset, expect, update);
         }
 
         public void set(T obj, int newValue) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             unsafe.putIntVolatile(obj, offset, newValue);
         }
 
         public void lazySet(T obj, int newValue) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             unsafe.putOrderedInt(obj, offset, newValue);
         }
 
         public final int get(T obj) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             return unsafe.getIntVolatile(obj, offset);
         }
 
         public int getAndSet(T obj, int newValue) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             return unsafe.getAndSetInt(obj, offset, newValue);
         }
 
@@ -474,7 +490,9 @@ public abstract class AtomicIntegerFieldUpdater<T> {
         }
 
         public int getAndAdd(T obj, int delta) {
-            if (obj == null || obj.getClass() != tclass || cclass != null) fullCheck(obj);
+            if (obj == null || obj.getClass() != tclass || cclass != null) {
+                fullCheck(obj);
+            }
             return unsafe.getAndAddInt(obj, offset, delta);
         }
 

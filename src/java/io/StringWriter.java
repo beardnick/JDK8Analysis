@@ -137,10 +137,11 @@ public class StringWriter extends Writer {
      * @since  1.5
      */
     public StringWriter append(CharSequence csq) {
-        if (csq == null)
+        if (csq == null) {
             write("null");
-        else
+        } else {
             write(csq.toString());
+        }
         return this;
     }
 

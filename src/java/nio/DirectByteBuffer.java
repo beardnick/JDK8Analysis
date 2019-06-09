@@ -267,8 +267,9 @@ class DirectByteBuffer
             int lim = limit();
             assert (pos <= lim);
             int rem = (pos <= lim ? lim - pos : 0);
-            if (length > rem)
+            if (length > rem) {
                 throw new BufferUnderflowException();
+            }
 
 
 
@@ -313,8 +314,9 @@ class DirectByteBuffer
     public ByteBuffer put(ByteBuffer src) {
 
         if (src instanceof DirectByteBuffer) {
-            if (src == this)
+            if (src == this) {
                 throw new IllegalArgumentException();
+            }
             DirectByteBuffer sb = (DirectByteBuffer)src;
 
             int spos = sb.position();
@@ -327,8 +329,9 @@ class DirectByteBuffer
             assert (pos <= lim);
             int rem = (pos <= lim ? lim - pos : 0);
 
-            if (srem > rem)
+            if (srem > rem) {
                 throw new BufferOverflowException();
+            }
             unsafe.copyMemory(sb.ix(spos), ix(pos), srem << 0);
             sb.position(spos + srem);
             position(pos + srem);
@@ -359,8 +362,9 @@ class DirectByteBuffer
             int lim = limit();
             assert (pos <= lim);
             int rem = (pos <= lim ? lim - pos : 0);
-            if (length > rem)
+            if (length > rem) {
                 throw new BufferOverflowException();
+            }
 
 
 

@@ -368,8 +368,9 @@ public class Exchanger<V> {
                 Object v = q.item;                     // release
                 q.match = item;
                 Thread w = q.parked;
-                if (w != null)
+                if (w != null) {
                     U.unpark(w);
+                }
                 return v;
             }
             else if (i <= (m = (b = bound) & MMASK) && q == null) {
@@ -388,40 +389,48 @@ public class Exchanger<V> {
                         else if (spins > 0) {
                             h ^= h << 1; h ^= h >>> 3; h ^= h << 10; // xorshift
                             if (h == 0)                // initialize hash
+                            {
                                 h = SPINS | (int)t.getId();
-                            else if (h < 0 &&          // approx 50% true
-                                     (--spins & ((SPINS >>> 1) - 1)) == 0)
+                            } else if (h < 0 &&          // approx 50% true
+                                     (--spins & ((SPINS >>> 1) - 1)) == 0) {
                                 Thread.yield();        // two yields per wait
+                            }
                         }
-                        else if (U.getObjectVolatile(a, j) != p)
+                        else if (U.getObjectVolatile(a, j) != p) {
                             spins = SPINS;       // releaser hasn't set match yet
-                        else if (!t.isInterrupted() && m == 0 &&
+                        } else if (!t.isInterrupted() && m == 0 &&
                                  (!timed ||
                                   (ns = end - System.nanoTime()) > 0L)) {
                             U.putObject(t, BLOCKER, this); // emulate LockSupport
                             p.parked = t;              // minimize window
-                            if (U.getObjectVolatile(a, j) == p)
+                            if (U.getObjectVolatile(a, j) == p) {
                                 U.park(false, ns);
+                            }
                             p.parked = null;
                             U.putObject(t, BLOCKER, null);
                         }
                         else if (U.getObjectVolatile(a, j) == p &&
                                  U.compareAndSwapObject(a, j, p, null)) {
                             if (m != 0)                // try to shrink
+                            {
                                 U.compareAndSwapInt(this, BOUND, b, b + SEQ - 1);
+                            }
                             p.item = null;
                             p.hash = h;
                             i = p.index >>>= 1;        // descend
-                            if (Thread.interrupted())
+                            if (Thread.interrupted()) {
                                 return null;
-                            if (timed && m == 0 && ns <= 0L)
+                            }
+                            if (timed && m == 0 && ns <= 0L) {
                                 return TIMED_OUT;
+                            }
                             break;                     // expired; restart
                         }
                     }
                 }
-                else
+                else {
                     p.item = null;                     // clear offer
+                }
             }
             else {
                 if (p.bound != b) {                    // stale; reset
@@ -434,8 +443,9 @@ public class Exchanger<V> {
                     p.collides = c + 1;
                     i = (i == 0) ? m : i - 1;          // cyclically traverse
                 }
-                else
+                else {
                     i = m + 1;                         // grow
+                }
                 p.index = i;
             }
         }
@@ -455,7 +465,9 @@ public class Exchanger<V> {
         Node p = participant.get();
         Thread t = Thread.currentThread();
         if (t.isInterrupted()) // preserve interrupt status so caller can recheck
+        {
             return null;
+        }
 
         for (Node q;;) {
             if ((q = slot) != null) {
@@ -463,21 +475,24 @@ public class Exchanger<V> {
                     Object v = q.item;
                     q.match = item;
                     Thread w = q.parked;
-                    if (w != null)
+                    if (w != null) {
                         U.unpark(w);
+                    }
                     return v;
                 }
                 // create arena on contention, but continue until slot null
                 if (NCPU > 1 && bound == 0 &&
-                    U.compareAndSwapInt(this, BOUND, 0, SEQ))
+                    U.compareAndSwapInt(this, BOUND, 0, SEQ)) {
                     arena = new Node[(FULL + 2) << ASHIFT];
+                }
             }
-            else if (arena != null)
+            else if (arena != null) {
                 return null; // caller must reroute to arenaExchange
-            else {
+            } else {
                 p.item = item;
-                if (U.compareAndSwapObject(this, SLOT, null, p))
+                if (U.compareAndSwapObject(this, SLOT, null, p)) {
                     break;
+                }
                 p.item = null;
             }
         }
@@ -490,19 +505,21 @@ public class Exchanger<V> {
         while ((v = p.match) == null) {
             if (spins > 0) {
                 h ^= h << 1; h ^= h >>> 3; h ^= h << 10;
-                if (h == 0)
+                if (h == 0) {
                     h = SPINS | (int)t.getId();
-                else if (h < 0 && (--spins & ((SPINS >>> 1) - 1)) == 0)
+                } else if (h < 0 && (--spins & ((SPINS >>> 1) - 1)) == 0) {
                     Thread.yield();
+                }
             }
-            else if (slot != p)
+            else if (slot != p) {
                 spins = SPINS;
-            else if (!t.isInterrupted() && arena == null &&
+            } else if (!t.isInterrupted() && arena == null &&
                      (!timed || (ns = end - System.nanoTime()) > 0L)) {
                 U.putObject(t, BLOCKER, this);
                 p.parked = t;
-                if (slot == p)
+                if (slot == p) {
                     U.park(false, ns);
+                }
                 p.parked = null;
                 U.putObject(t, BLOCKER, null);
             }
@@ -564,8 +581,9 @@ public class Exchanger<V> {
         if ((arena != null ||
              (v = slotExchange(item, false, 0L)) == null) &&
             ((Thread.interrupted() || // disambiguates null return
-              (v = arenaExchange(item, false, 0L)) == null)))
+              (v = arenaExchange(item, false, 0L)) == null))) {
             throw new InterruptedException();
+        }
         return (v == NULL_ITEM) ? null : (V)v;
     }
 
@@ -620,10 +638,12 @@ public class Exchanger<V> {
         if ((arena != null ||
              (v = slotExchange(item, true, ns)) == null) &&
             ((Thread.interrupted() ||
-              (v = arenaExchange(item, true, ns)) == null)))
+              (v = arenaExchange(item, true, ns)) == null))) {
             throw new InterruptedException();
-        if (v == TIMED_OUT)
+        }
+        if (v == TIMED_OUT) {
             throw new TimeoutException();
+        }
         return (v == NULL_ITEM) ? null : (V)v;
     }
 
@@ -657,8 +677,9 @@ public class Exchanger<V> {
         } catch (Exception e) {
             throw new Error(e);
         }
-        if ((s & (s-1)) != 0 || s > (1 << ASHIFT))
+        if ((s & (s-1)) != 0 || s > (1 << ASHIFT)) {
             throw new Error("Unsupported array scale");
+        }
     }
 
 }

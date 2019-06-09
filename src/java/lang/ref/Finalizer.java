@@ -89,7 +89,9 @@ final class Finalizer extends FinalReference<Object> { /* Package-private; must 
 
     private void runFinalizer(JavaLangAccess jla) {
         synchronized (this) {
-            if (hasBeenFinalized()) return;
+            if (hasBeenFinalized()) {
+                return;
+            }
             remove();
         }
         try {
@@ -125,7 +127,9 @@ final class Finalizer extends FinalReference<Object> { /* Package-private; must 
                 ThreadGroup tg = Thread.currentThread().getThreadGroup();
                 for (ThreadGroup tgn = tg;
                      tgn != null;
-                     tg = tgn, tgn = tg.getParent());
+                     tg = tgn, tgn = tg.getParent()) {
+                    ;
+                }
                 Thread sft = new Thread(tg, proc, "Secondary finalizer");
                 sft.start();
                 try {
@@ -146,13 +150,16 @@ final class Finalizer extends FinalReference<Object> { /* Package-private; must 
         forkSecondaryFinalizer(new Runnable() {
             private volatile boolean running;
             public void run() {
-                if (running)
+                if (running) {
                     return;
+                }
                 final JavaLangAccess jla = SharedSecrets.getJavaLangAccess();
                 running = true;
                 for (;;) {
                     Finalizer f = (Finalizer)queue.poll();
-                    if (f == null) break;
+                    if (f == null) {
+                        break;
+                    }
                     f.runFinalizer(jla);
                 }
             }
@@ -168,15 +175,18 @@ final class Finalizer extends FinalReference<Object> { /* Package-private; must 
         forkSecondaryFinalizer(new Runnable() {
             private volatile boolean running;
             public void run() {
-                if (running)
+                if (running) {
                     return;
+                }
                 final JavaLangAccess jla = SharedSecrets.getJavaLangAccess();
                 running = true;
                 for (;;) {
                     Finalizer f;
                     synchronized (lock) {
                         f = unfinalized;
-                        if (f == null) break;
+                        if (f == null) {
+                            break;
+                        }
                         unfinalized = f.next;
                     }
                     f.runFinalizer(jla);
@@ -189,8 +199,9 @@ final class Finalizer extends FinalReference<Object> { /* Package-private; must 
             super(g, "Finalizer");
         }
         public void run() {
-            if (running)
+            if (running) {
                 return;
+            }
 
             // Finalizer thread starts before System.initializeSystemClass
             // is called.  Wait until JavaLangAccess is available
@@ -219,7 +230,9 @@ final class Finalizer extends FinalReference<Object> { /* Package-private; must 
         ThreadGroup tg = Thread.currentThread().getThreadGroup();
         for (ThreadGroup tgn = tg;
              tgn != null;
-             tg = tgn, tgn = tg.getParent());
+             tg = tgn, tgn = tg.getParent()) {
+            ;
+        }
         Thread finalizer = new FinalizerThread(tg);
         finalizer.setPriority(Thread.MAX_PRIORITY - 2);
         finalizer.setDaemon(true);

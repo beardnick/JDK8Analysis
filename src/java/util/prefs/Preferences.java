@@ -420,13 +420,15 @@ public abstract class Preferences {
      *         node associated with it.
      */
     private static String nodeName(Class<?> c) {
-        if (c.isArray())
+        if (c.isArray()) {
             throw new IllegalArgumentException(
                 "Arrays have no associated preferences node.");
+        }
         String className = c.getName();
         int pkgEndIndex = className.lastIndexOf('.');
-        if (pkgEndIndex < 0)
+        if (pkgEndIndex < 0) {
             return "/<unnamed>";
+        }
         String packageName = className.substring(0, pkgEndIndex);
         return "/" + packageName.replace('.', '/');
     }
@@ -448,8 +450,9 @@ public abstract class Preferences {
      */
     public static Preferences userRoot() {
         SecurityManager security = System.getSecurityManager();
-        if (security != null)
+        if (security != null) {
             security.checkPermission(prefsPerm);
+        }
 
         return factory.userRoot();
     }
@@ -464,8 +467,9 @@ public abstract class Preferences {
      */
     public static Preferences systemRoot() {
         SecurityManager security = System.getSecurityManager();
-        if (security != null)
+        if (security != null) {
             security.checkPermission(prefsPerm);
+        }
 
         return factory.systemRoot();
     }

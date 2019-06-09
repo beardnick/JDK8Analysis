@@ -83,8 +83,9 @@ import java.util.Set;
 
     HttpConnectSocketImpl(Proxy proxy) {
         SocketAddress a = proxy.address();
-        if ( !(a instanceof InetSocketAddress) )
+        if ( !(a instanceof InetSocketAddress) ) {
             throw new IllegalArgumentException("Unsupported address type");
+        }
 
         InetSocketAddress ad = (InetSocketAddress) a;
         server = ad.getHostString();
@@ -95,16 +96,18 @@ import java.util.Set;
     protected void connect(SocketAddress endpoint, int timeout)
         throws IOException
     {
-        if (endpoint == null || !(endpoint instanceof InetSocketAddress))
+        if (endpoint == null || !(endpoint instanceof InetSocketAddress)) {
             throw new IllegalArgumentException("Unsupported address type");
+        }
         final InetSocketAddress epoint = (InetSocketAddress)endpoint;
         final String destHost = epoint.isUnresolved() ? epoint.getHostName()
                                                       : epoint.getAddress().getHostAddress();
         final int destPort = epoint.getPort();
 
         SecurityManager security = System.getSecurityManager();
-        if (security != null)
+        if (security != null) {
             security.checkConnect(destHost, destPort);
+        }
 
         // Connect to the HTTP proxy server
         String urlString = "http://" + destHost + ":" + destPort;
@@ -133,8 +136,9 @@ import java.util.Set;
     public void setOption(int opt, Object val) throws SocketException {
         super.setOption(opt, val);
 
-        if (external_address != null)
+        if (external_address != null) {
             return;  // we're connected, just return
+        }
 
         // store options so that they can be re-applied to the impl after connect
         optionsMap.put(opt, val);
@@ -184,27 +188,31 @@ import java.util.Set;
 
     @Override
     protected InetAddress getInetAddress() {
-        if (external_address != null)
+        if (external_address != null) {
             return external_address.getAddress();
-        else
+        } else {
             return super.getInetAddress();
+        }
     }
 
     @Override
     protected int getPort() {
-        if (external_address != null)
+        if (external_address != null) {
             return external_address.getPort();
-        else
+        } else {
             return super.getPort();
+        }
     }
 
     @Override
     protected int getLocalPort() {
-        if (socket != null)
+        if (socket != null) {
             return super.getLocalPort();
-        if (external_address != null)
+        }
+        if (external_address != null) {
             return external_address.getPort();
-        else
+        } else {
             return super.getLocalPort();
+        }
     }
 }

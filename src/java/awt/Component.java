@@ -1012,8 +1012,9 @@ public abstract class Component implements ImageObserver, MenuContainer,
     public String getName() {
         if (name == null && !nameExplicitlySet) {
             synchronized(getObjectLock()) {
-                if (name == null && !nameExplicitlySet)
+                if (name == null && !nameExplicitlySet) {
                     name = constructComponentName();
+                }
             }
         }
         return name;
@@ -1080,13 +1081,16 @@ public abstract class Component implements ImageObserver, MenuContainer,
      */
 
     public synchronized void setDropTarget(DropTarget dt) {
-        if (dt == dropTarget || (dropTarget != null && dropTarget.equals(dt)))
+        if (dt == dropTarget || (dropTarget != null && dropTarget.equals(dt))) {
             return;
+        }
 
         DropTarget old;
 
         if ((old = dropTarget) != null) {
-            if (peer != null) dropTarget.removeNotify(peer);
+            if (peer != null) {
+                dropTarget.removeNotify(peer);
+            }
 
             DropTarget t = dropTarget;
 
@@ -1104,12 +1108,16 @@ public abstract class Component implements ImageObserver, MenuContainer,
         if ((dropTarget = dt) != null) {
             try {
                 dropTarget.setComponent(this);
-                if (peer != null) dropTarget.addNotify(peer);
+                if (peer != null) {
+                    dropTarget.addNotify(peer);
+                }
             } catch (IllegalArgumentException iae) {
                 if (old != null) {
                     try {
                         old.setComponent(this);
-                        if (peer != null) dropTarget.addNotify(peer);
+                        if (peer != null) {
+                            dropTarget.addNotify(peer);
+                        }
                     } catch (IllegalArgumentException iae1) {
                         // ignore it!
                     }
@@ -1580,8 +1588,9 @@ public abstract class Component implements ImageObserver, MenuContainer,
      */
     public void enableInputMethods(boolean enable) {
         if (enable) {
-            if ((eventMask & AWTEvent.INPUT_METHODS_ENABLED_MASK) != 0)
+            if ((eventMask & AWTEvent.INPUT_METHODS_ENABLED_MASK) != 0) {
                 return;
+            }
 
             // If this component already has focus, then activate the
             // input method by dispatching a synthesized focus gained
@@ -3027,9 +3036,13 @@ public abstract class Component implements ImageObserver, MenuContainer,
             // This is for a lightweight component, need to
             // translate coordinate spaces and clip relative
             // to the parent.
-            if (parent == null) return null;
+            if (parent == null) {
+                return null;
+            }
             Graphics g = parent.getGraphics();
-            if (g == null) return null;
+            if (g == null) {
+                return null;
+            }
             if (g instanceof ConstrainableGraphics) {
                 ((ConstrainableGraphics) g).constrain(x, y, width, height);
             } else {
@@ -3051,9 +3064,13 @@ public abstract class Component implements ImageObserver, MenuContainer,
             // translate coordinate spaces and clip relative
             // to the parent.
             Container parent = this.parent;
-            if (parent == null) return null;
+            if (parent == null) {
+                return null;
+            }
             Graphics g = parent.getGraphics_NoClientCode();
-            if (g == null) return null;
+            if (g == null) {
+                return null;
+            }
             if (g instanceof ConstrainableGraphics) {
                 ((ConstrainableGraphics) g).constrain(x, y, width, height);
             } else {
@@ -3139,7 +3156,9 @@ public abstract class Component implements ImageObserver, MenuContainer,
         if (peer instanceof LightweightPeer) {
             Container nativeContainer = getNativeContainer();
 
-            if (nativeContainer == null) return;
+            if (nativeContainer == null) {
+                return;
+            }
 
             ComponentPeer cPeer = nativeContainer.getPeer();
 
@@ -6940,7 +6959,9 @@ public abstract class Component implements ImageObserver, MenuContainer,
                 popup.addNotify();
             }
 
-            if (dropTarget != null) dropTarget.addNotify(peer);
+            if (dropTarget != null) {
+                dropTarget.addNotify(peer);
+            }
 
             peerFont = getFont();
 
@@ -7027,7 +7048,9 @@ public abstract class Component implements ImageObserver, MenuContainer,
                     ((FlipBufferStrategy)bufferStrategy).destroyBuffers();
                 }
 
-                if (dropTarget != null) dropTarget.removeNotify(peer);
+                if (dropTarget != null) {
+                    dropTarget.removeNotify(peer);
+                }
 
                 // Hide peer first to stop system events such as cursor moves.
                 if (visible) {
@@ -8745,26 +8768,22 @@ public abstract class Component implements ImageObserver, MenuContainer,
         while(null != (keyOrNull = s.readObject())) {
             String key = ((String)keyOrNull).intern();
 
-            if (componentListenerK == key)
+            if (componentListenerK == key) {
                 addComponentListener((ComponentListener)(s.readObject()));
-
-            else if (focusListenerK == key)
+            } else if (focusListenerK == key) {
                 addFocusListener((FocusListener)(s.readObject()));
-
-            else if (keyListenerK == key)
+            } else if (keyListenerK == key) {
                 addKeyListener((KeyListener)(s.readObject()));
-
-            else if (mouseListenerK == key)
+            } else if (mouseListenerK == key) {
                 addMouseListener((MouseListener)(s.readObject()));
-
-            else if (mouseMotionListenerK == key)
+            } else if (mouseMotionListenerK == key) {
                 addMouseMotionListener((MouseMotionListener)(s.readObject()));
-
-            else if (inputMethodListenerK == key)
+            } else if (inputMethodListenerK == key) {
                 addInputMethodListener((InputMethodListener)(s.readObject()));
-
-            else // skip value for unrecognized key
+            } else // skip value for unrecognized key
+            {
                 s.readObject();
+            }
 
         }
 
@@ -9708,8 +9727,12 @@ public abstract class Component implements ImageObserver, MenuContainer,
      *         false, otherwise, or if obj or className is null
      */
     static boolean isInstanceOf(Object obj, String className) {
-        if (obj == null) return false;
-        if (className == null) return false;
+        if (obj == null) {
+            return false;
+        }
+        if (className == null) {
+            return false;
+        }
 
         Class<?> cls = obj.getClass();
         while (cls != null) {

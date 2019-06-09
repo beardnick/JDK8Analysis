@@ -60,23 +60,26 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
                             << from.ordinal();
         } else {
             elements[fromIndex] = (-1L << from.ordinal());
-            for (int i = fromIndex + 1; i < toIndex; i++)
+            for (int i = fromIndex + 1; i < toIndex; i++) {
                 elements[i] = -1;
+            }
             elements[toIndex] = -1L >>> (63 - to.ordinal());
         }
         size = to.ordinal() - from.ordinal() + 1;
     }
 
     void addAll() {
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < elements.length; i++) {
             elements[i] = -1;
+        }
         elements[elements.length - 1] >>>= -universe.length;
         size = universe.length;
     }
 
     void complement() {
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < elements.length; i++) {
             elements[i] = ~elements[i];
+        }
         elements[elements.length - 1] &= (-1L >>> -universe.length);
         size = universe.length - size;
     }
@@ -123,16 +126,18 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
 
         @Override
         public boolean hasNext() {
-            while (unseen == 0 && unseenIndex < elements.length - 1)
+            while (unseen == 0 && unseenIndex < elements.length - 1) {
                 unseen = elements[++unseenIndex];
+            }
             return unseen != 0;
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public E next() {
-            if (!hasNext())
+            if (!hasNext()) {
                 throw new NoSuchElementException();
+            }
             lastReturned = unseen & -unseen;
             lastReturnedIndex = unseenIndex;
             unseen -= lastReturned;
@@ -142,8 +147,9 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
 
         @Override
         public void remove() {
-            if (lastReturned == 0)
+            if (lastReturned == 0) {
                 throw new IllegalStateException();
+            }
             final long oldElements = elements[lastReturnedIndex];
             elements[lastReturnedIndex] &= ~lastReturned;
             if (oldElements != elements[lastReturnedIndex]) {
@@ -178,11 +184,13 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * @return <tt>true</tt> if this set contains the specified element
      */
     public boolean contains(Object e) {
-        if (e == null)
+        if (e == null) {
             return false;
+        }
         Class<?> eClass = e.getClass();
-        if (eClass != elementType && eClass.getSuperclass() != elementType)
+        if (eClass != elementType && eClass.getSuperclass() != elementType) {
             return false;
+        }
 
         int eOrdinal = ((Enum<?>)e).ordinal();
         return (elements[eOrdinal >>> 6] & (1L << eOrdinal)) != 0;
@@ -207,8 +215,9 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
         long oldElements = elements[eWordNum];
         elements[eWordNum] |= (1L << eOrdinal);
         boolean result = (elements[eWordNum] != oldElements);
-        if (result)
+        if (result) {
             size++;
+        }
         return result;
     }
 
@@ -219,19 +228,22 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * @return <tt>true</tt> if the set contained the specified element
      */
     public boolean remove(Object e) {
-        if (e == null)
+        if (e == null) {
             return false;
+        }
         Class<?> eClass = e.getClass();
-        if (eClass != elementType && eClass.getSuperclass() != elementType)
+        if (eClass != elementType && eClass.getSuperclass() != elementType) {
             return false;
+        }
         int eOrdinal = ((Enum<?>)e).ordinal();
         int eWordNum = eOrdinal >>> 6;
 
         long oldElements = elements[eWordNum];
         elements[eWordNum] &= ~(1L << eOrdinal);
         boolean result = (elements[eWordNum] != oldElements);
-        if (result)
+        if (result) {
             size--;
+        }
         return result;
     }
 
@@ -247,16 +259,20 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * @throws NullPointerException if the specified collection is null
      */
     public boolean containsAll(Collection<?> c) {
-        if (!(c instanceof JumboEnumSet))
+        if (!(c instanceof JumboEnumSet)) {
             return super.containsAll(c);
+        }
 
         JumboEnumSet<?> es = (JumboEnumSet<?>)c;
-        if (es.elementType != elementType)
+        if (es.elementType != elementType) {
             return es.isEmpty();
+        }
 
-        for (int i = 0; i < elements.length; i++)
-            if ((es.elements[i] & ~elements[i]) != 0)
+        for (int i = 0; i < elements.length; i++) {
+            if ((es.elements[i] & ~elements[i]) != 0) {
                 return false;
+            }
+        }
         return true;
     }
 
@@ -269,20 +285,23 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      *     its elements are null
      */
     public boolean addAll(Collection<? extends E> c) {
-        if (!(c instanceof JumboEnumSet))
+        if (!(c instanceof JumboEnumSet)) {
             return super.addAll(c);
+        }
 
         JumboEnumSet<?> es = (JumboEnumSet<?>)c;
         if (es.elementType != elementType) {
-            if (es.isEmpty())
+            if (es.isEmpty()) {
                 return false;
-            else
+            } else {
                 throw new ClassCastException(
                     es.elementType + " != " + elementType);
+            }
         }
 
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < elements.length; i++) {
             elements[i] |= es.elements[i];
+        }
         return recalculateSize();
     }
 
@@ -295,15 +314,18 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * @throws NullPointerException if the specified collection is null
      */
     public boolean removeAll(Collection<?> c) {
-        if (!(c instanceof JumboEnumSet))
+        if (!(c instanceof JumboEnumSet)) {
             return super.removeAll(c);
+        }
 
         JumboEnumSet<?> es = (JumboEnumSet<?>)c;
-        if (es.elementType != elementType)
+        if (es.elementType != elementType) {
             return false;
+        }
 
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < elements.length; i++) {
             elements[i] &= ~es.elements[i];
+        }
         return recalculateSize();
     }
 
@@ -316,8 +338,9 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * @throws NullPointerException if the specified collection is null
      */
     public boolean retainAll(Collection<?> c) {
-        if (!(c instanceof JumboEnumSet))
+        if (!(c instanceof JumboEnumSet)) {
             return super.retainAll(c);
+        }
 
         JumboEnumSet<?> es = (JumboEnumSet<?>)c;
         if (es.elementType != elementType) {
@@ -326,8 +349,9 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
             return changed;
         }
 
-        for (int i = 0; i < elements.length; i++)
+        for (int i = 0; i < elements.length; i++) {
             elements[i] &= es.elements[i];
+        }
         return recalculateSize();
     }
 
@@ -349,12 +373,14 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
      * @return <tt>true</tt> if the specified object is equal to this set
      */
     public boolean equals(Object o) {
-        if (!(o instanceof JumboEnumSet))
+        if (!(o instanceof JumboEnumSet)) {
             return super.equals(o);
+        }
 
         JumboEnumSet<?> es = (JumboEnumSet<?>)o;
-        if (es.elementType != elementType)
+        if (es.elementType != elementType) {
             return size == 0 && es.size == 0;
+        }
 
         return Arrays.equals(es.elements, elements);
     }
@@ -365,8 +391,9 @@ class JumboEnumSet<E extends Enum<E>> extends EnumSet<E> {
     private boolean recalculateSize() {
         int oldSize = size;
         size = 0;
-        for (long elt : elements)
+        for (long elt : elements) {
             size += Long.bitCount(elt);
+        }
 
         return size != oldSize;
     }

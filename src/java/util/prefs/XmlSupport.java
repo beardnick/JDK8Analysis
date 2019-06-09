@@ -96,8 +96,9 @@ class XmlSupport {
      */
     static void export(OutputStream os, final Preferences p, boolean subTree)
         throws IOException, BackingStoreException {
-        if (((AbstractPreferences)p).isRemoved())
+        if (((AbstractPreferences)p).isRemoved()) {
             throw new IllegalStateException("Node has been removed");
+        }
         Document doc = createPrefsDoc("preferences");
         Element preferences =  doc.getDocumentElement() ;
         preferences.setAttribute("EXTERNAL_XML_VERSION", EXTERNAL_XML_VERSION);
@@ -166,8 +167,9 @@ class XmlSupport {
                 /* Get a copy of kids while lock is held */
                 kidNames = prefs.childrenNames();
                 kidsCopy = new Preferences[kidNames.length];
-                for (int i = 0; i <  kidNames.length; i++)
+                for (int i = 0; i <  kidNames.length; i++) {
                     kidsCopy[i] = prefs.node(kidNames[i]);
+                }
             }
             // release lock
         }
@@ -199,12 +201,13 @@ class XmlSupport {
             Document doc = loadPrefsDoc(is);
             String xmlVersion =
                 doc.getDocumentElement().getAttribute("EXTERNAL_XML_VERSION");
-            if (xmlVersion.compareTo(EXTERNAL_XML_VERSION) > 0)
+            if (xmlVersion.compareTo(EXTERNAL_XML_VERSION) > 0) {
                 throw new InvalidPreferencesFormatException(
                 "Exported preferences file format version " + xmlVersion +
                 " is not supported. This java installation can read" +
                 " versions " + EXTERNAL_XML_VERSION + " or older. You may need" +
                 " to install a newer version of JDK.");
+            }
 
             Element xmlRoot = (Element) doc.getDocumentElement().
                                                getChildNodes().item(0);
@@ -298,8 +301,9 @@ class XmlSupport {
         /* Lock the node */
         synchronized (((AbstractPreferences)prefsNode).lock) {
             //If removed, return silently
-            if (((AbstractPreferences)prefsNode).isRemoved())
+            if (((AbstractPreferences)prefsNode).isRemoved()) {
                 return;
+            }
 
             // Import any preferences at this node
             Element firstXmlKid = (Element) xmlKids.item(0);
@@ -313,8 +317,9 @@ class XmlSupport {
             }
         } // unlocked the node
         // import children
-        for (int i=1; i < numXmlKids; i++)
+        for (int i=1; i < numXmlKids; i++) {
             ImportSubtree(prefsKids[i-1], (Element)xmlKids.item(i));
+        }
     }
 
     /**
@@ -376,12 +381,13 @@ class XmlSupport {
             Element xmlMap = doc.getDocumentElement();
             // check version
             String mapVersion = xmlMap.getAttribute("MAP_XML_VERSION");
-            if (mapVersion.compareTo(MAP_XML_VERSION) > 0)
+            if (mapVersion.compareTo(MAP_XML_VERSION) > 0) {
                 throw new InvalidPreferencesFormatException(
                 "Preferences map file format version " + mapVersion +
                 " is not supported. This java installation can read" +
                 " versions " + MAP_XML_VERSION + " or older. You may need" +
                 " to install a newer version of JDK.");
+            }
 
             NodeList entries = xmlMap.getChildNodes();
             for (int i=0, numEntries=entries.getLength(); i<numEntries; i++) {

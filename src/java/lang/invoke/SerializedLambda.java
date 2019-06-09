@@ -231,12 +231,13 @@ public final class SerializedLambda implements Serializable {
         }
         catch (PrivilegedActionException e) {
             Exception cause = e.getException();
-            if (cause instanceof ReflectiveOperationException)
+            if (cause instanceof ReflectiveOperationException) {
                 throw (ReflectiveOperationException) cause;
-            else if (cause instanceof RuntimeException)
+            } else if (cause instanceof RuntimeException) {
                 throw (RuntimeException) cause;
-            else
+            } else {
                 throw new RuntimeException("Exception in SerializedLambda.readResolve", e);
+            }
         }
     }
 

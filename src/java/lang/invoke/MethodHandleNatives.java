@@ -253,12 +253,16 @@ class MethodHandleNatives {
         for (int i = 0; ; i++) {
             box[0] = null;
             int vmval = getNamedCon(i, box);
-            if (box[0] == null)  break;
+            if (box[0] == null) {
+                break;
+            }
             String name = (String) box[0];
             try {
                 Field con = Constants.class.getDeclaredField(name);
                 int jval = con.getInt(null);
-                if (jval == vmval)  continue;
+                if (jval == vmval) {
+                    continue;
+                }
                 String err = (name+": JVM has "+vmval+" while Java has "+jval);
                 if (name.equals("CONV_OP_LIMIT")) {
                     System.err.println("warning: "+err);
@@ -293,9 +297,10 @@ class MethodHandleNatives {
         Class<?> caller = (Class<?>)callerObj;
         String name = nameObj.toString().intern();
         MethodType type = (MethodType)typeObj;
-        if (!TRACE_METHOD_LINKAGE)
+        if (!TRACE_METHOD_LINKAGE) {
             return linkCallSiteImpl(caller, bootstrapMethod, name, type,
                                     staticArguments, appendixResult);
+        }
         return linkCallSiteTracing(caller, bootstrapMethod, name, type,
                                    staticArguments, appendixResult);
     }
@@ -324,7 +329,9 @@ class MethodHandleNatives {
                                           Object staticArguments,
                                           Object[] appendixResult) {
         Object bsmReference = bootstrapMethod.internalMemberName();
-        if (bsmReference == null)  bsmReference = bootstrapMethod;
+        if (bsmReference == null) {
+            bsmReference = bootstrapMethod;
+        }
         Object staticArglist = (staticArguments instanceof Object[] ?
                                 java.util.Arrays.asList((Object[]) staticArguments) :
                                 staticArguments);
@@ -419,8 +426,9 @@ class MethodHandleNatives {
     static MemberName linkMethod(Class<?> callerClass, int refKind,
                                  Class<?> defc, String name, Object type,
                                  Object[] appendixResult) {
-        if (!TRACE_METHOD_LINKAGE)
+        if (!TRACE_METHOD_LINKAGE) {
             return linkMethodImpl(callerClass, refKind, defc, name, type, appendixResult);
+        }
         return linkMethodTracing(callerClass, refKind, defc, name, type, appendixResult);
     }
     static MemberName linkMethodImpl(Class<?> callerClass, int refKind,
@@ -431,18 +439,20 @@ class MethodHandleNatives {
                 return Invokers.methodHandleInvokeLinkerMethod(name, fixMethodType(callerClass, type), appendixResult);
             }
         } catch (Throwable ex) {
-            if (ex instanceof LinkageError)
+            if (ex instanceof LinkageError) {
                 throw (LinkageError) ex;
-            else
+            } else {
                 throw new LinkageError(ex.getMessage(), ex);
+            }
         }
         throw new LinkageError("no such method "+defc.getName()+"."+name+type);
     }
     private static MethodType fixMethodType(Class<?> callerClass, Object type) {
-        if (type instanceof MethodType)
+        if (type instanceof MethodType) {
             return (MethodType) type;
-        else
+        } else {
             return MethodType.fromMethodDescriptorString((String)type, callerClass.getClassLoader());
+        }
     }
     // Tracing logic:
     static MemberName linkMethodTracing(Class<?> callerClass, int refKind,
@@ -501,8 +511,9 @@ class MethodHandleNatives {
      */
     static private Error initCauseFrom(Error err, Exception ex) {
         Throwable th = ex.getCause();
-        if (err.getClass().isInstance(th))
-           return (Error) th;
+        if (err.getClass().isInstance(th)) {
+            return (Error) th;
+        }
         err.initCause(th == null ? ex : th);
         return err;
     }
@@ -513,7 +524,9 @@ class MethodHandleNatives {
      * to ask about the identity of its caller?
      */
     static boolean isCallerSensitive(MemberName mem) {
-        if (!mem.isInvocable())  return false;  // fields are not caller sensitive
+        if (!mem.isInvocable()) {
+            return false;  // fields are not caller sensitive
+        }
 
         return mem.isCallerSensitive() || canBeCalledVirtual(mem);
     }
@@ -532,8 +545,12 @@ class MethodHandleNatives {
 
     static boolean canBeCalledVirtual(MemberName symbolicRef, Class<?> definingClass) {
         Class<?> symbolicRefClass = symbolicRef.getDeclaringClass();
-        if (symbolicRefClass == definingClass)  return true;
-        if (symbolicRef.isStatic() || symbolicRef.isPrivate())  return false;
+        if (symbolicRefClass == definingClass) {
+            return true;
+        }
+        if (symbolicRef.isStatic() || symbolicRef.isPrivate()) {
+            return false;
+        }
         return (definingClass.isAssignableFrom(symbolicRefClass) ||  // Msym overrides Mdef
                 symbolicRefClass.isInterface());                     // Mdef implements Msym
     }

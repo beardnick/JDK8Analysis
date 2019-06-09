@@ -163,8 +163,9 @@ public class AtomicMarkableReference<V> {
      */
     public void set(V newReference, boolean newMark) {
         Pair<V> current = pair;
-        if (newReference != current.reference || newMark != current.mark)
+        if (newReference != current.reference || newMark != current.mark) {
             this.pair = Pair.of(newReference, newMark);
+        }
     }
 
     /**

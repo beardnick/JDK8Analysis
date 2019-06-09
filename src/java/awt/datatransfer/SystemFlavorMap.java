@@ -1248,13 +1248,17 @@ public final class SystemFlavorMap implements FlavorMap, FlavorTable {
         }
 
         public void remove(K key) {
-            if (cache == null) return;
+            if (cache == null) {
+                return;
+            }
             cache.remove(null);
             cache.remove(key);
         }
 
         public LinkedHashSet<V> check(K key) {
-            if (cache == null) return null;
+            if (cache == null) {
+                return null;
+            }
             SoftReference<LinkedHashSet<V>> ref = cache.get(key);
             if (ref != null) {
                 return ref.get();

@@ -278,10 +278,12 @@ public class ProtectionDomain {
         }
 
         if (!staticPermissions &&
-            Policy.getPolicyNoCheck().implies(this, permission))
+            Policy.getPolicyNoCheck().implies(this, permission)) {
             return true;
-        if (permissions != null)
+        }
+        if (permissions != null) {
             return permissions.implies(permission);
+        }
 
         return false;
     }
@@ -303,10 +305,11 @@ public class ProtectionDomain {
                 palBuf.append(principals[i].getClass().getName() +
                             " \"" + principals[i].getName() +
                             "\"");
-                if (i < principals.length-1)
+                if (i < principals.length-1) {
                     palBuf.append(",\n");
-                else
+                } else {
                     palBuf.append(")\n");
+                }
             }
             pals = palBuf.toString();
         }
@@ -365,8 +368,9 @@ public class ProtectionDomain {
     }
 
     private PermissionCollection mergePermissions() {
-        if (staticPermissions)
+        if (staticPermissions) {
             return permissions;
+        }
 
         PermissionCollection perms =
             java.security.AccessController.doPrivileged

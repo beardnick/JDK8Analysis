@@ -92,7 +92,9 @@ public class AccessibleObject implements AnnotatedElement {
     public static void setAccessible(AccessibleObject[] array, boolean flag)
         throws SecurityException {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null) sm.checkPermission(ACCESS_PERMISSION);
+        if (sm != null) {
+            sm.checkPermission(ACCESS_PERMISSION);
+        }
         for (int i = 0; i < array.length; i++) {
             setAccessible0(array[i], flag);
         }
@@ -125,7 +127,9 @@ public class AccessibleObject implements AnnotatedElement {
      */
     public void setAccessible(boolean flag) throws SecurityException {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null) sm.checkPermission(ACCESS_PERMISSION);
+        if (sm != null) {
+            sm.checkPermission(ACCESS_PERMISSION);
+        }
         setAccessible0(this, flag);
     }
 

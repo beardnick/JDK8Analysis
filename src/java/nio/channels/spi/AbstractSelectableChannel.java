@@ -97,17 +97,20 @@ public abstract class AbstractSelectableChannel
         int i = 0;
         if ((keys != null) && (keyCount < keys.length)) {
             // Find empty element of key array
-            for (i = 0; i < keys.length; i++)
-                if (keys[i] == null)
+            for (i = 0; i < keys.length; i++) {
+                if (keys[i] == null) {
                     break;
+                }
+            }
         } else if (keys == null) {
             keys =  new SelectionKey[3];
         } else {
             // Grow key array
             int n = keys.length * 2;
             SelectionKey[] ks =  new SelectionKey[n];
-            for (i = 0; i < keys.length; i++)
+            for (i = 0; i < keys.length; i++) {
                 ks[i] = keys[i];
+            }
             keys = ks;
             i = keyCount;
         }
@@ -117,33 +120,39 @@ public abstract class AbstractSelectableChannel
 
     private SelectionKey findKey(Selector sel) {
         synchronized (keyLock) {
-            if (keys == null)
+            if (keys == null) {
                 return null;
-            for (int i = 0; i < keys.length; i++)
-                if ((keys[i] != null) && (keys[i].selector() == sel))
+            }
+            for (int i = 0; i < keys.length; i++) {
+                if ((keys[i] != null) && (keys[i].selector() == sel)) {
                     return keys[i];
+                }
+            }
             return null;
         }
     }
 
     void removeKey(SelectionKey k) {                    // package-private
         synchronized (keyLock) {
-            for (int i = 0; i < keys.length; i++)
+            for (int i = 0; i < keys.length; i++) {
                 if (keys[i] == k) {
                     keys[i] = null;
                     keyCount--;
                 }
+            }
             ((AbstractSelectionKey)k).invalidate();
         }
     }
 
     private boolean haveValidKeys() {
         synchronized (keyLock) {
-            if (keyCount == 0)
+            if (keyCount == 0) {
                 return false;
+            }
             for (int i = 0; i < keys.length; i++) {
-                if ((keys[i] != null) && keys[i].isValid())
+                if ((keys[i] != null) && keys[i].isValid()) {
                     return true;
+                }
             }
             return false;
         }
@@ -193,12 +202,15 @@ public abstract class AbstractSelectableChannel
         throws ClosedChannelException
     {
         synchronized (regLock) {
-            if (!isOpen())
+            if (!isOpen()) {
                 throw new ClosedChannelException();
-            if ((ops & ~validOps()) != 0)
+            }
+            if ((ops & ~validOps()) != 0) {
                 throw new IllegalArgumentException();
-            if (blocking)
+            }
+            if (blocking) {
                 throw new IllegalBlockingModeException();
+            }
             SelectionKey k = findKey(sel);
             if (k != null) {
                 k.interestOps(ops);
@@ -207,8 +219,9 @@ public abstract class AbstractSelectableChannel
             if (k == null) {
                 // New registration
                 synchronized (keyLock) {
-                    if (!isOpen())
+                    if (!isOpen()) {
                         throw new ClosedChannelException();
+                    }
                     k = ((AbstractSelector)sel).register(this, ops, att);
                     addKey(k);
                 }
@@ -236,8 +249,9 @@ public abstract class AbstractSelectableChannel
             int count = (keys == null) ? 0 : keys.length;
             for (int i = 0; i < count; i++) {
                 SelectionKey k = keys[i];
-                if (k != null)
+                if (k != null) {
                     k.cancel();
+                }
             }
         }
     }
@@ -285,12 +299,15 @@ public abstract class AbstractSelectableChannel
         throws IOException
     {
         synchronized (regLock) {
-            if (!isOpen())
+            if (!isOpen()) {
                 throw new ClosedChannelException();
-            if (blocking == block)
+            }
+            if (blocking == block) {
                 return this;
-            if (block && haveValidKeys())
+            }
+            if (block && haveValidKeys()) {
                 throw new IllegalBlockingModeException();
+            }
             implConfigureBlocking(block);
             blocking = block;
         }

@@ -87,8 +87,9 @@ abstract class DelegatingMethodHandle extends MethodHandle {
     }
 
     private static LambdaForm chooseDelegatingForm(MethodHandle target) {
-        if (target instanceof SimpleMethodHandle)
+        if (target instanceof SimpleMethodHandle) {
             return target.internalForm();  // no need for an indirection
+        }
         return makeReinvokerForm(target, MethodTypeForm.LF_DELEGATE, DelegatingMethodHandle.class, NF_getTarget);
     }
 
@@ -120,7 +121,9 @@ abstract class DelegatingMethodHandle extends MethodHandle {
         LambdaForm form;
         if (!customized) {
             form = mtype.form().cachedLambdaForm(whichCache);
-            if (form != null)  return form;
+            if (form != null) {
+                return form;
+            }
         }
         final int THIS_DMH    = 0;
         final int ARG_BASE    = 1;

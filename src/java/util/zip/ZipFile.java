@@ -212,8 +212,9 @@ class ZipFile implements ZipConstants, Closeable {
                 sm.checkDelete(name);
             }
         }
-        if (charset == null)
+        if (charset == null) {
             throw new NullPointerException("charset is null");
+        }
         this.zc = ZipCoder.get(charset);
         long t0 = System.nanoTime();
         jzfile = open(name, mode, file.lastModified(), usemmap);
@@ -286,8 +287,9 @@ class ZipFile implements ZipConstants, Closeable {
         synchronized (this) {
             ensureOpen();
             byte[] bcomm = getCommentBytes(jzfile);
-            if (bcomm == null)
+            if (bcomm == null) {
                 return null;
+            }
             return zc.toString(bcomm, bcomm.length);
         }
     }
@@ -368,8 +370,12 @@ class ZipFile implements ZipConstants, Closeable {
             case DEFLATED:
                 // MORE: Compute good size for inflater stream:
                 long size = getEntrySize(jzentry) + 2; // Inflater likes a bit of slack
-                if (size > 65536) size = 8192;
-                if (size <= 0) size = 4096;
+                if (size > 65536) {
+                    size = 8192;
+                }
+                if (size <= 0) {
+                    size = 4096;
+                }
                 Inflater inf = getInflater();
                 InputStream is =
                     new ZipFileInflaterInputStream(in, inf, (int)size);
@@ -395,8 +401,9 @@ class ZipFile implements ZipConstants, Closeable {
         }
 
         public void close() throws IOException {
-            if (closeRequested)
+            if (closeRequested) {
                 return;
+            }
             closeRequested = true;
 
             super.close();
@@ -426,8 +433,9 @@ class ZipFile implements ZipConstants, Closeable {
         }
 
         public int available() throws IOException {
-            if (closeRequested)
+            if (closeRequested) {
                 return 0;
+            }
             long avail = zfin.size() - inf.getBytesWritten();
             return (avail > (long) Integer.MAX_VALUE ?
                     Integer.MAX_VALUE : (int) avail);
@@ -606,8 +614,9 @@ class ZipFile implements ZipConstants, Closeable {
      * @throws IOException if an I/O error has occurred
      */
     public void close() throws IOException {
-        if (closeRequested)
+        if (closeRequested) {
             return;
+        }
         closeRequested = true;
 
         synchronized (this) {
@@ -736,8 +745,9 @@ class ZipFile implements ZipConstants, Closeable {
         }
 
         public long skip(long n) {
-            if (n > rem)
+            if (n > rem) {
                 n = rem;
+            }
             pos += n;
             rem -= n;
             if (rem == 0) {
@@ -755,8 +765,9 @@ class ZipFile implements ZipConstants, Closeable {
         }
 
         public void close() {
-            if (closeRequested)
+            if (closeRequested) {
                 return;
+            }
             closeRequested = true;
 
             rem = 0;

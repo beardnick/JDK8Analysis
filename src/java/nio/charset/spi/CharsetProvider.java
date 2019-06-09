@@ -80,8 +80,9 @@ public abstract class CharsetProvider {
      */
     protected CharsetProvider() {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
+        if (sm != null) {
             sm.checkPermission(new RuntimePermission("charsetProvider"));
+        }
     }
 
     /**

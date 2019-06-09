@@ -163,8 +163,9 @@ public class PriorityQueue<E> extends AbstractQueue<E>
                          Comparator<? super E> comparator) {
         // Note: This restriction of at least one is not actually needed,
         // but continues for 1.5 compatibility
-        if (initialCapacity < 1)
+        if (initialCapacity < 1) {
             throw new IllegalArgumentException();
+        }
         this.queue = new Object[initialCapacity];
         this.comparator = comparator;
     }
@@ -254,13 +255,17 @@ public class PriorityQueue<E> extends AbstractQueue<E>
     private void initElementsFromCollection(Collection<? extends E> c) {
         Object[] a = c.toArray();
         // If c.toArray incorrectly doesn't return Object[], copy it.
-        if (a.getClass() != Object[].class)
+        if (a.getClass() != Object[].class) {
             a = Arrays.copyOf(a, a.length, Object[].class);
+        }
         int len = a.length;
-        if (len == 1 || this.comparator != null)
-            for (int i = 0; i < len; i++)
-                if (a[i] == null)
+        if (len == 1 || this.comparator != null) {
+            for (int i = 0; i < len; i++) {
+                if (a[i] == null) {
                     throw new NullPointerException();
+                }
+            }
+        }
         this.queue = a;
         this.size = a.length;
     }
@@ -295,14 +300,17 @@ public class PriorityQueue<E> extends AbstractQueue<E>
                                          (oldCapacity + 2) :
                                          (oldCapacity >> 1));
         // overflow-conscious code
-        if (newCapacity - MAX_ARRAY_SIZE > 0)
+        if (newCapacity - MAX_ARRAY_SIZE > 0) {
             newCapacity = hugeCapacity(minCapacity);
+        }
         queue = Arrays.copyOf(queue, newCapacity);
     }
 
     private static int hugeCapacity(int minCapacity) {
         if (minCapacity < 0) // overflow
+        {
             throw new OutOfMemoryError();
+        }
         return (minCapacity > MAX_ARRAY_SIZE) ?
             Integer.MAX_VALUE :
             MAX_ARRAY_SIZE;
@@ -331,17 +339,20 @@ public class PriorityQueue<E> extends AbstractQueue<E>
      * @throws NullPointerException if the specified element is null
      */
     public boolean offer(E e) {
-        if (e == null)
+        if (e == null) {
             throw new NullPointerException();
+        }
         modCount++;
         int i = size;
-        if (i >= queue.length)
+        if (i >= queue.length) {
             grow(i + 1);
+        }
         size = i + 1;
-        if (i == 0)
+        if (i == 0) {
             queue[0] = e;
-        else
+        } else {
             siftUp(i, e);
+        }
         return true;
     }
 
@@ -352,9 +363,11 @@ public class PriorityQueue<E> extends AbstractQueue<E>
 
     private int indexOf(Object o) {
         if (o != null) {
-            for (int i = 0; i < size; i++)
-                if (o.equals(queue[i]))
+            for (int i = 0; i < size; i++) {
+                if (o.equals(queue[i])) {
                     return i;
+                }
+            }
         }
         return -1;
     }
@@ -372,9 +385,9 @@ public class PriorityQueue<E> extends AbstractQueue<E>
      */
     public boolean remove(Object o) {
         int i = indexOf(o);
-        if (i == -1)
+        if (i == -1) {
             return false;
-        else {
+        } else {
             removeAt(i);
             return true;
         }
@@ -467,10 +480,13 @@ public class PriorityQueue<E> extends AbstractQueue<E>
         final int size = this.size;
         if (a.length < size)
             // Make a new array of a's runtime type, but my contents:
+        {
             return (T[]) Arrays.copyOf(queue, size, a.getClass());
+        }
         System.arraycopy(queue, 0, a, 0, size);
-        if (a.length > size)
+        if (a.length > size) {
             a[size] = null;
+        }
         return a;
     }
 
@@ -531,30 +547,35 @@ public class PriorityQueue<E> extends AbstractQueue<E>
 
         @SuppressWarnings("unchecked")
         public E next() {
-            if (expectedModCount != modCount)
+            if (expectedModCount != modCount) {
                 throw new ConcurrentModificationException();
-            if (cursor < size)
+            }
+            if (cursor < size) {
                 return (E) queue[lastRet = cursor++];
+            }
             if (forgetMeNot != null) {
                 lastRet = -1;
                 lastRetElt = forgetMeNot.poll();
-                if (lastRetElt != null)
+                if (lastRetElt != null) {
                     return lastRetElt;
+                }
             }
             throw new NoSuchElementException();
         }
 
         public void remove() {
-            if (expectedModCount != modCount)
+            if (expectedModCount != modCount) {
                 throw new ConcurrentModificationException();
+            }
             if (lastRet != -1) {
                 E moved = PriorityQueue.this.removeAt(lastRet);
                 lastRet = -1;
-                if (moved == null)
+                if (moved == null) {
                     cursor--;
-                else {
-                    if (forgetMeNot == null)
+                } else {
+                    if (forgetMeNot == null) {
                         forgetMeNot = new ArrayDeque<>();
+                    }
                     forgetMeNot.add(moved);
                 }
             } else if (lastRetElt != null) {
@@ -577,22 +598,25 @@ public class PriorityQueue<E> extends AbstractQueue<E>
      */
     public void clear() {
         modCount++;
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++) {
             queue[i] = null;
+        }
         size = 0;
     }
 
     @SuppressWarnings("unchecked")
     public E poll() {
-        if (size == 0)
+        if (size == 0) {
             return null;
+        }
         int s = --size;
         modCount++;
         E result = (E) queue[0];
         E x = (E) queue[s];
         queue[s] = null;
-        if (s != 0)
+        if (s != 0) {
             siftDown(0, x);
+        }
         return result;
     }
 
@@ -614,15 +638,17 @@ public class PriorityQueue<E> extends AbstractQueue<E>
         modCount++;
         int s = --size;
         if (s == i) // removed last element
+        {
             queue[i] = null;
-        else {
+        } else {
             E moved = (E) queue[s];
             queue[s] = null;
             siftDown(i, moved);
             if (queue[i] == moved) {
                 siftUp(i, moved);
-                if (queue[i] != moved)
+                if (queue[i] != moved) {
                     return moved;
+                }
             }
         }
         return null;
@@ -641,10 +667,11 @@ public class PriorityQueue<E> extends AbstractQueue<E>
      * @param x the item to insert
      */
     private void siftUp(int k, E x) {
-        if (comparator != null)
+        if (comparator != null) {
             siftUpUsingComparator(k, x);
-        else
+        } else {
             siftUpComparable(k, x);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -653,8 +680,9 @@ public class PriorityQueue<E> extends AbstractQueue<E>
         while (k > 0) {
             int parent = (k - 1) >>> 1;
             Object e = queue[parent];
-            if (key.compareTo((E) e) >= 0)
+            if (key.compareTo((E) e) >= 0) {
                 break;
+            }
             queue[k] = e;
             k = parent;
         }
@@ -666,8 +694,9 @@ public class PriorityQueue<E> extends AbstractQueue<E>
         while (k > 0) {
             int parent = (k - 1) >>> 1;
             Object e = queue[parent];
-            if (comparator.compare(x, (E) e) >= 0)
+            if (comparator.compare(x, (E) e) >= 0) {
                 break;
+            }
             queue[k] = e;
             k = parent;
         }
@@ -683,10 +712,11 @@ public class PriorityQueue<E> extends AbstractQueue<E>
      * @param x the item to insert
      */
     private void siftDown(int k, E x) {
-        if (comparator != null)
+        if (comparator != null) {
             siftDownUsingComparator(k, x);
-        else
+        } else {
             siftDownComparable(k, x);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -698,10 +728,12 @@ public class PriorityQueue<E> extends AbstractQueue<E>
             Object c = queue[child];
             int right = child + 1;
             if (right < size &&
-                ((Comparable<? super E>) c).compareTo((E) queue[right]) > 0)
+                ((Comparable<? super E>) c).compareTo((E) queue[right]) > 0) {
                 c = queue[child = right];
-            if (key.compareTo((E) c) <= 0)
+            }
+            if (key.compareTo((E) c) <= 0) {
                 break;
+            }
             queue[k] = c;
             k = child;
         }
@@ -716,10 +748,12 @@ public class PriorityQueue<E> extends AbstractQueue<E>
             Object c = queue[child];
             int right = child + 1;
             if (right < size &&
-                comparator.compare((E) c, (E) queue[right]) > 0)
+                comparator.compare((E) c, (E) queue[right]) > 0) {
                 c = queue[child = right];
-            if (comparator.compare(x, (E) c) <= 0)
+            }
+            if (comparator.compare(x, (E) c) <= 0) {
                 break;
+            }
             queue[k] = c;
             k = child;
         }
@@ -732,8 +766,9 @@ public class PriorityQueue<E> extends AbstractQueue<E>
      */
     @SuppressWarnings("unchecked")
     private void heapify() {
-        for (int i = (size >>> 1) - 1; i >= 0; i--)
+        for (int i = (size >>> 1) - 1; i >= 0; i--) {
             siftDown(i, (E) queue[i]);
+        }
     }
 
     /**
@@ -766,8 +801,9 @@ public class PriorityQueue<E> extends AbstractQueue<E>
         s.writeInt(Math.max(2, size + 1));
 
         // Write out all elements in the "proper order".
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++) {
             s.writeObject(queue[i]);
+        }
     }
 
     /**
@@ -787,8 +823,9 @@ public class PriorityQueue<E> extends AbstractQueue<E>
         queue = new Object[size];
 
         // Read in all elements.
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++) {
             queue[i] = s.readObject();
+        }
 
         // Elements are guaranteed to be in "proper order", but the
         // spec has never explained what that might be.
@@ -851,26 +888,31 @@ public class PriorityQueue<E> extends AbstractQueue<E>
         public void forEachRemaining(Consumer<? super E> action) {
             int i, hi, mc; // hoist accesses and checks from loop
             PriorityQueue<E> q; Object[] a;
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             if ((q = pq) != null && (a = q.queue) != null) {
                 if ((hi = fence) < 0) {
                     mc = q.modCount;
                     hi = q.size;
                 }
-                else
+                else {
                     mc = expectedModCount;
+                }
                 if ((i = index) >= 0 && (index = hi) <= a.length) {
                     for (E e;; ++i) {
                         if (i < hi) {
                             if ((e = (E) a[i]) == null) // must be CME
+                            {
                                 break;
+                            }
                             action.accept(e);
                         }
-                        else if (q.modCount != mc)
+                        else if (q.modCount != mc) {
                             break;
-                        else
+                        } else {
                             return;
+                        }
                     }
                 }
             }
@@ -878,17 +920,20 @@ public class PriorityQueue<E> extends AbstractQueue<E>
         }
 
         public boolean tryAdvance(Consumer<? super E> action) {
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             int hi = getFence(), lo = index;
             if (lo >= 0 && lo < hi) {
                 index = lo + 1;
                 @SuppressWarnings("unchecked") E e = (E)pq.queue[lo];
-                if (e == null)
+                if (e == null) {
                     throw new ConcurrentModificationException();
+                }
                 action.accept(e);
-                if (pq.modCount != expectedModCount)
+                if (pq.modCount != expectedModCount) {
                     throw new ConcurrentModificationException();
+                }
                 return true;
             }
             return false;

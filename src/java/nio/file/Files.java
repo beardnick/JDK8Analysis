@@ -510,8 +510,9 @@ public final class Files {
         throws IOException
     {
         // avoid creating a matcher if all entries are required.
-        if (glob.equals("*"))
+        if (glob.equals("*")) {
             return newDirectoryStream(dir);
+        }
 
         // create a matcher and return a filter that uses it.
         FileSystem fs = dir.getFileSystem();
@@ -780,8 +781,9 @@ public final class Files {
         try {
             createDirectory(dir, attrs);
         } catch (FileAlreadyExistsException x) {
-            if (!isDirectory(dir, LinkOption.NOFOLLOW_LINKS))
+            if (!isDirectory(dir, LinkOption.NOFOLLOW_LINKS)) {
                 throw x;
+            }
         }
     }
 
@@ -1616,8 +1618,9 @@ public final class Files {
         // try installed file type detectors
         for (FileTypeDetector detector: FileTypeDetectors.installeDetectors) {
             String result = detector.probeContentType(path);
-            if (result != null)
+            if (result != null) {
                 return result;
+            }
         }
 
         // fallback to default
@@ -1864,8 +1867,9 @@ public final class Files {
         throws IOException
     {
         // only one attribute should be read
-        if (attribute.indexOf('*') >= 0 || attribute.indexOf(',') >= 0)
+        if (attribute.indexOf('*') >= 0 || attribute.indexOf(',') >= 0) {
             throw new IllegalArgumentException(attribute);
+        }
         Map<String,Object> map = readAttributes(path, attribute, options);
         assert map.size() == 1;
         String name;
@@ -2040,8 +2044,9 @@ public final class Files {
     {
         PosixFileAttributeView view =
             getFileAttributeView(path, PosixFileAttributeView.class);
-        if (view == null)
+        if (view == null) {
             throw new UnsupportedOperationException();
+        }
         view.setPermissions(perms);
         return path;
     }
@@ -2074,8 +2079,9 @@ public final class Files {
     public static UserPrincipal getOwner(Path path, LinkOption... options) throws IOException {
         FileOwnerAttributeView view =
             getFileAttributeView(path, FileOwnerAttributeView.class, options);
-        if (view == null)
+        if (view == null) {
             throw new UnsupportedOperationException();
+        }
         return view.getOwner();
     }
 
@@ -2122,8 +2128,9 @@ public final class Files {
     {
         FileOwnerAttributeView view =
             getFileAttributeView(path, FileOwnerAttributeView.class);
-        if (view == null)
+        if (view == null) {
             throw new UnsupportedOperationException();
+        }
         view.setOwner(owner);
         return path;
     }
@@ -2344,8 +2351,9 @@ public final class Files {
                 followLinks = false;
                 continue;
             }
-            if (opt == null)
+            if (opt == null) {
                 throw new NullPointerException();
+            }
             throw new AssertionError("Should not get here");
         }
         return followLinks;
@@ -2680,16 +2688,18 @@ public final class Files {
                         // there shouldn't be any more events for the current
                         // directory.
                         if (result == FileVisitResult.SKIP_SUBTREE ||
-                            result == FileVisitResult.SKIP_SIBLINGS)
+                            result == FileVisitResult.SKIP_SIBLINGS) {
                             walker.pop();
+                        }
                         break;
 
                     case END_DIRECTORY :
                         result = visitor.postVisitDirectory(ev.file(), ev.ioeException());
 
                         // SKIP_SIBLINGS is a no-op for postVisitDirectory
-                        if (result == FileVisitResult.SKIP_SIBLINGS)
+                        if (result == FileVisitResult.SKIP_SIBLINGS) {
                             result = FileVisitResult.CONTINUE;
+                        }
                         break;
 
                     default :
@@ -3016,8 +3026,9 @@ public final class Files {
             ostream = newOutputStream(target, StandardOpenOption.CREATE_NEW,
                                               StandardOpenOption.WRITE);
         } catch (FileAlreadyExistsException x) {
-            if (se != null)
+            if (se != null) {
                 throw se;
+            }
             // someone else won the race and created the file
             throw x;
         }
@@ -3102,20 +3113,23 @@ public final class Files {
         for (;;) {
             // read to EOF which may read more or less than initialSize (eg: file
             // is truncated while we are reading)
-            while ((n = source.read(buf, nread, capacity - nread)) > 0)
+            while ((n = source.read(buf, nread, capacity - nread)) > 0) {
                 nread += n;
+            }
 
             // if last call to source.read() returned -1, we are done
             // otherwise, try to read one more byte; if that failed we're done too
-            if (n < 0 || (n = source.read()) < 0)
+            if (n < 0 || (n = source.read()) < 0) {
                 break;
+            }
 
             // one more byte was read; need to allocate a larger buffer
             if (capacity <= MAX_BUFFER_SIZE - capacity) {
                 capacity = Math.max(capacity << 1, BUFFER_SIZE);
             } else {
-                if (capacity == MAX_BUFFER_SIZE)
+                if (capacity == MAX_BUFFER_SIZE) {
                     throw new OutOfMemoryError("Required array size too large");
+                }
                 capacity = MAX_BUFFER_SIZE;
             }
             buf = Arrays.copyOf(buf, capacity);
@@ -3152,8 +3166,9 @@ public final class Files {
         try (SeekableByteChannel sbc = Files.newByteChannel(path);
              InputStream in = Channels.newInputStream(sbc)) {
             long size = sbc.size();
-            if (size > (long)MAX_BUFFER_SIZE)
+            if (size > (long)MAX_BUFFER_SIZE) {
                 throw new OutOfMemoryError("Required array size too large");
+            }
 
             return read(in, (int)size);
         }
@@ -3203,8 +3218,9 @@ public final class Files {
             List<String> result = new ArrayList<>();
             for (;;) {
                 String line = reader.readLine();
-                if (line == null)
+                if (line == null) {
                     break;
+                }
                 result.add(line);
             }
             return result;

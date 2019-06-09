@@ -198,8 +198,9 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
 
     protected void joinGroup(SocketAddress mcastaddr, NetworkInterface netIf)
         throws IOException {
-        if (mcastaddr == null || !(mcastaddr instanceof InetSocketAddress))
+        if (mcastaddr == null || !(mcastaddr instanceof InetSocketAddress)) {
             throw new IllegalArgumentException("Unsupported address type");
+        }
         join(((InetSocketAddress)mcastaddr).getAddress(), netIf);
     }
 
@@ -216,8 +217,9 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
      */
     protected void leaveGroup(SocketAddress mcastaddr, NetworkInterface netIf)
         throws IOException {
-        if (mcastaddr == null || !(mcastaddr instanceof InetSocketAddress))
+        if (mcastaddr == null || !(mcastaddr instanceof InetSocketAddress)) {
             throw new IllegalArgumentException("Unsupported address type");
+        }
         leave(((InetSocketAddress)mcastaddr).getAddress(), netIf);
     }
 
@@ -262,8 +264,9 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
                  throw new SocketException("bad argument for SO_TIMEOUT");
              }
              int tmp = ((Integer) o).intValue();
-             if (tmp < 0)
+             if (tmp < 0) {
                  throw new IllegalArgumentException("timeout < 0");
+             }
              timeout = tmp;
              return;
          case IP_TOS:
@@ -293,16 +296,19 @@ abstract class AbstractPlainDatagramSocketImpl extends DatagramSocketImpl
              }
              break;
          case IP_MULTICAST_IF:
-             if (o == null || !(o instanceof InetAddress))
+             if (o == null || !(o instanceof InetAddress)) {
                  throw new SocketException("bad argument for IP_MULTICAST_IF");
+             }
              break;
          case IP_MULTICAST_IF2:
-             if (o == null || !(o instanceof NetworkInterface))
+             if (o == null || !(o instanceof NetworkInterface)) {
                  throw new SocketException("bad argument for IP_MULTICAST_IF2");
+             }
              break;
          case IP_MULTICAST_LOOP:
-             if (o == null || !(o instanceof Boolean))
+             if (o == null || !(o instanceof Boolean)) {
                  throw new SocketException("bad argument for IP_MULTICAST_LOOP");
+             }
              break;
          default:
              throw new SocketException("invalid option: " + optID);

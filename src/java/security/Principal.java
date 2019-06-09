@@ -87,8 +87,9 @@ public interface Principal {
      * @since 1.8
      */
     public default boolean implies(Subject subject) {
-        if (subject == null)
+        if (subject == null) {
             return false;
+        }
         return subject.getPrincipals().contains(this);
     }
 }

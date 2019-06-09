@@ -188,13 +188,15 @@ class DataInputStream extends FilterInputStream implements DataInput {
      * @see        java.io.FilterInputStream#in
      */
     public final void readFully(byte b[], int off, int len) throws IOException {
-        if (len < 0)
+        if (len < 0) {
             throw new IndexOutOfBoundsException();
+        }
         int n = 0;
         while (n < len) {
             int count = in.read(b, off + n, len - n);
-            if (count < 0)
+            if (count < 0) {
                 throw new EOFException();
+            }
             n += count;
         }
     }
@@ -240,8 +242,9 @@ class DataInputStream extends FilterInputStream implements DataInput {
      */
     public final boolean readBoolean() throws IOException {
         int ch = in.read();
-        if (ch < 0)
+        if (ch < 0) {
             throw new EOFException();
+        }
         return (ch != 0);
     }
 
@@ -263,8 +266,9 @@ class DataInputStream extends FilterInputStream implements DataInput {
      */
     public final byte readByte() throws IOException {
         int ch = in.read();
-        if (ch < 0)
+        if (ch < 0) {
             throw new EOFException();
+        }
         return (byte)(ch);
     }
 
@@ -286,8 +290,9 @@ class DataInputStream extends FilterInputStream implements DataInput {
      */
     public final int readUnsignedByte() throws IOException {
         int ch = in.read();
-        if (ch < 0)
+        if (ch < 0) {
             throw new EOFException();
+        }
         return ch;
     }
 
@@ -311,8 +316,9 @@ class DataInputStream extends FilterInputStream implements DataInput {
     public final short readShort() throws IOException {
         int ch1 = in.read();
         int ch2 = in.read();
-        if ((ch1 | ch2) < 0)
+        if ((ch1 | ch2) < 0) {
             throw new EOFException();
+        }
         return (short)((ch1 << 8) + (ch2 << 0));
     }
 
@@ -336,8 +342,9 @@ class DataInputStream extends FilterInputStream implements DataInput {
     public final int readUnsignedShort() throws IOException {
         int ch1 = in.read();
         int ch2 = in.read();
-        if ((ch1 | ch2) < 0)
+        if ((ch1 | ch2) < 0) {
             throw new EOFException();
+        }
         return (ch1 << 8) + (ch2 << 0);
     }
 
@@ -361,8 +368,9 @@ class DataInputStream extends FilterInputStream implements DataInput {
     public final char readChar() throws IOException {
         int ch1 = in.read();
         int ch2 = in.read();
-        if ((ch1 | ch2) < 0)
+        if ((ch1 | ch2) < 0) {
             throw new EOFException();
+        }
         return (char)((ch1 << 8) + (ch2 << 0));
     }
 
@@ -388,8 +396,9 @@ class DataInputStream extends FilterInputStream implements DataInput {
         int ch2 = in.read();
         int ch3 = in.read();
         int ch4 = in.read();
-        if ((ch1 | ch2 | ch3 | ch4) < 0)
+        if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
+        }
         return ((ch1 << 24) + (ch2 << 16) + (ch3 << 8) + (ch4 << 0));
     }
 
@@ -610,7 +619,9 @@ loop:   while (true) {
 
         while (count < utflen) {
             c = (int) bytearr[count] & 0xff;
-            if (c > 127) break;
+            if (c > 127) {
+                break;
+            }
             count++;
             chararr[chararr_count++]=(char)c;
         }
@@ -626,27 +637,31 @@ loop:   while (true) {
                 case 12: case 13:
                     /* 110x xxxx   10xx xxxx*/
                     count += 2;
-                    if (count > utflen)
+                    if (count > utflen) {
                         throw new UTFDataFormatException(
                             "malformed input: partial character at end");
+                    }
                     char2 = (int) bytearr[count-1];
-                    if ((char2 & 0xC0) != 0x80)
+                    if ((char2 & 0xC0) != 0x80) {
                         throw new UTFDataFormatException(
                             "malformed input around byte " + count);
+                    }
                     chararr[chararr_count++]=(char)(((c & 0x1F) << 6) |
                                                     (char2 & 0x3F));
                     break;
                 case 14:
                     /* 1110 xxxx  10xx xxxx  10xx xxxx */
                     count += 3;
-                    if (count > utflen)
+                    if (count > utflen) {
                         throw new UTFDataFormatException(
                             "malformed input: partial character at end");
+                    }
                     char2 = (int) bytearr[count-2];
                     char3 = (int) bytearr[count-1];
-                    if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80))
+                    if (((char2 & 0xC0) != 0x80) || ((char3 & 0xC0) != 0x80)) {
                         throw new UTFDataFormatException(
                             "malformed input around byte " + (count-1));
+                    }
                     chararr[chararr_count++]=(char)(((c     & 0x0F) << 12) |
                                                     ((char2 & 0x3F) << 6)  |
                                                     ((char3 & 0x3F) << 0));

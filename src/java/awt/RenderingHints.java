@@ -1134,12 +1134,14 @@ public class RenderingHints
         //if (m instanceof RenderingHints) {
         if (RenderingHints.class.isInstance(m)) {
             //hintmap.putAll(((RenderingHints) m).hintmap);
-            for (Map.Entry<?,?> entry : m.entrySet())
+            for (Map.Entry<?,?> entry : m.entrySet()) {
                 hintmap.put(entry.getKey(), entry.getValue());
+            }
         } else {
             // Funnel each key/value pair through our protected put method
-            for (Map.Entry<?,?> entry : m.entrySet())
+            for (Map.Entry<?,?> entry : m.entrySet()) {
                 put(entry.getKey(), entry.getValue());
+            }
         }
     }
 

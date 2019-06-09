@@ -286,13 +286,16 @@ public final class Double extends Number implements Comparable<Double> {
          */
         if (!isFinite(d) )
             // For infinity and NaN, use the decimal output.
+        {
             return Double.toString(d);
-        else {
+        } else {
             // Initialized to maximum size of output.
             StringBuilder answer = new StringBuilder(24);
 
             if (Math.copySign(1.0, d) == -1.0)    // value is negative,
+            {
                 answer.append("-");                  // so append sign info
+            }
 
             answer.append("0x");
 
@@ -838,8 +841,9 @@ public final class Double extends Number implements Comparable<Double> {
         // exponent and nonzero significand.
         if ( ((result & DoubleConsts.EXP_BIT_MASK) ==
               DoubleConsts.EXP_BIT_MASK) &&
-             (result & DoubleConsts.SIGNIF_BIT_MASK) != 0L)
+             (result & DoubleConsts.SIGNIF_BIT_MASK) != 0L) {
             result = 0x7ff8000000000000L;
+        }
         return result;
     }
 
@@ -997,10 +1001,12 @@ public final class Double extends Number implements Comparable<Double> {
      * @since 1.4
      */
     public static int compare(double d1, double d2) {
-        if (d1 < d2)
+        if (d1 < d2) {
             return -1;           // Neither val is NaN, thisVal is smaller
-        if (d1 > d2)
+        }
+        if (d1 > d2) {
             return 1;            // Neither val is NaN, thisVal is larger
+        }
 
         // Cannot use doubleToRawLongBits because of possibility of NaNs.
         long thisBits    = Double.doubleToLongBits(d1);

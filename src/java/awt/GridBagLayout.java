@@ -583,8 +583,9 @@ java.io.Serializable {
      * @since      JDK1.1
      */
     public int [][] getLayoutDimensions () {
-        if (layoutInfo == null)
+        if (layoutInfo == null) {
             return new int[2][0];
+        }
 
         int dim[][] = new int [2][];
         dim[0] = new int[layoutInfo.width];
@@ -609,8 +610,9 @@ java.io.Serializable {
      * @since       JDK1.1
      */
     public double [][] getLayoutWeights () {
-        if (layoutInfo == null)
+        if (layoutInfo == null) {
             return new double[2][0];
+        }
 
         double weights[][] = new double [2][];
         weights[0] = new double[layoutInfo.width];
@@ -653,20 +655,23 @@ java.io.Serializable {
         Point loc = new Point(0,0);
         int i, d;
 
-        if (layoutInfo == null)
+        if (layoutInfo == null) {
             return loc;
+        }
 
         d = layoutInfo.startx;
         if (!rightToLeft) {
             for (i=0; i<layoutInfo.width; i++) {
                 d += layoutInfo.minWidth[i];
-                if (d > x)
+                if (d > x) {
                     break;
+                }
             }
         } else {
             for (i=layoutInfo.width-1; i>=0; i--) {
-                if (d > x)
+                if (d > x) {
                     break;
+                }
                 d += layoutInfo.minWidth[i];
             }
             i++;
@@ -676,8 +681,9 @@ java.io.Serializable {
         d = layoutInfo.starty;
         for (i=0; i<layoutInfo.height; i++) {
             d += layoutInfo.minHeight[i];
-            if (d > y)
+            if (d > y) {
                 break;
+            }
         }
         loc.y = i;
 
@@ -1047,27 +1053,31 @@ java.io.Serializable {
             boolean hasBaseline = false;
             for (compindex = 0 ; compindex < components.length ; compindex++) {
                 comp = components[compindex];
-                if (!comp.isVisible())
+                if (!comp.isVisible()) {
                     continue;
+                }
                 constraints = lookupConstraints(comp);
 
                 curX = constraints.gridx;
                 curY = constraints.gridy;
                 curWidth = constraints.gridwidth;
-                if (curWidth <= 0)
+                if (curWidth <= 0) {
                     curWidth = 1;
+                }
                 curHeight = constraints.gridheight;
-                if (curHeight <= 0)
+                if (curHeight <= 0) {
                     curHeight = 1;
+                }
 
                 /* If x or y is negative, then use relative positioning: */
                 if (curX < 0 && curY < 0) {
-                    if (curRow >= 0)
+                    if (curRow >= 0) {
                         curY = curRow;
-                    else if (curCol >= 0)
+                    } else if (curCol >= 0) {
                         curX = curCol;
-                    else
+                    } else {
                         curY = 0;
+                    }
                 }
                 if (curX < 0) {
                     px = 0;
@@ -1076,8 +1086,9 @@ java.io.Serializable {
                     }
 
                     curX = px - curX - 1;
-                    if(curX < 0)
+                    if(curX < 0) {
                         curX = 0;
+                    }
                 }
                 else if (curY < 0) {
                     py = 0;
@@ -1085,8 +1096,9 @@ java.io.Serializable {
                         py = Math.max(py, yMaxArray[i]);
                     }
                     curY = py - curY - 1;
-                    if(curY < 0)
+                    if(curY < 0) {
                         curY = 0;
+                    }
                 }
 
                 /* Adjust the grid width and height
@@ -1111,10 +1123,11 @@ java.io.Serializable {
 
 
                 /* Cache the current slave's size. */
-                if (sizeflag == PREFERREDSIZE)
+                if (sizeflag == PREFERREDSIZE) {
                     d = comp.getPreferredSize();
-                else
+                } else {
                     d = comp.getMinimumSize();
+                }
                 constraints.minWidth = d.width;
                 constraints.minHeight = d.height;
                 if (calculateBaseline(comp, constraints, d)) {
@@ -1123,26 +1136,31 @@ java.io.Serializable {
 
                 /* Zero width and height must mean that this is the last item (or
                  * else something is wrong). */
-                if (constraints.gridheight == 0 && constraints.gridwidth == 0)
+                if (constraints.gridheight == 0 && constraints.gridwidth == 0) {
                     curRow = curCol = -1;
+                }
 
                 /* Zero width starts a new row */
-                if (constraints.gridheight == 0 && curRow < 0)
+                if (constraints.gridheight == 0 && curRow < 0) {
                     curCol = curX + curWidth;
+                }
 
                 /* Zero height starts a new column */
-                else if (constraints.gridwidth == 0 && curCol < 0)
+                else if (constraints.gridwidth == 0 && curCol < 0) {
                     curRow = curY + curHeight;
+                }
             } //for (components) loop
 
 
             /*
              * Apply minimum row/column dimensions
              */
-            if (columnWidths != null && layoutWidth < columnWidths.length)
+            if (columnWidths != null && layoutWidth < columnWidths.length) {
                 layoutWidth = columnWidths.length;
-            if (rowHeights != null && layoutHeight < rowHeights.length)
+            }
+            if (rowHeights != null && layoutHeight < rowHeights.length) {
                 layoutHeight = rowHeights.length;
+            }
 
             r = new GridBagLayoutInfo(layoutWidth, layoutHeight);
 
@@ -1174,8 +1192,9 @@ java.io.Serializable {
 
             for (compindex = 0 ; compindex < components.length ; compindex++) {
                 comp = components[compindex];
-                if (!comp.isVisible())
+                if (!comp.isVisible()) {
                     continue;
+                }
                 constraints = lookupConstraints(comp);
 
                 curX = constraints.gridx;
@@ -1185,34 +1204,39 @@ java.io.Serializable {
 
                 /* If x or y is negative, then use relative positioning: */
                 if (curX < 0 && curY < 0) {
-                    if(curRow >= 0)
+                    if(curRow >= 0) {
                         curY = curRow;
-                    else if(curCol >= 0)
+                    } else if(curCol >= 0) {
                         curX = curCol;
-                    else
+                    } else {
                         curY = 0;
+                    }
                 }
 
                 if (curX < 0) {
                     if (curHeight <= 0) {
                         curHeight += r.height - curY;
-                        if (curHeight < 1)
+                        if (curHeight < 1) {
                             curHeight = 1;
+                        }
                     }
 
                     px = 0;
-                    for (i = curY; i < (curY + curHeight); i++)
+                    for (i = curY; i < (curY + curHeight); i++) {
                         px = Math.max(px, xMaxArray[i]);
+                    }
 
                     curX = px - curX - 1;
-                    if(curX < 0)
+                    if(curX < 0) {
                         curX = 0;
+                    }
                 }
                 else if (curY < 0) {
                     if (curWidth <= 0) {
                         curWidth += r.width - curX;
-                        if (curWidth < 1)
+                        if (curWidth < 1) {
                             curWidth = 1;
+                        }
                     }
 
                     py = 0;
@@ -1221,20 +1245,23 @@ java.io.Serializable {
                     }
 
                     curY = py - curY - 1;
-                    if(curY < 0)
+                    if(curY < 0) {
                         curY = 0;
+                    }
                 }
 
                 if (curWidth <= 0) {
                     curWidth += r.width - curX;
-                    if (curWidth < 1)
+                    if (curWidth < 1) {
                         curWidth = 1;
+                    }
                 }
 
                 if (curHeight <= 0) {
                     curHeight += r.height - curY;
-                    if (curHeight < 1)
+                    if (curHeight < 1) {
                         curHeight = 1;
+                    }
                 }
 
                 px = curX + curWidth;
@@ -1244,12 +1271,14 @@ java.io.Serializable {
                 for (i = curY; i < (curY + curHeight); i++) { xMaxArray[i] = px; }
 
                 /* Make negative sizes start a new row/column */
-                if (constraints.gridheight == 0 && constraints.gridwidth == 0)
+                if (constraints.gridheight == 0 && constraints.gridwidth == 0) {
                     curRow = curCol = -1;
-                if (constraints.gridheight == 0 && curRow < 0)
+                }
+                if (constraints.gridheight == 0 && curRow < 0) {
                     curCol = curX + curWidth;
-                else if (constraints.gridwidth == 0 && curCol < 0)
+                } else if (constraints.gridwidth == 0 && curCol < 0) {
                     curRow = curY + curHeight;
+                }
 
                 /* Assign the new values to the gridbag slave */
                 constraints.tempX = curX;
@@ -1340,14 +1369,18 @@ java.io.Serializable {
             /*
              * Apply minimum row/column dimensions and weights
              */
-            if (columnWidths != null)
+            if (columnWidths != null) {
                 System.arraycopy(columnWidths, 0, r.minWidth, 0, columnWidths.length);
-            if (rowHeights != null)
+            }
+            if (rowHeights != null) {
                 System.arraycopy(rowHeights, 0, r.minHeight, 0, rowHeights.length);
-            if (columnWeights != null)
+            }
+            if (columnWeights != null) {
                 System.arraycopy(columnWeights, 0, r.weightX, 0,  Math.min(r.weightX.length, columnWeights.length));
-            if (rowWeights != null)
+            }
+            if (rowWeights != null) {
                 System.arraycopy(rowWeights, 0, r.weightY, 0,  Math.min(r.weightY.length, rowWeights.length));
+            }
 
             /*
              * Pass #3
@@ -1362,8 +1395,9 @@ java.io.Serializable {
                  i = nextSize, nextSize = Integer.MAX_VALUE) {
                 for (compindex = 0 ; compindex < components.length ; compindex++) {
                     comp = components[compindex];
-                    if (!comp.isVisible())
+                    if (!comp.isVisible()) {
                         continue;
+                    }
                     constraints = lookupConstraints(comp);
 
                     if (constraints.tempWidth == i) {
@@ -1377,12 +1411,14 @@ java.io.Serializable {
                          */
 
                         weight_diff = constraints.weightx;
-                        for (k = constraints.tempX; k < px; k++)
+                        for (k = constraints.tempX; k < px; k++) {
                             weight_diff -= r.weightX[k];
+                        }
                         if (weight_diff > 0.0) {
                             weight = 0.0;
-                            for (k = constraints.tempX; k < px; k++)
+                            for (k = constraints.tempX; k < px; k++) {
                                 weight += r.weightX[k];
+                            }
                             for (k = constraints.tempX; weight > 0.0 && k < px; k++) {
                                 double wt = r.weightX[k];
                                 double dx = (wt * weight_diff) / weight;
@@ -1406,12 +1442,14 @@ java.io.Serializable {
                             constraints.minWidth + constraints.ipadx +
                             constraints.insets.left + constraints.insets.right;
 
-                        for (k = constraints.tempX; k < px; k++)
+                        for (k = constraints.tempX; k < px; k++) {
                             pixels_diff -= r.minWidth[k];
+                        }
                         if (pixels_diff > 0) {
                             weight = 0.0;
-                            for (k = constraints.tempX; k < px; k++)
+                            for (k = constraints.tempX; k < px; k++) {
                                 weight += r.weightX[k];
+                            }
                             for (k = constraints.tempX; weight > 0.0 && k < px; k++) {
                                 double wt = r.weightX[k];
                                 int dx = (int)((wt * ((double)pixels_diff)) / weight);
@@ -1423,8 +1461,9 @@ java.io.Serializable {
                             r.minWidth[px-1] += pixels_diff;
                         }
                     }
-                    else if (constraints.tempWidth > i && constraints.tempWidth < nextSize)
+                    else if (constraints.tempWidth > i && constraints.tempWidth < nextSize) {
                         nextSize = constraints.tempWidth;
+                    }
 
 
                     if (constraints.tempHeight == i) {
@@ -1438,12 +1477,14 @@ java.io.Serializable {
                          */
 
                         weight_diff = constraints.weighty;
-                        for (k = constraints.tempY; k < py; k++)
+                        for (k = constraints.tempY; k < py; k++) {
                             weight_diff -= r.weightY[k];
+                        }
                         if (weight_diff > 0.0) {
                             weight = 0.0;
-                            for (k = constraints.tempY; k < py; k++)
+                            for (k = constraints.tempY; k < py; k++) {
                                 weight += r.weightY[k];
+                            }
                             for (k = constraints.tempY; weight > 0.0 && k < py; k++) {
                                 double wt = r.weightY[k];
                                 double dy = (wt * weight_diff) / weight;
@@ -1513,12 +1554,14 @@ java.io.Serializable {
                                 constraints.insets.top +
                                 constraints.insets.bottom;
                         }
-                        for (k = constraints.tempY; k < py; k++)
+                        for (k = constraints.tempY; k < py; k++) {
                             pixels_diff -= r.minHeight[k];
+                        }
                         if (pixels_diff > 0) {
                             weight = 0.0;
-                            for (k = constraints.tempY; k < py; k++)
+                            for (k = constraints.tempY; k < py; k++) {
                                 weight += r.weightY[k];
+                            }
                             for (k = constraints.tempY; weight > 0.0 && k < py; k++) {
                                 double wt = r.weightY[k];
                                 int dy = (int)((wt * ((double)pixels_diff)) / weight);
@@ -1531,8 +1574,9 @@ java.io.Serializable {
                         }
                     }
                     else if (constraints.tempHeight > i &&
-                             constraints.tempHeight < nextSize)
+                             constraints.tempHeight < nextSize) {
                         nextSize = constraints.tempHeight;
+                    }
                 }
             }
             return r;
@@ -2005,13 +2049,15 @@ java.io.Serializable {
         Insets insets = parent.getInsets();
 
         t = 0;
-        for(i = 0; i < info.width; i++)
+        for(i = 0; i < info.width; i++) {
             t += info.minWidth[i];
+        }
         d.width = t + insets.left + insets.right;
 
         t = 0;
-        for(i = 0; i < info.height; i++)
+        for(i = 0; i < info.height; i++) {
             t += info.minHeight[i];
+        }
         d.height = t + insets.top + insets.bottom;
 
         return d;
@@ -2103,8 +2149,9 @@ java.io.Serializable {
         diffw = parent.width - r.width;
         if (diffw != 0) {
             weight = 0.0;
-            for (i = 0; i < info.width; i++)
+            for (i = 0; i < info.width; i++) {
                 weight += info.weightX[i];
+            }
             if (weight > 0.0) {
                 for (i = 0; i < info.width; i++) {
                     int dx = (int)(( ((double)diffw) * info.weightX[i]) / weight);
@@ -2126,8 +2173,9 @@ java.io.Serializable {
         diffh = parent.height - r.height;
         if (diffh != 0) {
             weight = 0.0;
-            for (i = 0; i < info.height; i++)
+            for (i = 0; i < info.height; i++) {
                 weight += info.weightY[i];
+            }
             if (weight > 0.0) {
                 for (i = 0; i < info.height; i++) {
                     int dy = (int)(( ((double)diffh) * info.weightY[i]) / weight);
@@ -2170,17 +2218,20 @@ java.io.Serializable {
 
             if (!rightToLeft) {
                 r.x = info.startx;
-                for(i = 0; i < constraints.tempX; i++)
+                for(i = 0; i < constraints.tempX; i++) {
                     r.x += info.minWidth[i];
+                }
             } else {
                 r.x = parent.width - (diffw/2 + insets.right);
-                for(i = 0; i < constraints.tempX; i++)
+                for(i = 0; i < constraints.tempX; i++) {
                     r.x -= info.minWidth[i];
+                }
             }
 
             r.y = info.starty;
-            for(i = 0; i < constraints.tempY; i++)
+            for(i = 0; i < constraints.tempY; i++) {
                 r.y += info.minHeight[i];
+            }
 
             r.width = 0;
             for(i = constraints.tempX;

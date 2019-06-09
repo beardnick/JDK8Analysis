@@ -440,13 +440,15 @@ public class Runtime {
      */
     public Process exec(String command, String[] envp, File dir)
         throws IOException {
-        if (command.length() == 0)
+        if (command.length() == 0) {
             throw new IllegalArgumentException("Empty command");
+        }
 
         StringTokenizer st = new StringTokenizer(command);
         String[] cmdarray = new String[st.countTokens()];
-        for (int i = 0; st.hasMoreTokens(); i++)
+        for (int i = 0; st.hasMoreTokens(); i++) {
             cmdarray[i] = st.nextToken();
+        }
         return exec(cmdarray, envp, dir);
     }
 

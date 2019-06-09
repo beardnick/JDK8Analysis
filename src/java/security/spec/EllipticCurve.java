@@ -156,8 +156,11 @@ public class EllipticCurve {
      * array is returned each time this method is called.
      */
     public byte[] getSeed() {
-        if (seed == null) return null;
-        else return seed.clone();
+        if (seed == null) {
+            return null;
+        } else {
+            return seed.clone();
+        }
     }
 
     /**
@@ -168,7 +171,9 @@ public class EllipticCurve {
      * EllipticCurve and the field, A, and B match, false otherwise.
      */
     public boolean equals(Object obj) {
-        if (this == obj) return true;
+        if (this == obj) {
+            return true;
+        }
         if (obj instanceof EllipticCurve) {
             EllipticCurve curve = (EllipticCurve) obj;
             if ((field.equals(curve.field)) &&

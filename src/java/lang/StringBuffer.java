@@ -200,8 +200,9 @@ import java.util.Arrays;
      */
     @Override
     public synchronized char charAt(int index) {
-        if ((index < 0) || (index >= count))
+        if ((index < 0) || (index >= count)) {
             throw new StringIndexOutOfBoundsException(index);
+        }
         return value[index];
     }
 
@@ -253,8 +254,9 @@ import java.util.Arrays;
      */
     @Override
     public synchronized void setCharAt(int index, char ch) {
-        if ((index < 0) || (index >= count))
+        if ((index < 0) || (index >= count)) {
             throw new StringIndexOutOfBoundsException(index);
+        }
         toStringCache = null;
         value[index] = ch;
     }

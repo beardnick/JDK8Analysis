@@ -74,10 +74,11 @@ public class WriteAbortedException extends ObjectStreamException {
      * exception, if there is one.
      */
     public String getMessage() {
-        if (detail == null)
+        if (detail == null) {
             return super.getMessage();
-        else
+        } else {
             return super.getMessage() + "; " + detail.toString();
+        }
     }
 
     /**

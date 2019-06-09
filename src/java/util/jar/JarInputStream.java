@@ -81,8 +81,9 @@ class JarInputStream extends ZipInputStream {
         // by the dir META-INF/). It skips the META-INF/ and then
         // "consumes" the MANIFEST.MF to initialize the Manifest object.
         JarEntry e = (JarEntry)super.getNextEntry();
-        if (e != null && e.getName().equalsIgnoreCase("META-INF/"))
+        if (e != null && e.getName().equalsIgnoreCase("META-INF/")) {
             e = (JarEntry)super.getNextEntry();
+        }
         first = checkManifest(e);
     }
 
@@ -146,8 +147,9 @@ class JarInputStream extends ZipInputStream {
             }
         } else {
             e = first;
-            if (first.getName().equalsIgnoreCase(JarIndex.INDEX_NAME))
+            if (first.getName().equalsIgnoreCase(JarIndex.INDEX_NAME)) {
                 tryManifest = true;
+            }
             first = null;
         }
         if (jv != null && e != null) {

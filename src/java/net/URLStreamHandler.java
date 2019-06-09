@@ -144,8 +144,9 @@ public abstract class URLStreamHandler {
             queryOnly = queryStart == start;
             if ((queryStart != -1) && (queryStart < limit)) {
                 query = spec.substring(queryStart+1, limit);
-                if (limit > queryStart)
+                if (limit > queryStart) {
                     limit = queryStart;
+                }
                 spec = spec.substring(0, queryStart);
             }
         }
@@ -163,8 +164,9 @@ public abstract class URLStreamHandler {
             i = spec.indexOf('/', start);
             if (i < 0) {
                 i = spec.indexOf('?', start);
-                if (i < 0)
+                if (i < 0) {
                     i = limit;
+                }
             }
 
             host = authority = spec.substring(start, i);
@@ -221,14 +223,16 @@ public abstract class URLStreamHandler {
             } else {
                 host = "";
             }
-            if (port < -1)
+            if (port < -1) {
                 throw new IllegalArgumentException("Invalid port number :" +
                                                    port);
+            }
             start = i;
             // If the authority is defined then the path is defined by the
             // spec only; See RFC 2396 Section 5.2.4.
-            if (authority != null && authority.length() > 0)
+            if (authority != null && authority.length() > 0) {
                 path = "";
+            }
         }
 
         if (host == null) {
@@ -243,8 +247,9 @@ public abstract class URLStreamHandler {
                 isRelPath = true;
                 int ind = path.lastIndexOf('/');
                 String seperator = "";
-                if (ind == -1 && authority != null)
+                if (ind == -1 && authority != null) {
                     seperator = "/";
+                }
                 path = path.substring(0, ind + 1) + seperator +
                          spec.substring(start, limit);
 
@@ -254,12 +259,14 @@ public abstract class URLStreamHandler {
             }
         } else if (queryOnly && path != null) {
             int ind = path.lastIndexOf('/');
-            if (ind < 0)
+            if (ind < 0) {
                 ind = 0;
+            }
             path = path.substring(0, ind) + "/";
         }
-        if (path == null)
+        if (path == null) {
             path = "";
+        }
 
         if (isRelPath) {
             // Remove embedded /./
@@ -293,12 +300,14 @@ public abstract class URLStreamHandler {
                 }
             }
             // Remove starting .
-            if (path.startsWith("./") && path.length() > 2)
+            if (path.startsWith("./") && path.length() > 2) {
                 path = path.substring(2);
+            }
 
             // Remove trailing .
-            if (path.endsWith("/."))
+            if (path.endsWith("/.")) {
                 path = path.substring(0, path.length() -1);
+            }
         }
 
         setURL(u, protocol, host, port, authority, userInfo, path, query, ref);
@@ -346,8 +355,9 @@ public abstract class URLStreamHandler {
 
         // Generate the protocol part.
         String protocol = u.getProtocol();
-        if (protocol != null)
+        if (protocol != null) {
             h += protocol.hashCode();
+        }
 
         // Generate the host part.
         InetAddress addr = getHostAddress(u);
@@ -355,25 +365,29 @@ public abstract class URLStreamHandler {
             h += addr.hashCode();
         } else {
             String host = u.getHost();
-            if (host != null)
+            if (host != null) {
                 h += host.toLowerCase().hashCode();
+            }
         }
 
         // Generate the file part.
         String file = u.getFile();
-        if (file != null)
+        if (file != null) {
             h += file.hashCode();
+        }
 
         // Generate the port part.
-        if (u.getPort() == -1)
+        if (u.getPort() == -1) {
             h += getDefaultPort();
-        else
+        } else {
             h += u.getPort();
+        }
 
         // Generate the ref part.
         String ref = u.getRef();
-        if (ref != null)
+        if (ref != null) {
             h += ref.hashCode();
+        }
 
         return h;
     }
@@ -393,24 +407,28 @@ public abstract class URLStreamHandler {
         // Compare the protocols.
         if (!((u1.getProtocol() == u2.getProtocol()) ||
               (u1.getProtocol() != null &&
-               u1.getProtocol().equalsIgnoreCase(u2.getProtocol()))))
+               u1.getProtocol().equalsIgnoreCase(u2.getProtocol())))) {
             return false;
+        }
 
         // Compare the files.
         if (!(u1.getFile() == u2.getFile() ||
-              (u1.getFile() != null && u1.getFile().equals(u2.getFile()))))
+              (u1.getFile() != null && u1.getFile().equals(u2.getFile())))) {
             return false;
+        }
 
         // Compare the ports.
         int port1, port2;
         port1 = (u1.getPort() != -1) ? u1.getPort() : u1.handler.getDefaultPort();
         port2 = (u2.getPort() != -1) ? u2.getPort() : u2.handler.getDefaultPort();
-        if (port1 != port2)
+        if (port1 != port2) {
             return false;
+        }
 
         // Compare the hosts.
-        if (!hostsEqual(u1, u2))
+        if (!hostsEqual(u1, u2)) {
             return false;
+        }
 
         return true;
     }
@@ -425,8 +443,9 @@ public abstract class URLStreamHandler {
      * @since 1.3
      */
     protected synchronized InetAddress getHostAddress(URL u) {
-        if (u.hostAddress != null)
+        if (u.hostAddress != null) {
             return u.hostAddress;
+        }
 
         String host = u.getHost();
         if (host == null || host.equals("")) {
@@ -458,10 +477,11 @@ public abstract class URLStreamHandler {
         if (a1 != null && a2 != null) {
             return a1.equals(a2);
         // else, if both have host names, compare them
-        } else if (u1.getHost() != null && u2.getHost() != null)
+        } else if (u1.getHost() != null && u2.getHost() != null) {
             return u1.getHost().equalsIgnoreCase(u2.getHost());
-         else
+        } else {
             return u1.getHost() == null && u2.getHost() == null;
+        }
     }
 
     /**
@@ -475,16 +495,18 @@ public abstract class URLStreamHandler {
 
         // pre-compute length of StringBuffer
         int len = u.getProtocol().length() + 1;
-        if (u.getAuthority() != null && u.getAuthority().length() > 0)
+        if (u.getAuthority() != null && u.getAuthority().length() > 0) {
             len += 2 + u.getAuthority().length();
+        }
         if (u.getPath() != null) {
             len += u.getPath().length();
         }
         if (u.getQuery() != null) {
             len += 1 + u.getQuery().length();
         }
-        if (u.getRef() != null)
+        if (u.getRef() != null) {
             len += 1 + u.getRef().length();
+        }
 
         StringBuffer result = new StringBuffer(len);
         result.append(u.getProtocol());
@@ -581,8 +603,9 @@ public abstract class URLStreamHandler {
             if (q != -1) {
                 query = file.substring(q+1);
                 path = file.substring(0, q);
-            } else
+            } else {
                 path = file;
+            }
         }
         setURL(u, protocol, host, port, authority, userInfo, path, query, ref);
     }

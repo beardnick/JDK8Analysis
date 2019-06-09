@@ -251,8 +251,9 @@ public class List extends Component implements ItemSelectable, Accessible {
      */
     public void addNotify() {
         synchronized (getTreeLock()) {
-            if (peer == null)
+            if (peer == null) {
                 peer = getToolkit().createList(this);
+            }
             super.addNotify();
         }
     }
@@ -1242,14 +1243,14 @@ public class List extends Component implements ItemSelectable, Accessible {
       while(null != (keyOrNull = s.readObject())) {
         String key = ((String)keyOrNull).intern();
 
-        if (itemListenerK == key)
-          addItemListener((ItemListener)(s.readObject()));
-
-        else if (actionListenerK == key)
-          addActionListener((ActionListener)(s.readObject()));
-
-        else // skip value for unrecognized key
-          s.readObject();
+        if (itemListenerK == key) {
+            addItemListener((ItemListener)(s.readObject()));
+        } else if (actionListenerK == key) {
+            addActionListener((ActionListener)(s.readObject()));
+        } else // skip value for unrecognized key
+        {
+            s.readObject();
+        }
       }
     }
 
@@ -1451,8 +1452,9 @@ public class List extends Component implements ItemSelectable, Accessible {
          public void clearAccessibleSelection() {
              synchronized(List.this)  {
                  int selectedIndexes[] = List.this.getSelectedIndexes();
-                 if (selectedIndexes == null)
+                 if (selectedIndexes == null) {
                      return;
+                 }
                  for (int i = selectedIndexes.length - 1; i >= 0; i--) {
                      List.this.deselect(selectedIndexes[i]);
                  }

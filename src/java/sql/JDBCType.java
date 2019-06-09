@@ -252,8 +252,9 @@ public enum JDBCType implements SQLType {
      */
     public static JDBCType valueOf(int type) {
         for( JDBCType sqlType : JDBCType.class.getEnumConstants()) {
-            if(type == sqlType.type)
+            if(type == sqlType.type) {
                 return sqlType;
+            }
         }
         throw new IllegalArgumentException("Type:" + type + " is not a valid "
                 + "Types.java value.");

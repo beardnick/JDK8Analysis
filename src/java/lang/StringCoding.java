@@ -61,8 +61,9 @@ class StringCoding {
 
     private static <T> T deref(ThreadLocal<SoftReference<T>> tl) {
         SoftReference<T> sr = tl.get();
-        if (sr == null)
+        if (sr == null) {
             return null;
+        }
         return sr.get();
     }
 
@@ -73,20 +74,22 @@ class StringCoding {
     // Trim the given byte array to the given length
     //
     private static byte[] safeTrim(byte[] ba, int len, Charset cs, boolean isTrusted) {
-        if (len == ba.length && (isTrusted || System.getSecurityManager() == null))
+        if (len == ba.length && (isTrusted || System.getSecurityManager() == null)) {
             return ba;
-        else
+        } else {
             return Arrays.copyOf(ba, len);
+        }
     }
 
     // Trim the given char array to the given length
     //
     private static char[] safeTrim(char[] ca, int len,
                                    Charset cs, boolean isTrusted) {
-        if (len == ca.length && (isTrusted || System.getSecurityManager() == null))
+        if (len == ca.length && (isTrusted || System.getSecurityManager() == null)) {
             return ca;
-        else
+        } else {
             return Arrays.copyOf(ca, len);
+        }
     }
 
     private static int scale(int len, float expansionFactor) {
@@ -135,8 +138,9 @@ class StringCoding {
         }
 
         String charsetName() {
-            if (cs instanceof HistoricallyNamedCharset)
+            if (cs instanceof HistoricallyNamedCharset) {
                 return ((HistoricallyNamedCharset)cs).historicalName();
+            }
             return cs.name();
         }
 
@@ -147,8 +151,9 @@ class StringCoding {
         char[] decode(byte[] ba, int off, int len) {
             int en = scale(len, cd.maxCharsPerByte());
             char[] ca = new char[en];
-            if (len == 0)
+            if (len == 0) {
                 return ca;
+            }
             if (cd instanceof ArrayDecoder) {
                 int clen = ((ArrayDecoder)cd).decode(ba, off, len, ca);
                 return safeTrim(ca, clen, cs, isTrusted);
@@ -158,11 +163,13 @@ class StringCoding {
                 CharBuffer cb = CharBuffer.wrap(ca);
                 try {
                     CoderResult cr = cd.decode(bb, cb, true);
-                    if (!cr.isUnderflow())
+                    if (!cr.isUnderflow()) {
                         cr.throwException();
+                    }
                     cr = cd.flush(cb);
-                    if (!cr.isUnderflow())
+                    if (!cr.isUnderflow()) {
                         cr.throwException();
+                    }
                 } catch (CharacterCodingException x) {
                     // Substitution is always enabled,
                     // so this shouldn't happen
@@ -183,11 +190,13 @@ class StringCoding {
             sd = null;
             try {
                 Charset cs = lookupCharset(csn);
-                if (cs != null)
+                if (cs != null) {
                     sd = new StringDecoder(cs, csn);
+                }
             } catch (IllegalCharsetNameException x) {}
-            if (sd == null)
+            if (sd == null) {
                 throw new UnsupportedEncodingException(csn);
+            }
             set(decoder, sd);
         }
         return sd.decode(ba, off, len);
@@ -213,8 +222,9 @@ class StringCoding {
         CharsetDecoder cd = cs.newDecoder();
         int en = scale(len, cd.maxCharsPerByte());
         char[] ca = new char[en];
-        if (len == 0)
+        if (len == 0) {
             return ca;
+        }
         boolean isTrusted = false;
         if (System.getSecurityManager() != null) {
             if (!(isTrusted = (cs.getClass().getClassLoader0() == null))) {
@@ -233,11 +243,13 @@ class StringCoding {
             CharBuffer cb = CharBuffer.wrap(ca);
             try {
                 CoderResult cr = cd.decode(bb, cb, true);
-                if (!cr.isUnderflow())
+                if (!cr.isUnderflow()) {
                     cr.throwException();
+                }
                 cr = cd.flush(cb);
-                if (!cr.isUnderflow())
+                if (!cr.isUnderflow()) {
                     cr.throwException();
+                }
             } catch (CharacterCodingException x) {
                 // Substitution is always enabled,
                 // so this shouldn't happen
@@ -286,8 +298,9 @@ class StringCoding {
         }
 
         String charsetName() {
-            if (cs instanceof HistoricallyNamedCharset)
+            if (cs instanceof HistoricallyNamedCharset) {
                 return ((HistoricallyNamedCharset)cs).historicalName();
+            }
             return cs.name();
         }
 
@@ -298,8 +311,9 @@ class StringCoding {
         byte[] encode(char[] ca, int off, int len) {
             int en = scale(len, ce.maxBytesPerChar());
             byte[] ba = new byte[en];
-            if (len == 0)
+            if (len == 0) {
                 return ba;
+            }
             if (ce instanceof ArrayEncoder) {
                 int blen = ((ArrayEncoder)ce).encode(ca, off, len, ba);
                 return safeTrim(ba, blen, cs, isTrusted);
@@ -309,11 +323,13 @@ class StringCoding {
                 CharBuffer cb = CharBuffer.wrap(ca, off, len);
                 try {
                     CoderResult cr = ce.encode(cb, bb, true);
-                    if (!cr.isUnderflow())
+                    if (!cr.isUnderflow()) {
                         cr.throwException();
+                    }
                     cr = ce.flush(bb);
-                    if (!cr.isUnderflow())
+                    if (!cr.isUnderflow()) {
                         cr.throwException();
+                    }
                 } catch (CharacterCodingException x) {
                     // Substitution is always enabled,
                     // so this shouldn't happen
@@ -334,11 +350,13 @@ class StringCoding {
             se = null;
             try {
                 Charset cs = lookupCharset(csn);
-                if (cs != null)
+                if (cs != null) {
                     se = new StringEncoder(cs, csn);
+                }
             } catch (IllegalCharsetNameException x) {}
-            if (se == null)
+            if (se == null) {
                 throw new UnsupportedEncodingException (csn);
+            }
             set(encoder, se);
         }
         return se.encode(ca, off, len);
@@ -348,8 +366,9 @@ class StringCoding {
         CharsetEncoder ce = cs.newEncoder();
         int en = scale(len, ce.maxBytesPerChar());
         byte[] ba = new byte[en];
-        if (len == 0)
+        if (len == 0) {
             return ba;
+        }
         boolean isTrusted = false;
         if (System.getSecurityManager() != null) {
             if (!(isTrusted = (cs.getClass().getClassLoader0() == null))) {
@@ -368,11 +387,13 @@ class StringCoding {
             CharBuffer cb = CharBuffer.wrap(ca, off, len);
             try {
                 CoderResult cr = ce.encode(cb, bb, true);
-                if (!cr.isUnderflow())
+                if (!cr.isUnderflow()) {
                     cr.throwException();
+                }
                 cr = ce.flush(bb);
-                if (!cr.isUnderflow())
+                if (!cr.isUnderflow()) {
                     cr.throwException();
+                }
             } catch (CharacterCodingException x) {
                 throw new Error(x);
             }

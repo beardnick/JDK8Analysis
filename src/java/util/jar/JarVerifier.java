@@ -111,8 +111,9 @@ class JarVerifier {
     public void beginEntry(JarEntry je, ManifestEntryVerifier mev)
         throws IOException
     {
-        if (je == null)
+        if (je == null) {
             return;
+        }
 
         if (debug != null) {
             debug.println("beginEntry "+je.getName());
@@ -170,13 +171,15 @@ class JarVerifier {
 
         // be liberal in what you accept. If the name starts with ./, remove
         // it as we internally canonicalize it with out the ./.
-        if (name.startsWith("./"))
+        if (name.startsWith("./")) {
             name = name.substring(2);
+        }
 
         // be liberal in what you accept. If the name starts with /, remove
         // it as we internally canonicalize it with out the /.
-        if (name.startsWith("/"))
+        if (name.startsWith("/")) {
             name = name.substring(1);
+        }
 
         // only set the jev object for entries that have a signature
         // (either verified or not)
@@ -280,8 +283,9 @@ class JarVerifier {
 
                 String key = uname.substring(0, uname.lastIndexOf("."));
 
-                if (signerCache == null)
+                if (signerCache == null) {
                     signerCache = new ArrayList<>();
+                }
 
                 if (manDig == null) {
                     synchronized(manifestRawBytes) {
@@ -317,16 +321,24 @@ class JarVerifier {
 
             } catch (IOException ioe) {
                 // e.g. sun.security.pkcs.ParsingException
-                if (debug != null) debug.println("processEntry caught: "+ioe);
+                if (debug != null) {
+                    debug.println("processEntry caught: "+ioe);
+                }
                 // ignore and treat as unsigned
             } catch (SignatureException se) {
-                if (debug != null) debug.println("processEntry caught: "+se);
+                if (debug != null) {
+                    debug.println("processEntry caught: "+se);
+                }
                 // ignore and treat as unsigned
             } catch (NoSuchAlgorithmException nsae) {
-                if (debug != null) debug.println("processEntry caught: "+nsae);
+                if (debug != null) {
+                    debug.println("processEntry caught: "+nsae);
+                }
                 // ignore and treat as unsigned
             } catch (CertificateException ce) {
-                if (debug != null) debug.println("processEntry caught: "+ce);
+                if (debug != null) {
+                    debug.println("processEntry caught: "+ce);
+                }
                 // ignore and treat as unsigned
             }
         }
@@ -451,8 +463,9 @@ class JarVerifier {
             this.mev = new ManifestEntryVerifier(man);
             this.jv.beginEntry(je, mev);
             this.numLeft = je.getSize();
-            if (this.numLeft == 0)
+            if (this.numLeft == 0) {
                 this.jv.update(-1, this.mev);
+            }
         }
 
         public int read() throws IOException
@@ -461,8 +474,9 @@ class JarVerifier {
                 int b = is.read();
                 jv.update(b, mev);
                 numLeft--;
-                if (numLeft == 0)
+                if (numLeft == 0) {
                     jv.update(-1, mev);
+                }
                 return b;
             } else {
                 return -1;
@@ -478,8 +492,9 @@ class JarVerifier {
                 int n = is.read(b, off, len);
                 jv.update(n, b, off, len, mev);
                 numLeft -= n;
-                if (numLeft == 0)
+                if (numLeft == 0) {
                     jv.update(-1, b, off, len, mev);
+                }
                 return n;
             } else {
                 return -1;
@@ -489,8 +504,9 @@ class JarVerifier {
         public void close()
             throws IOException
         {
-            if (is != null)
+            if (is != null) {
                 is.close();
+            }
             is = null;
             mev = null;
             jv = null;

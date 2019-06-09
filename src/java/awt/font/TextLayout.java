@@ -2198,8 +2198,9 @@ public final class TextLayout implements Cloneable {
 
         if (firstCaret == 0 || secondCaret == 0) {
             GeneralPath ls = leftShape(bounds);
-            if (!ls.getBounds().isEmpty())
+            if (!ls.getBounds().isEmpty()) {
                 result.append(ls, false);
+            }
         }
 
         if (firstCaret == characterCount || secondCaret == characterCount) {

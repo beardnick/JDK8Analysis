@@ -138,8 +138,9 @@ public final class OptionalDouble {
      * null
      */
     public void ifPresent(DoubleConsumer consumer) {
-        if (isPresent)
+        if (isPresent) {
             consumer.accept(value);
+        }
     }
 
     /**

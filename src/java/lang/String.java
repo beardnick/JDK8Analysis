@@ -263,11 +263,13 @@ public final class String
         int n = count;
         for (int i = offset; i < end; i++) {
             int c = codePoints[i];
-            if (Character.isBmpCodePoint(c))
+            if (Character.isBmpCodePoint(c)) {
                 continue;
-            else if (Character.isValidCodePoint(c))
+            } else if (Character.isValidCodePoint(c)) {
                 n++;
-            else throw new IllegalArgumentException(Integer.toString(c));
+            } else {
+                throw new IllegalArgumentException(Integer.toString(c));
+            }
         }
 
         // Pass 2: Allocate and fill in char[]
@@ -275,10 +277,11 @@ public final class String
 
         for (int i = offset, j = 0; i < end; i++, j++) {
             int c = codePoints[i];
-            if (Character.isBmpCodePoint(c))
+            if (Character.isBmpCodePoint(c)) {
                 v[j] = (char)c;
-            else
+            } else {
                 Character.toSurrogates(c, v, j++);
+            }
         }
 
         this.value = v;
@@ -381,12 +384,15 @@ public final class String
      * constructors.
      */
     private static void checkBounds(byte[] bytes, int offset, int length) {
-        if (length < 0)
+        if (length < 0) {
             throw new StringIndexOutOfBoundsException(length);
-        if (offset < 0)
+        }
+        if (offset < 0) {
             throw new StringIndexOutOfBoundsException(offset);
-        if (offset > bytes.length - length)
+        }
+        if (offset > bytes.length - length) {
             throw new StringIndexOutOfBoundsException(offset + length);
+        }
     }
 
     /**
@@ -424,8 +430,9 @@ public final class String
      */
     public String(byte bytes[], int offset, int length, String charsetName)
             throws UnsupportedEncodingException {
-        if (charsetName == null)
+        if (charsetName == null) {
             throw new NullPointerException("charsetName");
+        }
         checkBounds(bytes, offset, length);
         this.value = StringCoding.decode(charsetName, bytes, offset, length);
     }
@@ -461,8 +468,9 @@ public final class String
      * @since  1.6
      */
     public String(byte bytes[], int offset, int length, Charset charset) {
-        if (charset == null)
+        if (charset == null) {
             throw new NullPointerException("charset");
+        }
         checkBounds(bytes, offset, length);
         this.value =  StringCoding.decode(charset, bytes, offset, length);
     }
@@ -918,7 +926,9 @@ public final class String
      */
     public byte[] getBytes(String charsetName)
             throws UnsupportedEncodingException {
-        if (charsetName == null) throw new NullPointerException();
+        if (charsetName == null) {
+            throw new NullPointerException();
+        }
         return StringCoding.encode(charsetName, value, 0, value.length);
     }
 
@@ -941,7 +951,9 @@ public final class String
      * @since  1.6
      */
     public byte[] getBytes(Charset charset) {
-        if (charset == null) throw new NullPointerException();
+        if (charset == null) {
+            throw new NullPointerException();
+        }
         return StringCoding.encode(charset, value, 0, value.length);
     }
 
@@ -989,8 +1001,9 @@ public final class String
                 char v2[] = anotherString.value;
                 int i = 0;
                 while (n-- != 0) {
-                    if (v1[i] != v2[i])
+                    if (v1[i] != v2[i]) {
                         return false;
+                    }
                     i++;
                 }
                 return true;
@@ -1774,7 +1787,9 @@ public final class String
         for (int i = sourceOffset + fromIndex; i <= max; i++) {
             /* Look for first character. */
             if (source[i] != first) {
-                while (++i <= max && source[i] != first);
+                while (++i <= max && source[i] != first) {
+                    ;
+                }
             }
 
             /* Found first character, now look at the rest of v2 */
@@ -1782,7 +1797,9 @@ public final class String
                 int j = i + 1;
                 int end = j + targetCount - 1;
                 for (int k = targetOffset + 1; j < end && source[j]
-                        == target[k]; j++, k++);
+                        == target[k]; j++, k++) {
+                    ;
+                }
 
                 if (j == end) {
                     /* Found whole string. */
@@ -2366,12 +2383,14 @@ public final class String
                 }
             }
             // If no match was found, return this
-            if (off == 0)
+            if (off == 0) {
                 return new String[]{this};
+            }
 
             // Add remaining segment
-            if (!limited || list.size() < limit)
+            if (!limited || list.size() < limit) {
                 list.add(substring(off, value.length));
+            }
 
             // Construct result
             int resultSize = list.size();

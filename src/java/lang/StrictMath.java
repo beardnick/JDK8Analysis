@@ -394,12 +394,13 @@ public final class StrictMath {
         long doppel = Double.doubleToRawLongBits(a);
         long mask   = DoubleConsts.SIGNIF_BIT_MASK >> exponent;
 
-        if ( (mask & doppel) == 0L )
+        if ( (mask & doppel) == 0L ) {
             return a; // integral value
-        else {
+        } else {
             double result = Double.longBitsToDouble(doppel & (~mask));
-            if (sign*a > 0.0)
+            if (sign*a > 0.0) {
                 result = result + sign;
+            }
             return result;
         }
     }

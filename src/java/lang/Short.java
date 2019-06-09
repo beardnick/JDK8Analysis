@@ -116,9 +116,10 @@ public final class Short extends Number implements Comparable<Short> {
     public static short parseShort(String s, int radix)
         throws NumberFormatException {
         int i = Integer.parseInt(s, radix);
-        if (i < MIN_VALUE || i > MAX_VALUE)
+        if (i < MIN_VALUE || i > MAX_VALUE) {
             throw new NumberFormatException(
                 "Value out of range. Value:\"" + s + "\" Radix:" + radix);
+        }
         return (short)i;
     }
 
@@ -206,8 +207,9 @@ public final class Short extends Number implements Comparable<Short> {
         static final Short cache[] = new Short[-(-128) + 127 + 1];
 
         static {
-            for(int i = 0; i < cache.length; i++)
+            for(int i = 0; i < cache.length; i++) {
                 cache[i] = new Short((short)(i - 128));
+            }
         }
     }
 
@@ -280,9 +282,10 @@ public final class Short extends Number implements Comparable<Short> {
      */
     public static Short decode(String nm) throws NumberFormatException {
         int i = Integer.decode(nm);
-        if (i < MIN_VALUE || i > MAX_VALUE)
+        if (i < MIN_VALUE || i > MAX_VALUE) {
             throw new NumberFormatException(
                     "Value " + i + " out of range from input " + nm);
+        }
         return valueOf((short)i);
     }
 

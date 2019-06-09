@@ -272,7 +272,9 @@ public class MutableCallSite extends CallSite {
      *                              or the array contains a null
      */
     public static void syncAll(MutableCallSite[] sites) {
-        if (sites.length == 0)  return;
+        if (sites.length == 0) {
+            return;
+        }
         STORE_BARRIER.lazySet(0);
         for (int i = 0; i < sites.length; i++) {
             sites[i].getClass();  // trigger NPE on first null

@@ -258,8 +258,9 @@ public class StreamTokenizer {
      * @see     java.io.StreamTokenizer#ordinaryChar(int)
      */
     public void resetSyntax() {
-        for (int i = ctype.length; --i >= 0;)
+        for (int i = ctype.length; --i >= 0;) {
             ctype[i] = 0;
+        }
     }
 
     /**
@@ -272,12 +273,15 @@ public class StreamTokenizer {
      * @param   hi    the high end of the range.
      */
     public void wordChars(int low, int hi) {
-        if (low < 0)
+        if (low < 0) {
             low = 0;
-        if (hi >= ctype.length)
+        }
+        if (hi >= ctype.length) {
             hi = ctype.length - 1;
-        while (low <= hi)
+        }
+        while (low <= hi) {
             ctype[low++] |= CT_ALPHA;
+        }
     }
 
     /**
@@ -293,12 +297,15 @@ public class StreamTokenizer {
      * @param   hi    the high end of the range.
      */
     public void whitespaceChars(int low, int hi) {
-        if (low < 0)
+        if (low < 0) {
             low = 0;
-        if (hi >= ctype.length)
+        }
+        if (hi >= ctype.length) {
             hi = ctype.length - 1;
-        while (low <= hi)
+        }
+        while (low <= hi) {
             ctype[low++] = CT_WHITESPACE;
+        }
     }
 
     /**
@@ -313,12 +320,15 @@ public class StreamTokenizer {
      * @see     java.io.StreamTokenizer#ordinaryChar(int)
      */
     public void ordinaryChars(int low, int hi) {
-        if (low < 0)
+        if (low < 0) {
             low = 0;
-        if (hi >= ctype.length)
+        }
+        if (hi >= ctype.length) {
             hi = ctype.length - 1;
-        while (low <= hi)
+        }
+        while (low <= hi) {
             ctype[low++] = 0;
+        }
     }
 
     /**
@@ -339,8 +349,9 @@ public class StreamTokenizer {
      * @see     java.io.StreamTokenizer#ttype
      */
     public void ordinaryChar(int ch) {
-        if (ch >= 0 && ch < ctype.length)
+        if (ch >= 0 && ch < ctype.length) {
             ctype[ch] = 0;
+        }
     }
 
     /**
@@ -353,8 +364,9 @@ public class StreamTokenizer {
      * @param   ch   the character.
      */
     public void commentChar(int ch) {
-        if (ch >= 0 && ch < ctype.length)
+        if (ch >= 0 && ch < ctype.length) {
             ctype[ch] = CT_COMMENT;
+        }
     }
 
     /**
@@ -382,8 +394,9 @@ public class StreamTokenizer {
      * @see     java.io.StreamTokenizer#ttype
      */
     public void quoteChar(int ch) {
-        if (ch >= 0 && ch < ctype.length)
+        if (ch >= 0 && ch < ctype.length) {
             ctype[ch] = CT_QUOTE;
+        }
     }
 
     /**
@@ -407,8 +420,9 @@ public class StreamTokenizer {
      * @see     java.io.StreamTokenizer#ttype
      */
     public void parseNumbers() {
-        for (int i = '0'; i <= '9'; i++)
+        for (int i = '0'; i <= '9'; i++) {
             ctype[i] |= CT_DIGIT;
+        }
         ctype['.'] |= CT_DIGIT;
         ctype['-'] |= CT_DIGIT;
     }
@@ -496,12 +510,13 @@ public class StreamTokenizer {
 
     /** Read the next character */
     private int read() throws IOException {
-        if (reader != null)
+        if (reader != null) {
             return reader.read();
-        else if (input != null)
+        } else if (input != null) {
             return input.read();
-        else
+        } else {
             throw new IllegalStateException();
+        }
     }
 
     /**
@@ -531,19 +546,23 @@ public class StreamTokenizer {
         sval = null;
 
         int c = peekc;
-        if (c < 0)
+        if (c < 0) {
             c = NEED_CHAR;
+        }
         if (c == SKIP_LF) {
             c = read();
-            if (c < 0)
+            if (c < 0) {
                 return ttype = TT_EOF;
-            if (c == '\n')
+            }
+            if (c == '\n') {
                 c = NEED_CHAR;
+            }
         }
         if (c == NEED_CHAR) {
             c = read();
-            if (c < 0)
+            if (c < 0) {
                 return ttype = TT_EOF;
+            }
         }
         ttype = c;              /* Just to be safe */
 
@@ -561,8 +580,9 @@ public class StreamTokenizer {
                     return ttype = TT_EOL;
                 }
                 c = read();
-                if (c == '\n')
+                if (c == '\n') {
                     c = read();
+                }
             } else {
                 if (c == '\n') {
                     LINENO++;
@@ -572,8 +592,9 @@ public class StreamTokenizer {
                 }
                 c = read();
             }
-            if (c < 0)
+            if (c < 0) {
                 return ttype = TT_EOF;
+            }
             ctype = c < 256 ? ct[c] : CT_ALPHA;
         }
 
@@ -591,13 +612,14 @@ public class StreamTokenizer {
             int decexp = 0;
             int seendot = 0;
             while (true) {
-                if (c == '.' && seendot == 0)
+                if (c == '.' && seendot == 0) {
                     seendot = 1;
-                else if ('0' <= c && c <= '9') {
+                } else if ('0' <= c && c <= '9') {
                     v = v * 10 + (c - '0');
                     decexp += seendot;
-                } else
+                } else {
                     break;
+                }
                 c = read();
             }
             peekc = c;
@@ -627,8 +649,9 @@ public class StreamTokenizer {
             } while ((ctype & (CT_ALPHA | CT_DIGIT)) != 0);
             peekc = c;
             sval = String.copyValueOf(buf, 0, i);
-            if (forceLower)
+            if (forceLower) {
                 sval = sval.toLowerCase();
+            }
             return ttype = TT_WORD;
         }
 
@@ -653,10 +676,12 @@ public class StreamTokenizer {
                             if ('0' <= c2 && c2 <= '7' && first <= '3') {
                                 c = (c << 3) + (c2 - '0');
                                 d = read();
-                            } else
+                            } else {
                                 d = c2;
-                        } else
-                          d = c2;
+                            }
+                        } else {
+                            d = c2;
+                        }
                     } else {
                         switch (c) {
                         case 'a':
@@ -720,19 +745,24 @@ public class StreamTokenizer {
                             c = read();
                         }
                     }
-                    if (c < 0)
+                    if (c < 0) {
                         return ttype = TT_EOF;
+                    }
                     prevc = c;
                 }
                 return nextToken();
             } else if (c == '/' && slashSlashCommentsP) {
-                while ((c = read()) != '\n' && c != '\r' && c >= 0);
+                while ((c = read()) != '\n' && c != '\r' && c >= 0) {
+                    ;
+                }
                 peekc = c;
                 return nextToken();
             } else {
                 /* Now see if it is still a single line comment */
                 if ((ct['/'] & CT_COMMENT) != 0) {
-                    while ((c = read()) != '\n' && c != '\r' && c >= 0);
+                    while ((c = read()) != '\n' && c != '\r' && c >= 0) {
+                        ;
+                    }
                     peekc = c;
                     return nextToken();
                 } else {
@@ -743,7 +773,9 @@ public class StreamTokenizer {
         }
 
         if ((ctype & CT_COMMENT) != 0) {
-            while ((c = read()) != '\n' && c != '\r' && c >= 0);
+            while ((c = read()) != '\n' && c != '\r' && c >= 0) {
+                ;
+            }
             peekc = c;
             return nextToken();
         }
@@ -763,8 +795,9 @@ public class StreamTokenizer {
      * @see     java.io.StreamTokenizer#ttype
      */
     public void pushBack() {
-        if (ttype != TT_NOTHING)   /* No-op if nextToken() not called */
+        if (ttype != TT_NOTHING)   /* No-op if nextToken() not called */ {
             pushedBack = true;
+        }
     }
 
     /**

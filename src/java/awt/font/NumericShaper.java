@@ -551,9 +551,13 @@ public final class NumericShaper implements java.io.Serializable {
     // warning, synchronize access to this as it modifies state
     private static int getContextKey(char c) {
         if (c < contexts[ctCache]) {
-            while (ctCache > 0 && c < contexts[ctCache]) --ctCache;
+            while (ctCache > 0 && c < contexts[ctCache]) {
+                --ctCache;
+            }
         } else if (c >= contexts[ctCache + 1]) {
-            while (ctCache < ctCacheLimit && c >= contexts[ctCache + 1]) ++ctCache;
+            while (ctCache < ctCacheLimit && c >= contexts[ctCache + 1]) {
+                ++ctCache;
+            }
         }
 
         // if we're not in a known range, then return EUROPEAN as the range key

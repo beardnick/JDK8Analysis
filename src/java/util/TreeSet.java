@@ -505,8 +505,9 @@ public class TreeSet<E> extends AbstractSet<E>
         s.writeInt(m.size());
 
         // Write out all elements in the proper order.
-        for (E e : m.keySet())
+        for (E e : m.keySet()) {
             s.writeObject(e);
+        }
     }
 
     /**

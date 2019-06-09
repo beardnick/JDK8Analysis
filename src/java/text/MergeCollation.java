@@ -68,8 +68,9 @@ final class MergeCollation {
      */
     public MergeCollation(String pattern) throws ParseException
     {
-        for (int i = 0; i < statusArray.length; i++)
+        for (int i = 0; i < statusArray.length; i++) {
             statusArray[i] = 0;
+        }
         setPattern(pattern);
     }
 
@@ -93,8 +94,9 @@ final class MergeCollation {
         for (i = 0; i < patterns.size(); ++i) {
             PatternEntry entry = patterns.get(i);
             if (entry.extension.length() != 0) {
-                if (extList == null)
+                if (extList == null) {
                     extList = new ArrayList<>();
+                }
                 extList.add(entry);
             } else {
                 if (extList != null) {
@@ -172,8 +174,9 @@ final class MergeCollation {
      */
     public void addPattern(String pattern) throws ParseException
     {
-        if (pattern == null)
+        if (pattern == null) {
             return;
+        }
 
         PatternEntry.Parser parser = new PatternEntry.Parser(pattern);
 
@@ -302,8 +305,9 @@ final class MergeCollation {
     private final int findLastEntry(PatternEntry entry,
                               StringBuffer excessChars) throws ParseException
     {
-        if (entry == null)
+        if (entry == null) {
             return 0;
+        }
 
         if (entry.strength != PatternEntry.RESET) {
             // Search backwards for string that contains this one;
@@ -319,9 +323,10 @@ final class MergeCollation {
             } else {
                 oldIndex = patterns.lastIndexOf(entry);
             }
-            if ((oldIndex == -1))
+            if ((oldIndex == -1)) {
                 throw new ParseException("couldn't find last entry: "
                                           + entry, oldIndex);
+            }
             return oldIndex + 1;
         } else {
             int i;
@@ -334,8 +339,9 @@ final class MergeCollation {
                     break;
                 }
             }
-            if (i == -1)
+            if (i == -1) {
                 throw new ParseException("couldn't find: " + entry, i);
+            }
             return i + 1;
         }
     }

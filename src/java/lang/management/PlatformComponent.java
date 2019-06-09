@@ -379,9 +379,10 @@ enum PlatformComponent {
 
     <T extends PlatformManagedObject> T getSingletonMXBean(Class<T> mxbeanInterface)
     {
-        if (!singleton)
+        if (!singleton) {
             throw new IllegalArgumentException(mxbeanInterfaceName +
                 " can have zero or more than one instances");
+        }
 
         List<T> list = getMXBeans(mxbeanInterface);
         assert list.size() == 1;
@@ -392,9 +393,10 @@ enum PlatformComponent {
             T getSingletonMXBean(MBeanServerConnection mbs, Class<T> mxbeanInterface)
         throws java.io.IOException
     {
-        if (!singleton)
+        if (!singleton) {
             throw new IllegalArgumentException(mxbeanInterfaceName +
                 " can have zero or more than one instances");
+        }
 
         // ObjectName of a singleton MXBean contains only domain and type
         assert keyProperties.size() == 1;
@@ -459,8 +461,9 @@ enum PlatformComponent {
         ensureInitialized();
         String cn = mxbeanInterface.getName();
         PlatformComponent pc = enumMap.get(cn);
-        if (pc != null && pc.getMXBeanInterface() == mxbeanInterface)
+        if (pc != null && pc.getMXBeanInterface() == mxbeanInterface) {
             return pc;
+        }
         return null;
     }
 

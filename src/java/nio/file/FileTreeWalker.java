@@ -184,8 +184,9 @@ class FileTreeWalker implements Closeable {
                     throw new AssertionError("Should not get here");
             }
         }
-        if (maxDepth < 0)
+        if (maxDepth < 0) {
             throw new IllegalArgumentException("'maxDepth' is negative");
+        }
 
         this.followLinks = fl;
         this.linkOptions = (fl) ? new LinkOption[0] :
@@ -218,8 +219,9 @@ class FileTreeWalker implements Closeable {
         try {
             attrs = Files.readAttributes(file, BasicFileAttributes.class, linkOptions);
         } catch (IOException ioe) {
-            if (!followLinks)
+            if (!followLinks) {
                 throw ioe;
+            }
 
             // attempt to get attrmptes without following links
             attrs = Files.readAttributes(file,
@@ -277,8 +279,9 @@ class FileTreeWalker implements Closeable {
         } catch (IOException ioe) {
             return new Event(EventType.ENTRY, entry, ioe);
         } catch (SecurityException se) {
-            if (ignoreSecurityException)
+            if (ignoreSecurityException) {
                 return null;
+            }
             throw se;
         }
 
@@ -301,8 +304,9 @@ class FileTreeWalker implements Closeable {
         } catch (IOException ioe) {
             return new Event(EventType.ENTRY, entry, ioe);
         } catch (SecurityException se) {
-            if (ignoreSecurityException)
+            if (ignoreSecurityException) {
                 return null;
+            }
             throw se;
         }
 
@@ -316,8 +320,9 @@ class FileTreeWalker implements Closeable {
      * Start walking from the given file.
      */
     Event walk(Path file) {
-        if (closed)
+        if (closed) {
             throw new IllegalStateException("Closed");
+        }
 
         Event ev = visit(file,
                          false,   // ignoreSecurityException
@@ -332,8 +337,9 @@ class FileTreeWalker implements Closeable {
      */
     Event next() {
         DirectoryNode top = stack.peek();
-        if (top == null)
+        if (top == null) {
             return null;      // stack is empty, we are done
+        }
 
         // continue iteration of the directory at the top of the stack
         Event ev;

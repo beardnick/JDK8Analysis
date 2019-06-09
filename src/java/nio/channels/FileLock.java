@@ -147,12 +147,15 @@ public abstract class FileLock implements AutoCloseable {
     protected FileLock(FileChannel channel,
                        long position, long size, boolean shared)
     {
-        if (position < 0)
+        if (position < 0) {
             throw new IllegalArgumentException("Negative position");
-        if (size < 0)
+        }
+        if (size < 0) {
             throw new IllegalArgumentException("Negative size");
-        if (position + size < 0)
+        }
+        if (position + size < 0) {
             throw new IllegalArgumentException("Negative position + size");
+        }
         this.channel = channel;
         this.position = position;
         this.size = size;
@@ -185,12 +188,15 @@ public abstract class FileLock implements AutoCloseable {
     protected FileLock(AsynchronousFileChannel channel,
                        long position, long size, boolean shared)
     {
-        if (position < 0)
+        if (position < 0) {
             throw new IllegalArgumentException("Negative position");
-        if (size < 0)
+        }
+        if (size < 0) {
             throw new IllegalArgumentException("Negative size");
-        if (position + size < 0)
+        }
+        if (position + size < 0) {
             throw new IllegalArgumentException("Negative position + size");
+        }
         this.channel = channel;
         this.position = position;
         this.size = size;
@@ -270,10 +276,12 @@ public abstract class FileLock implements AutoCloseable {
      *          range overlap by at least one byte
      */
     public final boolean overlaps(long position, long size) {
-        if (position + size <= this.position)
+        if (position + size <= this.position) {
             return false;               // That is below this
-        if (this.position + this.size <= position)
+        }
+        if (this.position + this.size <= position) {
             return false;               // This is below that
+        }
         return true;
     }
 

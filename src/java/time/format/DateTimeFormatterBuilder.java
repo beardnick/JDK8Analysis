@@ -1576,7 +1576,9 @@ public final class DateTimeFormatterBuilder {
             char cur = pattern.charAt(pos);
             if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
                 int start = pos++;
-                for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
+                for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++) {
+                    ;  // short loop
+                }
                 int count = pos - start;
                 // padding
                 if (cur == 'p') {
@@ -1586,7 +1588,9 @@ public final class DateTimeFormatterBuilder {
                         if ((cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z')) {
                             pad = count;
                             start = pos++;
-                            for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++);  // short loop
+                            for ( ; pos < pattern.length() && pattern.charAt(pos) == cur; pos++) {
+                                ;  // short loop
+                            }
                             count = pos - start;
                         }
                     }

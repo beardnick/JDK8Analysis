@@ -147,8 +147,9 @@ public final class Method extends Executable {
         // which implicitly requires that new java.lang.reflect
         // objects be fabricated for each reflective call on Class
         // objects.)
-        if (this.root != null)
+        if (this.root != null) {
             throw new IllegalArgumentException("Can not copy a non-root Method");
+        }
 
         Method res = new Method(clazz, name, parameterTypes, returnType,
                                 exceptionTypes, modifiers, slot, signature,
@@ -210,10 +211,11 @@ public final class Method extends Executable {
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
     public TypeVariable<Method>[] getTypeParameters() {
-        if (getGenericSignature() != null)
+        if (getGenericSignature() != null) {
             return (TypeVariable<Method>[])getGenericInfo().getTypeParameters();
-        else
+        } else {
             return (TypeVariable<Method>[])new TypeVariable[0];
+        }
     }
 
     /**
@@ -313,8 +315,9 @@ public final class Method extends Executable {
             Method other = (Method)obj;
             if ((getDeclaringClass() == other.getDeclaringClass())
                 && (getName() == other.getName())) {
-                if (!returnType.equals(other.getReturnType()))
+                if (!returnType.equals(other.getReturnType())) {
                     return false;
+                }
                 return equalParamTypes(parameterTypes, other.parameterTypes);
             }
         }
@@ -555,7 +558,9 @@ public final class Method extends Executable {
         // First check to see if one has been created yet, and take it
         // if so
         MethodAccessor tmp = null;
-        if (root != null) tmp = root.getMethodAccessor();
+        if (root != null) {
+            tmp = root.getMethodAccessor();
+        }
         if (tmp != null) {
             methodAccessor = tmp;
         } else {
@@ -598,8 +603,9 @@ public final class Method extends Executable {
      * @since  1.5
      */
     public Object getDefaultValue() {
-        if  (annotationDefault == null)
+        if  (annotationDefault == null) {
             return null;
+        }
         Class<?> memberType = AnnotationType.invocationHandlerReturnType(
             getReturnType());
         Object result = AnnotationParser.parseMemberValue(
@@ -607,8 +613,9 @@ public final class Method extends Executable {
             sun.misc.SharedSecrets.getJavaLangAccess().
                 getConstantPool(getDeclaringClass()),
             getDeclaringClass());
-        if (result instanceof sun.reflect.annotation.ExceptionProxy)
+        if (result instanceof sun.reflect.annotation.ExceptionProxy) {
             throw new AnnotationFormatError("Invalid default: " + this);
+        }
         return result;
     }
 

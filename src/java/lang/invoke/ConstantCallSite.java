@@ -92,7 +92,9 @@ public class ConstantCallSite extends CallSite {
      * @throws IllegalStateException if the {@code ConstantCallSite} constructor has not completed
      */
     @Override public final MethodHandle getTarget() {
-        if (!isFrozen)  throw new IllegalStateException();
+        if (!isFrozen) {
+            throw new IllegalStateException();
+        }
         return target;
     }
 

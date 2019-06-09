@@ -205,18 +205,22 @@ public class WeakHashMap<K,V>
      *         or if the load factor is nonpositive.
      */
     public WeakHashMap(int initialCapacity, float loadFactor) {
-        if (initialCapacity < 0)
+        if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Initial Capacity: "+
                                                initialCapacity);
-        if (initialCapacity > MAXIMUM_CAPACITY)
+        }
+        if (initialCapacity > MAXIMUM_CAPACITY) {
             initialCapacity = MAXIMUM_CAPACITY;
+        }
 
-        if (loadFactor <= 0 || Float.isNaN(loadFactor))
+        if (loadFactor <= 0 || Float.isNaN(loadFactor)) {
             throw new IllegalArgumentException("Illegal Load factor: "+
                                                loadFactor);
+        }
         int capacity = 1;
-        while (capacity < initialCapacity)
+        while (capacity < initialCapacity) {
             capacity <<= 1;
+        }
         table = newTable(capacity);
         this.loadFactor = loadFactor;
         threshold = (int)(capacity * loadFactor);
@@ -326,10 +330,11 @@ public class WeakHashMap<K,V>
                 while (p != null) {
                     Entry<K,V> next = p.next;
                     if (p == e) {
-                        if (prev == e)
+                        if (prev == e) {
                             table[i] = next;
-                        else
+                        } else {
                             prev.next = next;
+                        }
                         // Must not null out e.next;
                         // stale entries may be in use by a HashIterator
                         e.value = null; // Help GC
@@ -358,8 +363,9 @@ public class WeakHashMap<K,V>
      * because they are no longer referenced.
      */
     public int size() {
-        if (size == 0)
+        if (size == 0) {
             return 0;
+        }
         expungeStaleEntries();
         return size;
     }
@@ -398,8 +404,9 @@ public class WeakHashMap<K,V>
         int index = indexFor(h, tab.length);
         Entry<K,V> e = tab[index];
         while (e != null) {
-            if (e.hash == h && eq(k, e.get()))
+            if (e.hash == h && eq(k, e.get())) {
                 return e.value;
+            }
             e = e.next;
         }
         return null;
@@ -427,8 +434,9 @@ public class WeakHashMap<K,V>
         Entry<K,V>[] tab = getTable();
         int index = indexFor(h, tab.length);
         Entry<K,V> e = tab[index];
-        while (e != null && !(e.hash == h && eq(k, e.get())))
+        while (e != null && !(e.hash == h && eq(k, e.get()))) {
             e = e.next;
+        }
         return e;
     }
 
@@ -453,8 +461,9 @@ public class WeakHashMap<K,V>
         for (Entry<K,V> e = tab[i]; e != null; e = e.next) {
             if (h == e.hash && eq(k, e.get())) {
                 V oldValue = e.value;
-                if (value != oldValue)
+                if (value != oldValue) {
                     e.value = value;
+                }
                 return oldValue;
             }
         }
@@ -462,8 +471,9 @@ public class WeakHashMap<K,V>
         modCount++;
         Entry<K,V> e = tab[i];
         tab[i] = new Entry<>(k, value, queue, h, e);
-        if (++size >= threshold)
+        if (++size >= threshold) {
             resize(tab.length * 2);
+        }
         return null;
     }
 
@@ -539,8 +549,9 @@ public class WeakHashMap<K,V>
      */
     public void putAll(Map<? extends K, ? extends V> m) {
         int numKeysToBeAdded = m.size();
-        if (numKeysToBeAdded == 0)
+        if (numKeysToBeAdded == 0) {
             return;
+        }
 
         /*
          * Expand the map if the map if the number of mappings to be added
@@ -553,17 +564,21 @@ public class WeakHashMap<K,V>
          */
         if (numKeysToBeAdded > threshold) {
             int targetCapacity = (int)(numKeysToBeAdded / loadFactor + 1);
-            if (targetCapacity > MAXIMUM_CAPACITY)
+            if (targetCapacity > MAXIMUM_CAPACITY) {
                 targetCapacity = MAXIMUM_CAPACITY;
+            }
             int newCapacity = table.length;
-            while (newCapacity < targetCapacity)
+            while (newCapacity < targetCapacity) {
                 newCapacity <<= 1;
-            if (newCapacity > table.length)
+            }
+            if (newCapacity > table.length) {
                 resize(newCapacity);
+            }
         }
 
-        for (Map.Entry<? extends K, ? extends V> e : m.entrySet())
+        for (Map.Entry<? extends K, ? extends V> e : m.entrySet()) {
             put(e.getKey(), e.getValue());
+        }
     }
 
     /**
@@ -599,10 +614,11 @@ public class WeakHashMap<K,V>
             if (h == e.hash && eq(k, e.get())) {
                 modCount++;
                 size--;
-                if (prev == e)
+                if (prev == e) {
                     tab[i] = next;
-                else
+                } else {
                     prev.next = next;
+                }
                 return e.value;
             }
             prev = e;
@@ -614,8 +630,9 @@ public class WeakHashMap<K,V>
 
     /** Special version of remove needed by Entry set */
     boolean removeMapping(Object o) {
-        if (!(o instanceof Map.Entry))
+        if (!(o instanceof Map.Entry)) {
             return false;
+        }
         Entry<K,V>[] tab = getTable();
         Map.Entry<?,?> entry = (Map.Entry<?,?>)o;
         Object k = maskNull(entry.getKey());
@@ -629,10 +646,11 @@ public class WeakHashMap<K,V>
             if (h == e.hash && e.equals(entry)) {
                 modCount++;
                 size--;
-                if (prev == e)
+                if (prev == e) {
                     tab[i] = next;
-                else
+                } else {
                     prev.next = next;
+                }
                 return true;
             }
             prev = e;
@@ -649,8 +667,9 @@ public class WeakHashMap<K,V>
     public void clear() {
         // clear out ref queue. We don't need to expunge entries
         // since table is getting cleared.
-        while (queue.poll() != null)
+        while (queue.poll() != null) {
             ;
+        }
 
         modCount++;
         Arrays.fill(table, null);
@@ -659,8 +678,9 @@ public class WeakHashMap<K,V>
         // Allocation of array may have caused GC, which may have caused
         // additional entries to go stale.  Removing these entries from the
         // reference queue will make them eligible for reclamation.
-        while (queue.poll() != null)
+        while (queue.poll() != null) {
             ;
+        }
     }
 
     /**
@@ -672,14 +692,18 @@ public class WeakHashMap<K,V>
      *         specified value
      */
     public boolean containsValue(Object value) {
-        if (value==null)
+        if (value==null) {
             return containsNullValue();
+        }
 
         Entry<K,V>[] tab = getTable();
-        for (int i = tab.length; i-- > 0;)
-            for (Entry<K,V> e = tab[i]; e != null; e = e.next)
-                if (value.equals(e.value))
+        for (int i = tab.length; i-- > 0;) {
+            for (Entry<K,V> e = tab[i]; e != null; e = e.next) {
+                if (value.equals(e.value)) {
                     return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -688,10 +712,13 @@ public class WeakHashMap<K,V>
      */
     private boolean containsNullValue() {
         Entry<K,V>[] tab = getTable();
-        for (int i = tab.length; i-- > 0;)
-            for (Entry<K,V> e = tab[i]; e != null; e = e.next)
-                if (e.value==null)
+        for (int i = tab.length; i-- > 0;) {
+            for (Entry<K,V> e = tab[i]; e != null; e = e.next) {
+                if (e.value == null) {
                     return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -732,16 +759,18 @@ public class WeakHashMap<K,V>
         }
 
         public boolean equals(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> e = (Map.Entry<?,?>)o;
             K k1 = getKey();
             Object k2 = e.getKey();
             if (k1 == k2 || (k1 != null && k1.equals(k2))) {
                 V v1 = getValue();
                 Object v2 = e.getValue();
-                if (v1 == v2 || (v1 != null && v1.equals(v2)))
+                if (v1 == v2 || (v1 != null && v1.equals(v2))) {
                     return true;
+                }
             }
             return false;
         }
@@ -785,8 +814,9 @@ public class WeakHashMap<K,V>
             while (nextKey == null) {
                 Entry<K,V> e = entry;
                 int i = index;
-                while (e == null && i > 0)
+                while (e == null && i > 0) {
                     e = t[--i];
+                }
                 entry = e;
                 index = i;
                 if (e == null) {
@@ -794,18 +824,21 @@ public class WeakHashMap<K,V>
                     return false;
                 }
                 nextKey = e.get(); // hold on to key in strong ref
-                if (nextKey == null)
+                if (nextKey == null) {
                     entry = entry.next;
+                }
             }
             return true;
         }
 
         /** The common parts of next() across different types of iterators */
         protected Entry<K,V> nextEntry() {
-            if (modCount != expectedModCount)
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
-            if (nextKey == null && !hasNext())
+            }
+            if (nextKey == null && !hasNext()) {
                 throw new NoSuchElementException();
+            }
 
             lastReturned = entry;
             entry = entry.next;
@@ -815,10 +848,12 @@ public class WeakHashMap<K,V>
         }
 
         public void remove() {
-            if (lastReturned == null)
+            if (lastReturned == null) {
                 throw new IllegalStateException();
-            if (modCount != expectedModCount)
+            }
+            if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
+            }
 
             WeakHashMap.this.remove(currentKey);
             expectedModCount = modCount;
@@ -886,8 +921,9 @@ public class WeakHashMap<K,V>
                 WeakHashMap.this.remove(o);
                 return true;
             }
-            else
+            else {
                 return false;
+            }
         }
 
         public void clear() {
@@ -964,8 +1000,9 @@ public class WeakHashMap<K,V>
         }
 
         public boolean contains(Object o) {
-            if (!(o instanceof Map.Entry))
+            if (!(o instanceof Map.Entry)) {
                 return false;
+            }
             Map.Entry<?,?> e = (Map.Entry<?,?>)o;
             Entry<K,V> candidate = getEntry(e.getKey());
             return candidate != null && candidate.equals(e);
@@ -985,8 +1022,9 @@ public class WeakHashMap<K,V>
 
         private List<Map.Entry<K,V>> deepCopy() {
             List<Map.Entry<K,V>> list = new ArrayList<>(size());
-            for (Map.Entry<K,V> e : this)
-                list.add(new AbstractMap.SimpleEntry<>(e));
+            for (Map.Entry<K,V> e : this) {
+                list.add(new SimpleEntry<>(e));
+            }
             return list;
         }
 
@@ -1103,24 +1141,26 @@ public class WeakHashMap<K,V>
 
         public void forEachRemaining(Consumer<? super K> action) {
             int i, hi, mc;
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             WeakHashMap<K,V> m = map;
             WeakHashMap.Entry<K,V>[] tab = m.table;
             if ((hi = fence) < 0) {
                 mc = expectedModCount = m.modCount;
                 hi = fence = tab.length;
             }
-            else
+            else {
                 mc = expectedModCount;
+            }
             if (tab.length >= hi && (i = index) >= 0 &&
                 (i < (index = hi) || current != null)) {
                 WeakHashMap.Entry<K,V> p = current;
                 current = null; // exhaust
                 do {
-                    if (p == null)
+                    if (p == null) {
                         p = tab[i++];
-                    else {
+                    } else {
                         Object x = p.get();
                         p = p.next;
                         if (x != null) {
@@ -1131,28 +1171,31 @@ public class WeakHashMap<K,V>
                     }
                 } while (p != null || i < hi);
             }
-            if (m.modCount != mc)
+            if (m.modCount != mc) {
                 throw new ConcurrentModificationException();
+            }
         }
 
         public boolean tryAdvance(Consumer<? super K> action) {
             int hi;
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             WeakHashMap.Entry<K,V>[] tab = map.table;
             if (tab.length >= (hi = getFence()) && index >= 0) {
                 while (current != null || index < hi) {
-                    if (current == null)
+                    if (current == null) {
                         current = tab[index++];
-                    else {
+                    } else {
                         Object x = current.get();
                         current = current.next;
                         if (x != null) {
                             @SuppressWarnings("unchecked") K k =
                                 (K) WeakHashMap.unmaskNull(x);
                             action.accept(k);
-                            if (map.modCount != expectedModCount)
+                            if (map.modCount != expectedModCount) {
                                 throw new ConcurrentModificationException();
+                            }
                             return true;
                         }
                     }
@@ -1183,53 +1226,59 @@ public class WeakHashMap<K,V>
 
         public void forEachRemaining(Consumer<? super V> action) {
             int i, hi, mc;
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             WeakHashMap<K,V> m = map;
             WeakHashMap.Entry<K,V>[] tab = m.table;
             if ((hi = fence) < 0) {
                 mc = expectedModCount = m.modCount;
                 hi = fence = tab.length;
             }
-            else
+            else {
                 mc = expectedModCount;
+            }
             if (tab.length >= hi && (i = index) >= 0 &&
                 (i < (index = hi) || current != null)) {
                 WeakHashMap.Entry<K,V> p = current;
                 current = null; // exhaust
                 do {
-                    if (p == null)
+                    if (p == null) {
                         p = tab[i++];
-                    else {
+                    } else {
                         Object x = p.get();
                         V v = p.value;
                         p = p.next;
-                        if (x != null)
+                        if (x != null) {
                             action.accept(v);
+                        }
                     }
                 } while (p != null || i < hi);
             }
-            if (m.modCount != mc)
+            if (m.modCount != mc) {
                 throw new ConcurrentModificationException();
+            }
         }
 
         public boolean tryAdvance(Consumer<? super V> action) {
             int hi;
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             WeakHashMap.Entry<K,V>[] tab = map.table;
             if (tab.length >= (hi = getFence()) && index >= 0) {
                 while (current != null || index < hi) {
-                    if (current == null)
+                    if (current == null) {
                         current = tab[index++];
-                    else {
+                    } else {
                         Object x = current.get();
                         V v = current.value;
                         current = current.next;
                         if (x != null) {
                             action.accept(v);
-                            if (map.modCount != expectedModCount)
+                            if (map.modCount != expectedModCount) {
                                 throw new ConcurrentModificationException();
+                            }
                             return true;
                         }
                     }
@@ -1261,24 +1310,26 @@ public class WeakHashMap<K,V>
 
         public void forEachRemaining(Consumer<? super Map.Entry<K, V>> action) {
             int i, hi, mc;
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             WeakHashMap<K,V> m = map;
             WeakHashMap.Entry<K,V>[] tab = m.table;
             if ((hi = fence) < 0) {
                 mc = expectedModCount = m.modCount;
                 hi = fence = tab.length;
             }
-            else
+            else {
                 mc = expectedModCount;
+            }
             if (tab.length >= hi && (i = index) >= 0 &&
                 (i < (index = hi) || current != null)) {
                 WeakHashMap.Entry<K,V> p = current;
                 current = null; // exhaust
                 do {
-                    if (p == null)
+                    if (p == null) {
                         p = tab[i++];
-                    else {
+                    } else {
                         Object x = p.get();
                         V v = p.value;
                         p = p.next;
@@ -1291,20 +1342,22 @@ public class WeakHashMap<K,V>
                     }
                 } while (p != null || i < hi);
             }
-            if (m.modCount != mc)
+            if (m.modCount != mc) {
                 throw new ConcurrentModificationException();
+            }
         }
 
         public boolean tryAdvance(Consumer<? super Map.Entry<K,V>> action) {
             int hi;
-            if (action == null)
+            if (action == null) {
                 throw new NullPointerException();
+            }
             WeakHashMap.Entry<K,V>[] tab = map.table;
             if (tab.length >= (hi = getFence()) && index >= 0) {
                 while (current != null || index < hi) {
-                    if (current == null)
+                    if (current == null) {
                         current = tab[index++];
-                    else {
+                    } else {
                         Object x = current.get();
                         V v = current.value;
                         current = current.next;
@@ -1313,8 +1366,9 @@ public class WeakHashMap<K,V>
                                 (K) WeakHashMap.unmaskNull(x);
                             action.accept
                                 (new AbstractMap.SimpleImmutableEntry<K,V>(k, v));
-                            if (map.modCount != expectedModCount)
+                            if (map.modCount != expectedModCount) {
                                 throw new ConcurrentModificationException();
+                            }
                             return true;
                         }
                     }

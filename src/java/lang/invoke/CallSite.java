@@ -186,8 +186,9 @@ public class CallSite {
     void checkTargetChange(MethodHandle oldTarget, MethodHandle newTarget) {
         MethodType oldType = oldTarget.type();
         MethodType newType = newTarget.type();  // null check!
-        if (!newType.equals(oldType))
+        if (!newType.equals(oldType)) {
             throw wrongTargetType(newTarget, oldType);
+        }
     }
 
     private static WrongMethodTypeException wrongTargetType(MethodHandle target, MethodType type) {
@@ -316,8 +317,9 @@ public class CallSite {
                     break;
                 default:
                     final int NON_SPREAD_ARG_COUNT = 3;  // (caller, name, type)
-                    if (NON_SPREAD_ARG_COUNT + argv.length > MethodType.MAX_MH_ARITY)
+                    if (NON_SPREAD_ARG_COUNT + argv.length > MethodType.MAX_MH_ARITY) {
                         throw new BootstrapMethodError("too many bootstrap method arguments");
+                    }
                     MethodType bsmType = bootstrapMethod.type();
                     MethodType invocationType = MethodType.genericMethodType(NON_SPREAD_ARG_COUNT + argv.length);
                     MethodHandle typedBSM = bootstrapMethod.asType(invocationType);
@@ -331,14 +333,16 @@ public class CallSite {
             }  else {
                 throw new ClassCastException("bootstrap method failed to produce a CallSite");
             }
-            if (!site.getTarget().type().equals(type))
+            if (!site.getTarget().type().equals(type)) {
                 throw wrongTargetType(site.getTarget(), type);
+            }
         } catch (Throwable ex) {
             BootstrapMethodError bex;
-            if (ex instanceof BootstrapMethodError)
+            if (ex instanceof BootstrapMethodError) {
                 bex = (BootstrapMethodError) ex;
-            else
+            } else {
                 bex = new BootstrapMethodError("call site initialization exception", ex);
+            }
             throw bex;
         }
         return site;
@@ -347,8 +351,9 @@ public class CallSite {
     private static Object maybeReBox(Object x) {
         if (x instanceof Integer) {
             int xi = (int) x;
-            if (xi == (byte) xi)
+            if (xi == (byte) xi) {
                 x = xi;  // must rebox; see JLS 5.1.7
+            }
         }
         return x;
     }

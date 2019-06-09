@@ -653,15 +653,23 @@ public class Font implements java.io.Serializable
             String newName = null;
             if (oldName != null) {
                 newName = values.getFamily();
-                if (oldName.equals(newName)) newName = null;
+                if (oldName.equals(newName)) {
+                    newName = null;
+                }
             }
             int newStyle = 0;
             if (oldStyle == -1) {
                 newStyle = -1;
             } else {
-                if (values.getWeight() >= 2f)   newStyle  = BOLD;
-                if (values.getPosture() >= .2f) newStyle |= ITALIC;
-                if (oldStyle == newStyle)       newStyle  = -1;
+                if (values.getWeight() >= 2f) {
+                    newStyle  = BOLD;
+                }
+                if (values.getPosture() >= .2f) {
+                    newStyle |= ITALIC;
+                }
+                if (oldStyle == newStyle) {
+                    newStyle  = -1;
+                }
             }
             if (handle.font2D instanceof CompositeFont) {
                 if (newStyle != -1 || newName != null) {
@@ -758,8 +766,12 @@ public class Font implements java.io.Serializable
         this.name = values.getFamily();
         this.pointSize = values.getSize();
         this.size = (int)(values.getSize() + 0.5);
-        if (values.getWeight() >= 2f) this.style |= BOLD; // not == 2f
-        if (values.getPosture() >= .2f) this.style |= ITALIC; // not  == .2f
+        if (values.getWeight() >= 2f) {
+            this.style |= BOLD; // not == 2f
+        }
+        if (values.getPosture() >= .2f) {
+            this.style |= ITALIC; // not  == .2f
+        }
 
         this.nonIdentityTx = values.anyNonDefault(EXTRA_MASK);
         this.hasLayoutAttributes =  values.anyNonDefault(LAYOUT_MASK);

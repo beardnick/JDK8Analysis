@@ -131,8 +131,9 @@ class ZipOutputStream extends DeflaterOutputStream implements ZipConstants {
      */
     public ZipOutputStream(OutputStream out, Charset charset) {
         super(out, new Deflater(Deflater.DEFAULT_COMPRESSION, true));
-        if (charset == null)
+        if (charset == null) {
             throw new NullPointerException("charset is null");
+        }
         this.zc = ZipCoder.get(charset);
         usesDefaultDeflater = true;
     }
@@ -146,8 +147,9 @@ class ZipOutputStream extends DeflaterOutputStream implements ZipConstants {
     public void setComment(String comment) {
         if (comment != null) {
             this.comment = zc.getBytes(comment);
-            if (this.comment.length > 0xffff)
+            if (this.comment.length > 0xffff) {
                 throw new IllegalArgumentException("ZIP file comment too long.");
+            }
         }
     }
 
@@ -205,8 +207,9 @@ class ZipOutputStream extends DeflaterOutputStream implements ZipConstants {
         case DEFLATED:
             // store size, compressed size, and crc-32 in data descriptor
             // immediately following the compressed entry data
-            if (e.size  == -1 || e.csize == -1 || e.crc   == -1)
+            if (e.size  == -1 || e.csize == -1 || e.crc   == -1) {
                 e.flag = 8;
+            }
 
             break;
         case STORED:
@@ -231,8 +234,9 @@ class ZipOutputStream extends DeflaterOutputStream implements ZipConstants {
         if (! names.add(e.name)) {
             throw new ZipException("duplicate entry: " + e.name);
         }
-        if (zc.isUTF8())
+        if (zc.isUTF8()) {
             e.flag |= EFS;
+        }
         current = new XEntry(e, written);
         xentries.add(current);
         writeLOC(current);
@@ -361,8 +365,9 @@ class ZipOutputStream extends DeflaterOutputStream implements ZipConstants {
         }
         // write central directory
         long off = written;
-        for (XEntry xentry : xentries)
+        for (XEntry xentry : xentries) {
             writeCEN(xentry);
+        }
         writeEND(off, written - off);
         finished = true;
     }
@@ -436,8 +441,9 @@ class ZipOutputStream extends DeflaterOutputStream implements ZipConstants {
             elenEXTT += 4;
             flagEXTT |= EXTT_FLAT_CT;
         }
-        if (flagEXTT != 0)
+        if (flagEXTT != 0) {
             elen += (elenEXTT + 5);    // headid(2) + size(2) + flag(1) + data
+        }
         writeShort(elen);
         writeBytes(nameBytes, 0, nameBytes.length);
         if (hasZip64) {
@@ -450,12 +456,15 @@ class ZipOutputStream extends DeflaterOutputStream implements ZipConstants {
             writeShort(EXTID_EXTT);
             writeShort(elenEXTT + 1);      // flag + data
             writeByte(flagEXTT);
-            if (e.mtime != null)
+            if (e.mtime != null) {
                 writeInt(fileTimeToUnixTime(e.mtime));
-            if (e.atime != null)
+            }
+            if (e.atime != null) {
                 writeInt(fileTimeToUnixTime(e.atime));
-            if (e.ctime != null)
+            }
+            if (e.ctime != null) {
                 writeInt(fileTimeToUnixTime(e.ctime));
+            }
         }
         writeExtra(e.extra);
         locoff = written;
@@ -561,12 +570,15 @@ class ZipOutputStream extends DeflaterOutputStream implements ZipConstants {
         if (hasZip64) {
             writeShort(ZIP64_EXTID);// Zip64 extra
             writeShort(elenZIP64);
-            if (size == ZIP64_MAGICVAL)
+            if (size == ZIP64_MAGICVAL) {
                 writeLong(e.size);
-            if (csize == ZIP64_MAGICVAL)
+            }
+            if (csize == ZIP64_MAGICVAL) {
                 writeLong(e.csize);
-            if (offset == ZIP64_MAGICVAL)
+            }
+            if (offset == ZIP64_MAGICVAL) {
                 writeLong(xentry.offset);
+            }
         }
         if (flagEXTT != 0) {
             writeShort(EXTID_EXTT);
@@ -646,8 +658,9 @@ class ZipOutputStream extends DeflaterOutputStream implements ZipConstants {
      * Returns the length of extra data without EXTT and ZIP64.
      */
     private int getExtraLen(byte[] extra) {
-        if (extra == null)
+        if (extra == null) {
             return 0;
+        }
         int skipped = 0;
         int len = extra.length;
         int off = 0;

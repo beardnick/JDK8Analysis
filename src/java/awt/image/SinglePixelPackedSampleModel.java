@@ -307,13 +307,15 @@ public class SinglePixelPackedSampleModel extends SampleModel
      *                                  the sample model.
      */
     public SampleModel createSubsetSampleModel(int bands[]) {
-        if (bands.length > numBands)
+        if (bands.length > numBands) {
             throw new RasterFormatException("There are only " +
                                             numBands +
                                             " bands");
+        }
         int newBitMasks[] = new int[bands.length];
-        for (int i=0; i<bands.length; i++)
+        for (int i=0; i<bands.length; i++) {
             newBitMasks[i] = bitMasks[bands[i]];
+        }
 
         return new SinglePixelPackedSampleModel(this.dataType, width, height,
                                            this.scanlineStride, newBitMasks);
@@ -373,10 +375,11 @@ public class SinglePixelPackedSampleModel extends SampleModel
 
             byte[] bdata;
 
-            if (obj == null)
+            if (obj == null) {
                 bdata = new byte[1];
-            else
+            } else {
                 bdata = (byte[])obj;
+            }
 
             bdata[0] = (byte)data.getElem(y * scanlineStride + x);
 
@@ -387,10 +390,11 @@ public class SinglePixelPackedSampleModel extends SampleModel
 
             short[] sdata;
 
-            if (obj == null)
+            if (obj == null) {
                 sdata = new short[1];
-            else
+            } else {
                 sdata = (short[])obj;
+            }
 
             sdata[0] = (short)data.getElem(y * scanlineStride + x);
 
@@ -401,10 +405,11 @@ public class SinglePixelPackedSampleModel extends SampleModel
 
             int[] idata;
 
-            if (obj == null)
+            if (obj == null) {
                 idata = new int[1];
-            else
+            } else {
                 idata = (int[])obj;
+            }
 
             idata[0] = data.getElem(y * scanlineStride + x);
 

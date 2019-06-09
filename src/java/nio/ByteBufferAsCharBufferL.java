@@ -174,8 +174,9 @@ class ByteBufferAsCharBufferL                  // package-private
 
 
     public String toString(int start, int end) {
-        if ((end > limit()) || (start > end))
+        if ((end > limit()) || (start > end)) {
             throw new IndexOutOfBoundsException();
+        }
         try {
             int len = end - start;
             char[] ca = new char[len];
@@ -200,8 +201,9 @@ class ByteBufferAsCharBufferL                  // package-private
         pos = (pos <= lim ? pos : lim);
         int len = lim - pos;
 
-        if ((start < 0) || (end > len) || (start > end))
+        if ((start < 0) || (end > len) || (start > end)) {
             throw new IndexOutOfBoundsException();
+        }
         return new ByteBufferAsCharBufferL(bb,
                                                   -1,
                                                   pos + start,

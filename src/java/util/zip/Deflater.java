@@ -553,8 +553,9 @@ class Deflater {
 
     private void ensureOpen() {
         assert Thread.holdsLock(zsRef);
-        if (zsRef.address() == 0)
+        if (zsRef.address() == 0) {
             throw new NullPointerException("Deflater has been closed");
+        }
     }
 
     private static native void initIDs();

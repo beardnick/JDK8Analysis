@@ -670,9 +670,10 @@ public class ManagementFactory {
             throw new IllegalArgumentException(mxbeanInterface.getName() +
                 " is not a platform management interface");
         }
-        if (!pc.isSingleton())
+        if (!pc.isSingleton()) {
             throw new IllegalArgumentException(mxbeanInterface.getName() +
                 " can have zero or more than one instances");
+        }
 
         return pc.getSingletonMXBean(mxbeanInterface);
     }
@@ -765,9 +766,10 @@ public class ManagementFactory {
             throw new IllegalArgumentException(mxbeanInterface.getName() +
                 " is not a platform management interface");
         }
-        if (!pc.isSingleton())
+        if (!pc.isSingleton()) {
             throw new IllegalArgumentException(mxbeanInterface.getName() +
                 " can have zero or more than one instances");
+        }
         return pc.getSingletonMXBean(connection, mxbeanInterface);
     }
 

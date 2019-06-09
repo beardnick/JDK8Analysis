@@ -147,8 +147,9 @@ public final class LocateRegistry {
     {
         Registry registry = null;
 
-        if (port <= 0)
+        if (port <= 0) {
             port = Registry.REGISTRY_PORT;
+        }
 
         if (host == null || host.length() == 0) {
             // If host is blank (as returned by "file:" URL in 1.0.2 used in

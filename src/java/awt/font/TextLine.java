@@ -1270,8 +1270,9 @@ final class TextLine {
         if (baselineOffsets[baseline] != 0) {
             float base = baselineOffsets[baseline];
             float[] temp = new float[baselineOffsets.length];
-            for (int i = 0; i < temp.length; i++)
+            for (int i = 0; i < temp.length; i++) {
                 temp[i] = baselineOffsets[i] - base;
+            }
             baselineOffsets = temp;
         }
         return baselineOffsets;

@@ -108,10 +108,12 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
             fd = new FileDescriptor();
             socketCreate(true);
         }
-        if (socket != null)
+        if (socket != null) {
             socket.setCreated();
-        if (serverSocket != null)
+        }
+        if (serverSocket != null) {
             serverSocket.setCreated();
+        }
     }
 
     /**
@@ -177,11 +179,13 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
             throws IOException {
         boolean connected = false;
         try {
-            if (address == null || !(address instanceof InetSocketAddress))
+            if (address == null || !(address instanceof InetSocketAddress)) {
                 throw new IllegalArgumentException("unsupported address type");
+            }
             InetSocketAddress addr = (InetSocketAddress) address;
-            if (addr.isUnresolved())
+            if (addr.isUnresolved()) {
                 throw new UnknownHostException(addr.getHostName());
+            }
             this.port = addr.getPort();
             this.address = addr.getAddress();
 
@@ -218,19 +222,22 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
              * PlainSocketImpl.setOption().
              */
         case SO_LINGER:
-            if (val == null || (!(val instanceof Integer) && !(val instanceof Boolean)))
+            if (val == null || (!(val instanceof Integer) && !(val instanceof Boolean))) {
                 throw new SocketException("Bad parameter for option");
+            }
             if (val instanceof Boolean) {
                 /* true only if disabling - enabling should be Integer */
                 on = false;
             }
             break;
         case SO_TIMEOUT:
-            if (val == null || (!(val instanceof Integer)))
+            if (val == null || (!(val instanceof Integer))) {
                 throw new SocketException("Bad parameter for SO_TIMEOUT");
+            }
             int tmp = ((Integer) val).intValue();
-            if (tmp < 0)
+            if (tmp < 0) {
                 throw new IllegalArgumentException("timeout < 0");
+            }
             timeout = tmp;
             break;
         case IP_TOS:
@@ -242,8 +249,9 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
         case SO_BINDADDR:
             throw new SocketException("Cannot re-bind socket");
         case TCP_NODELAY:
-            if (val == null || !(val instanceof Boolean))
+            if (val == null || !(val instanceof Boolean)) {
                 throw new SocketException("bad parameter for TCP_NODELAY");
+            }
             on = ((Boolean)val).booleanValue();
             break;
         case SO_SNDBUF:
@@ -255,18 +263,21 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
             }
             break;
         case SO_KEEPALIVE:
-            if (val == null || !(val instanceof Boolean))
+            if (val == null || !(val instanceof Boolean)) {
                 throw new SocketException("bad parameter for SO_KEEPALIVE");
+            }
             on = ((Boolean)val).booleanValue();
             break;
         case SO_OOBINLINE:
-            if (val == null || !(val instanceof Boolean))
+            if (val == null || !(val instanceof Boolean)) {
                 throw new SocketException("bad parameter for SO_OOBINLINE");
+            }
             on = ((Boolean)val).booleanValue();
             break;
         case SO_REUSEADDR:
-            if (val == null || !(val instanceof Boolean))
+            if (val == null || !(val instanceof Boolean)) {
                 throw new SocketException("bad parameter for SO_REUSEADDR");
+            }
             on = ((Boolean)val).booleanValue();
             break;
         default:
@@ -385,10 +396,12 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
             }
         }
         socketBind(address, lport);
-        if (socket != null)
+        if (socket != null) {
             socket.setBound();
-        if (serverSocket != null)
+        }
+        if (serverSocket != null) {
             serverSocket.setBound();
+        }
     }
 
     /**
@@ -417,12 +430,15 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
      */
     protected synchronized InputStream getInputStream() throws IOException {
         synchronized (fdLock) {
-            if (isClosedOrPending())
+            if (isClosedOrPending()) {
                 throw new IOException("Socket Closed");
-            if (shut_rd)
+            }
+            if (shut_rd) {
                 throw new IOException("Socket input is shutdown");
-            if (socketInputStream == null)
+            }
+            if (socketInputStream == null) {
                 socketInputStream = new SocketInputStream(this);
+            }
         }
         return socketInputStream;
     }
@@ -436,12 +452,15 @@ abstract class AbstractPlainSocketImpl extends SocketImpl
      */
     protected synchronized OutputStream getOutputStream() throws IOException {
         synchronized (fdLock) {
-            if (isClosedOrPending())
+            if (isClosedOrPending()) {
                 throw new IOException("Socket Closed");
-            if (shut_wr)
+            }
+            if (shut_wr) {
                 throw new IOException("Socket output is shutdown");
-            if (socketOutputStream == null)
+            }
+            if (socketOutputStream == null) {
                 socketOutputStream = new SocketOutputStream(this);
+            }
         }
         return socketOutputStream;
     }

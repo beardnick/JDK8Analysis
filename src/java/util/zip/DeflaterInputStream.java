@@ -104,12 +104,15 @@ public class DeflaterInputStream extends FilterInputStream {
         super(in);
 
         // Sanity checks
-        if (in == null)
+        if (in == null) {
             throw new NullPointerException("Null input");
-        if (defl == null)
+        }
+        if (defl == null) {
             throw new NullPointerException("Null deflater");
-        if (bufLen < 1)
+        }
+        if (bufLen < 1) {
             throw new IllegalArgumentException("Buffer size < 1");
+        }
 
         // Initialize
         def = defl;
@@ -149,8 +152,9 @@ public class DeflaterInputStream extends FilterInputStream {
     public int read() throws IOException {
         // Read a single byte of compressed data
         int len = read(rbuf, 0, 1);
-        if (len <= 0)
+        if (len <= 0) {
             return -1;
+        }
         return (rbuf[0] & 0xFF);
     }
 
@@ -227,8 +231,9 @@ public class DeflaterInputStream extends FilterInputStream {
         ensureOpen();
 
         // Skip bytes by repeatedly decompressing small blocks
-        if (rbuf.length < 512)
+        if (rbuf.length < 512) {
             rbuf = new byte[512];
+        }
 
         int total = (int)Math.min(n, Integer.MAX_VALUE);
         long cnt = 0;

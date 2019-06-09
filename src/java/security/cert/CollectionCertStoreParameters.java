@@ -84,8 +84,9 @@ public class CollectionCertStoreParameters
      * {@code null}
      */
     public CollectionCertStoreParameters(Collection<?> collection) {
-        if (collection == null)
+        if (collection == null) {
             throw new NullPointerException();
+        }
         coll = collection;
     }
 

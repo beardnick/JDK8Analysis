@@ -315,7 +315,9 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
          * to push nodes fail due to contention.
          */
         static SNode snode(SNode s, Object e, SNode next, int mode) {
-            if (s == null) s = new SNode(e);
+            if (s == null) {
+                s = new SNode(e);
+            }
             s.mode = mode;
             s.next = next;
             return s;
@@ -354,24 +356,27 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                 SNode h = head;
                 if (h == null || h.mode == mode) {  // empty or same-mode
                     if (timed && nanos <= 0) {      // can't wait
-                        if (h != null && h.isCancelled())
+                        if (h != null && h.isCancelled()) {
                             casHead(h, h.next);     // pop cancelled node
-                        else
+                        } else {
                             return null;
+                        }
                     } else if (casHead(h, s = snode(s, e, h, mode))) {
                         SNode m = awaitFulfill(s, timed, nanos);
                         if (m == s) {               // wait was cancelled
                             clean(s);
                             return null;
                         }
-                        if ((h = head) != null && h.next == s)
+                        if ((h = head) != null && h.next == s) {
                             casHead(h, s.next);     // help s's fulfiller
+                        }
                         return (E) ((mode == REQUEST) ? m.item : s.item);
                     }
                 } else if (!isFulfilling(h.mode)) { // try to fulfill
                     if (h.isCancelled())            // already cancelled
+                    {
                         casHead(h, h.next);         // pop and retry
-                    else if (casHead(h, s=snode(s, e, h, FULFILLING|mode))) {
+                    } else if (casHead(h, s=snode(s, e, h, FULFILLING|mode))) {
                         for (;;) { // loop until matched or waiters disappear
                             SNode m = s.next;       // m is s's match
                             if (m == null) {        // all waiters are gone
@@ -384,19 +389,25 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                                 casHead(s, mn);     // pop both s and m
                                 return (E) ((mode == REQUEST) ? m.item : s.item);
                             } else                  // lost match
+                            {
                                 s.casNext(m, mn);   // help unlink
+                            }
                         }
                     }
                 } else {                            // help a fulfiller
                     SNode m = h.next;               // m is h's match
                     if (m == null)                  // waiter is gone
+                    {
                         casHead(h, null);           // pop fulfilling node
-                    else {
+                    } else {
                         SNode mn = m.next;
                         if (m.tryMatch(h))          // help match
+                        {
                             casHead(h, mn);         // pop both h and m
-                        else                        // lost match
+                        } else                        // lost match
+                        {
                             h.casNext(m, mn);       // help unlink
+                        }
                     }
                 }
             }
@@ -438,11 +449,13 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
             int spins = (shouldSpin(s) ?
                          (timed ? maxTimedSpins : maxUntimedSpins) : 0);
             for (;;) {
-                if (w.isInterrupted())
+                if (w.isInterrupted()) {
                     s.tryCancel();
+                }
                 SNode m = s.match;
-                if (m != null)
+                if (m != null) {
                     return m;
+                }
                 if (timed) {
                     nanos = deadline - System.nanoTime();
                     if (nanos <= 0L) {
@@ -450,14 +463,15 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                         continue;
                     }
                 }
-                if (spins > 0)
+                if (spins > 0) {
                     spins = shouldSpin(s) ? (spins-1) : 0;
-                else if (s.waiter == null)
+                } else if (s.waiter == null) {
                     s.waiter = w; // establish waiter so can park next iter
-                else if (!timed)
+                } else if (!timed) {
                     LockSupport.park(this);
-                else if (nanos > spinForTimeoutThreshold)
+                } else if (nanos > spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanos);
+                }
             }
         }
 
@@ -489,21 +503,24 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
              */
 
             SNode past = s.next;
-            if (past != null && past.isCancelled())
+            if (past != null && past.isCancelled()) {
                 past = past.next;
+            }
 
             // Absorb cancelled nodes at head
             SNode p;
-            while ((p = head) != null && p != past && p.isCancelled())
+            while ((p = head) != null && p != past && p.isCancelled()) {
                 casHead(p, p.next);
+            }
 
             // Unsplice embedded nodes
             while (p != null && p != past) {
                 SNode n = p.next;
-                if (n != null && n.isCancelled())
+                if (n != null && n.isCancelled()) {
                     p.casNext(n, n.next);
-                else
+                } else {
                     p = n;
+                }
             }
         }
 
@@ -617,16 +634,18 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
          */
         void advanceHead(QNode h, QNode nh) {
             if (h == head &&
-                UNSAFE.compareAndSwapObject(this, headOffset, h, nh))
+                UNSAFE.compareAndSwapObject(this, headOffset, h, nh)) {
                 h.next = h; // forget old next
+            }
         }
 
         /**
          * Tries to cas nt as new tail.
          */
         void advanceTail(QNode t, QNode nt) {
-            if (tail == t)
+            if (tail == t) {
                 UNSAFE.compareAndSwapObject(this, tailOffset, t, nt);
+            }
         }
 
         /**
@@ -674,22 +693,31 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                 QNode t = tail;
                 QNode h = head;
                 if (t == null || h == null)         // saw uninitialized value
+                {
                     continue;                       // spin
+                }
 
                 if (h == t || t.isData == isData) { // empty or same-mode
                     QNode tn = t.next;
                     if (t != tail)                  // inconsistent read
+                    {
                         continue;
+                    }
                     if (tn != null) {               // lagging tail
                         advanceTail(t, tn);
                         continue;
                     }
                     if (timed && nanos <= 0)        // can't wait
+                    {
                         return null;
-                    if (s == null)
+                    }
+                    if (s == null) {
                         s = new QNode(e, isData);
+                    }
                     if (!t.casNext(null, s))        // failed to link in
+                    {
                         continue;
+                    }
 
                     advanceTail(t, s);              // swing tail and wait
                     Object x = awaitFulfill(s, e, timed, nanos);
@@ -701,15 +729,18 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                     if (!s.isOffList()) {           // not already unlinked
                         advanceHead(t, s);          // unlink if head
                         if (x != null)              // and forget fields
+                        {
                             s.item = s;
+                        }
                         s.waiter = null;
                     }
                     return (x != null) ? (E)x : e;
 
                 } else {                            // complementary-mode
                     QNode m = h.next;               // node to fulfill
-                    if (t != tail || m == null || h != head)
+                    if (t != tail || m == null || h != head) {
                         continue;                   // inconsistent read
+                    }
 
                     Object x = m.item;
                     if (isData == (x != null) ||    // m already fulfilled
@@ -742,11 +773,13 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
             int spins = ((head.next == s) ?
                          (timed ? maxTimedSpins : maxUntimedSpins) : 0);
             for (;;) {
-                if (w.isInterrupted())
+                if (w.isInterrupted()) {
                     s.tryCancel(e);
+                }
                 Object x = s.item;
-                if (x != e)
+                if (x != e) {
                     return x;
+                }
                 if (timed) {
                     nanos = deadline - System.nanoTime();
                     if (nanos <= 0L) {
@@ -754,14 +787,15 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                         continue;
                     }
                 }
-                if (spins > 0)
+                if (spins > 0) {
                     --spins;
-                else if (s.waiter == null)
+                } else if (s.waiter == null) {
                     s.waiter = w;
-                else if (!timed)
+                } else if (!timed) {
                     LockSupport.park(this);
-                else if (nanos > spinForTimeoutThreshold)
+                } else if (nanos > spinForTimeoutThreshold) {
                     LockSupport.parkNanos(this, nanos);
+                }
             }
         }
 
@@ -786,19 +820,22 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                     continue;
                 }
                 QNode t = tail;      // Ensure consistent read for tail
-                if (t == h)
+                if (t == h) {
                     return;
+                }
                 QNode tn = t.next;
-                if (t != tail)
+                if (t != tail) {
                     continue;
+                }
                 if (tn != null) {
                     advanceTail(t, tn);
                     continue;
                 }
                 if (s != t) {        // If not tail, try to unsplice
                     QNode sn = s.next;
-                    if (sn == s || pred.casNext(s, sn))
+                    if (sn == s || pred.casNext(s, sn)) {
                         return;
+                    }
                 }
                 QNode dp = cleanMe;
                 if (dp != null) {    // Try unlinking previous cancelled node
@@ -811,11 +848,15 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                          (dn = d.next) != null &&  //   has successor
                          dn != d &&                //   that is on list
                          dp.casNext(d, dn)))       // d unspliced
+                    {
                         casCleanMe(dp, null);
-                    if (dp == pred)
+                    }
+                    if (dp == pred) {
                         return;      // s is already saved node
-                } else if (casCleanMe(null, pred))
+                    }
+                } else if (casCleanMe(null, pred)) {
                     return;          // Postpone cleaning s
+                }
             }
         }
 
@@ -873,7 +914,9 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      * @throws NullPointerException {@inheritDoc}
      */
     public void put(E e) throws InterruptedException {
-        if (e == null) throw new NullPointerException();
+        if (e == null) {
+            throw new NullPointerException();
+        }
         if (transferer.transfer(e, false, 0) == null) {
             Thread.interrupted();
             throw new InterruptedException();
@@ -891,11 +934,15 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      */
     public boolean offer(E e, long timeout, TimeUnit unit)
         throws InterruptedException {
-        if (e == null) throw new NullPointerException();
-        if (transferer.transfer(e, true, unit.toNanos(timeout)) != null)
+        if (e == null) {
+            throw new NullPointerException();
+        }
+        if (transferer.transfer(e, true, unit.toNanos(timeout)) != null) {
             return true;
-        if (!Thread.interrupted())
+        }
+        if (!Thread.interrupted()) {
             return false;
+        }
         throw new InterruptedException();
     }
 
@@ -909,7 +956,9 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      * @throws NullPointerException if the specified element is null
      */
     public boolean offer(E e) {
-        if (e == null) throw new NullPointerException();
+        if (e == null) {
+            throw new NullPointerException();
+        }
         return transferer.transfer(e, true, 0) != null;
     }
 
@@ -922,8 +971,9 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      */
     public E take() throws InterruptedException {
         E e = transferer.transfer(null, false, 0);
-        if (e != null)
+        if (e != null) {
             return e;
+        }
         Thread.interrupted();
         throw new InterruptedException();
     }
@@ -939,8 +989,9 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      */
     public E poll(long timeout, TimeUnit unit) throws InterruptedException {
         E e = transferer.transfer(null, true, unit.toNanos(timeout));
-        if (e != null || !Thread.interrupted())
+        if (e != null || !Thread.interrupted()) {
             return e;
+        }
         throw new InterruptedException();
     }
 
@@ -1096,8 +1147,9 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      * @throws NullPointerException if the specified array is null
      */
     public <T> T[] toArray(T[] a) {
-        if (a.length > 0)
+        if (a.length > 0) {
             a[0] = null;
+        }
         return a;
     }
 
@@ -1108,10 +1160,12 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     public int drainTo(Collection<? super E> c) {
-        if (c == null)
+        if (c == null) {
             throw new NullPointerException();
-        if (c == this)
+        }
+        if (c == this) {
             throw new IllegalArgumentException();
+        }
         int n = 0;
         for (E e; (e = poll()) != null;) {
             c.add(e);
@@ -1127,10 +1181,12 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      * @throws IllegalArgumentException      {@inheritDoc}
      */
     public int drainTo(Collection<? super E> c, int maxElements) {
-        if (c == null)
+        if (c == null) {
             throw new NullPointerException();
-        if (c == this)
+        }
+        if (c == this) {
             throw new IllegalArgumentException();
+        }
         int n = 0;
         for (E e; n < maxElements && (e = poll()) != null;) {
             c.add(e);
@@ -1190,10 +1246,11 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
     private void readObject(java.io.ObjectInputStream s)
         throws java.io.IOException, ClassNotFoundException {
         s.defaultReadObject();
-        if (waitingProducers instanceof FifoWaitQueue)
+        if (waitingProducers instanceof FifoWaitQueue) {
             transferer = new TransferQueue<E>();
-        else
+        } else {
             transferer = new TransferStack<E>();
+        }
     }
 
     // Unsafe mechanics

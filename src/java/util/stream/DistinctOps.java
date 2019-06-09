@@ -80,10 +80,11 @@ final class DistinctOps {
                     AtomicBoolean seenNull = new AtomicBoolean(false);
                     ConcurrentHashMap<T, Boolean> map = new ConcurrentHashMap<>();
                     TerminalOp<T, Void> forEachOp = ForEachOps.makeRef(t -> {
-                        if (t == null)
+                        if (t == null) {
                             seenNull.set(true);
-                        else
+                        } else {
                             map.putIfAbsent(t, Boolean.TRUE);
+                        }
                     }, false);
                     forEachOp.evaluateParallel(helper, spliterator);
 

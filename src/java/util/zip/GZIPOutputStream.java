@@ -164,8 +164,9 @@ class GZIPOutputStream extends DeflaterOutputStream {
                     out.write(buf, 0, len);
                     return;
                 }
-                if (len > 0)
+                if (len > 0) {
                     out.write(buf, 0, len);
+                }
             }
             // if we can't fit the trailer at the end of the last
             // deflater buffer, we write it separately

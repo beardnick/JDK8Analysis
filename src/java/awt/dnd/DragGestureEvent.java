@@ -102,20 +102,26 @@ public class DragGestureEvent extends EventObject {
     {
         super(dgr);
 
-        if ((component = dgr.getComponent()) == null)
+        if ((component = dgr.getComponent()) == null) {
             throw new IllegalArgumentException("null component");
-        if ((dragSource = dgr.getDragSource()) == null)
+        }
+        if ((dragSource = dgr.getDragSource()) == null) {
             throw new IllegalArgumentException("null DragSource");
+        }
 
-        if (evs == null || evs.isEmpty())
+        if (evs == null || evs.isEmpty()) {
             throw new IllegalArgumentException("null or empty list of events");
+        }
 
         if (act != DnDConstants.ACTION_COPY &&
             act != DnDConstants.ACTION_MOVE &&
-            act != DnDConstants.ACTION_LINK)
+            act != DnDConstants.ACTION_LINK) {
             throw new IllegalArgumentException("bad action");
+        }
 
-        if (ori == null) throw new IllegalArgumentException("null origin");
+        if (ori == null) {
+            throw new IllegalArgumentException("null origin");
+        }
 
         events     = evs;
         action     = act;

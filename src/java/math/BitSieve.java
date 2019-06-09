@@ -118,8 +118,9 @@ class BitSieve {
 
             // Take each multiple of step out of sieve
             start = convertedStep - start;
-            if (start%2 == 0)
+            if (start%2 == 0) {
                 start += convertedStep;
+            }
             sieveSingle(searchLen, (start-1)/2, convertedStep);
 
             // Find next prime from small sieve
@@ -164,13 +165,15 @@ class BitSieve {
      * specified limit. It returns -1 if there is no such clear bit.
      */
     private int sieveSearch(int limit, int start) {
-        if (start >= limit)
+        if (start >= limit) {
             return -1;
+        }
 
         int index = start;
         do {
-            if (!get(index))
+            if (!get(index)) {
                 return index;
+            }
             index++;
         } while(index < limit-1);
         return -1;
@@ -200,8 +203,9 @@ class BitSieve {
                 if ((nextLong & 1) == 1) {
                     BigInteger candidate = initValue.add(
                                            BigInteger.valueOf(offset));
-                    if (candidate.primeToCertainty(certainty, random))
+                    if (candidate.primeToCertainty(certainty, random)) {
                         return candidate;
+                    }
                 }
                 nextLong >>>= 1;
                 offset+=2;

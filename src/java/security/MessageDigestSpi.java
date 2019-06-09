@@ -174,11 +174,13 @@ public abstract class MessageDigestSpi {
                                                 throws DigestException {
 
         byte[] digest = engineDigest();
-        if (len < digest.length)
-                throw new DigestException("partial digests not returned");
-        if (buf.length - offset < digest.length)
-                throw new DigestException("insufficient space in the output "
-                                          + "buffer to store the digest");
+        if (len < digest.length) {
+            throw new DigestException("partial digests not returned");
+        }
+        if (buf.length - offset < digest.length) {
+            throw new DigestException("insufficient space in the output "
+                                      + "buffer to store the digest");
+        }
         System.arraycopy(digest, 0, buf, offset, digest.length);
         return digest.length;
     }

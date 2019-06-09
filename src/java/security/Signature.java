@@ -497,8 +497,9 @@ public abstract class Signature extends SignatureSpi {
                 && critSet.contains("2.5.29.15")) {
                 boolean[] keyUsageInfo = cert.getKeyUsage();
                 // keyUsageInfo[0] is for digitalSignature.
-                if ((keyUsageInfo != null) && (keyUsageInfo[0] == false))
+                if ((keyUsageInfo != null) && (keyUsageInfo[0] == false)) {
                     throw new InvalidKeyException("Wrong key usage");
+                }
             }
         }
 

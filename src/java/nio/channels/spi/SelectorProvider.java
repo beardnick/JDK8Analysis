@@ -80,14 +80,16 @@ public abstract class SelectorProvider {
      */
     protected SelectorProvider() {
         SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
+        if (sm != null) {
             sm.checkPermission(new RuntimePermission("selectorProvider"));
+        }
     }
 
     private static boolean loadProviderFromProperty() {
         String cn = System.getProperty("java.nio.channels.spi.SelectorProvider");
-        if (cn == null)
+        if (cn == null) {
             return false;
+        }
         try {
             Class<?> c = Class.forName(cn, true,
                                        ClassLoader.getSystemClassLoader());
@@ -112,8 +114,9 @@ public abstract class SelectorProvider {
         Iterator<SelectorProvider> i = sl.iterator();
         for (;;) {
             try {
-                if (!i.hasNext())
+                if (!i.hasNext()) {
                     return false;
+                }
                 provider = i.next();
                 return true;
             } catch (ServiceConfigurationError sce) {
@@ -163,15 +166,18 @@ public abstract class SelectorProvider {
      */
     public static SelectorProvider provider() {
         synchronized (lock) {
-            if (provider != null)
+            if (provider != null) {
                 return provider;
+            }
             return AccessController.doPrivileged(
                 new PrivilegedAction<SelectorProvider>() {
                     public SelectorProvider run() {
-                            if (loadProviderFromProperty())
+                            if (loadProviderFromProperty()) {
                                 return provider;
-                            if (loadProviderAsService())
+                            }
+                            if (loadProviderAsService()) {
                                 return provider;
+                            }
                             provider = sun.nio.ch.DefaultSelectorProvider.create();
                             return provider;
                         }
